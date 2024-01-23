@@ -251,8 +251,8 @@ def rims_inference(
 
     # data to dataframe
     df = pd.DataFrame(records)
-    if "index" in df.columns:
-        df = df.set_index("index", drop=False)
+    if "index" not in df.columns:
+        df["index"] = df.index # make index for later
     if running_on_prev_result:
         # pick conflict only records to efficiently infer, keeping its order intact
         nonconflict_mask = df.selection_or_rims.apply(

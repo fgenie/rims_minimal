@@ -1090,13 +1090,6 @@ def extract_num_turbo(solution: str):
 #     return func(*args, **kwargs)
 
 
-def emergency_fix_str_none(d: dict) -> dict:
-    """
-    fix "None" to None in the dict
-    """
-    return {k: None if v == "None" else v for k, v in d.items()}
-
-
 def get_concordant_answer(
     answers: list,
     ensure_unanimity: bool = False,
@@ -1152,9 +1145,10 @@ def get_concordant_answer(
                 else:
                     return None
             else:  # len()==3
+                revert_normalized = dict(zip(answers_normalized, answers_no_none))
                 for a1, a2 in combinations(answers_normalized, 2):
                     if math_util.is_equiv(a1, a2):
-                        return a1
+                        return revert_normalized[a1]
                 return None  # no concordant answers
     elif dataset_type in ["ocw"]:
         raise NotImplementedError("use the code appears on appendix of the paper")

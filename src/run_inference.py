@@ -47,7 +47,6 @@ row:
 
 def indiv_inference(
     row: dict = None,
-    re_execute_sln: bool = False,  # fix option
     num_methods: int = 3,
     temperature: float = 0.0,
     n: int = 1,
@@ -127,16 +126,6 @@ def indiv_inference(
 
             ansmap["p2c"] = p2c_ans
             solmap["p2c"] = p2c_solution
-    if re_execute_sln:
-        for key, oldans in ansmap.items():
-            newans = oldans
-            if key == "pal":
-                newans = safe_execute_turbo(solmap[key])
-            elif key == "p2c":
-                newans = safe_execute_turbo(solmap[key][-1])
-            if newans != oldans:
-                print(f"{key}: answer changes to {oldans}->{newans}")
-                ansmap[key] = newans
 
     return ansmap, solmap  # updated ones
 
@@ -387,17 +376,12 @@ def baseline_inference(
     seed: int = 777,
     # dev option
     dbg: bool = False,
-    reuse_selection_if_exist: bool = False,  # if True, will reuse selection results if it already exists
-    re_execute_sln: bool = False,  # if True, re-execute solution of above
+
 ):
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
     assert (
         dataset_type in gsm_jslf.lower()
     ), f"sanity check: dataset_type will affect `get_concordant_answer()` \ncurrently running:\n{gsm_jslf=}\n{dataset_type=}"
-    if re_execute_sln:
-        assert (
-            reuse_selection_if_exist
-        ), "if re_execute_sln, reuse_selection_if_exist must be True"
 
     if n > 1:
         raise NotImplementedError(

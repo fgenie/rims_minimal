@@ -626,7 +626,14 @@ def get_select_prompt(
             False
         ), f"len(cot_pal_p2c_sln_d) needs to be 2 or 3 (current = {len(cot_pal_p2c_sln_d)})"
 
-    cot_solution, pal_solution, p2c_solution = cot_pal_p2c_sln_d.values()
+    # cot_solution, pal_solution, p2c_solution = cot_pal_p2c_sln_d.values()
+    if 'cot' in cot_pal_p2c_sln_d.keys():
+        cot_solution = cot_pal_p2c_sln_d['cot']
+    if 'pal' in cot_pal_p2c_sln_d.keys():
+        pal_solution = cot_pal_p2c_sln_d['pal']
+    if 'p2c' in cot_pal_p2c_sln_d.keys():
+        p2c_solution = cot_pal_p2c_sln_d['p2c']
+
 
     messages = get_user_assistant_messages(
         system_message, user_message, assistant_message
@@ -665,8 +672,8 @@ def get_select_prompt(
             else "Answer:\n" + cot_solution.strip()
         )
 
-    if len(cot_pal_p2c_sln_d) == 2:
-        user_message = f"""Math problem: {question.strip()}
+    # if len(cot_pal_p2c_sln_d) == 2:
+    user_message = f"""Math problem: {question.strip()}
 
 (A)
 {cot_generated.strip()}
@@ -676,7 +683,7 @@ def get_select_prompt(
 
 Which of the above two choices can correctly answer the math problem?"""
 
-    else:  # len(cot_pal_p2c_sln_d)==3:
+    if len(cot_pal_p2c_sln_d)==3:  # len(cot_pal_p2c_sln_d)==3:
         p2c_choice_str = f"(C)\n{p2c_solution[0].strip() if isinstance(p2c_solution, list) else p2c_solution.strip()}\n\nWhich of the above three choices can correctly answer the math problem?"
         user_message = user_message.replace(
             "Which of the above two choices can correctly answer the math problem?",
@@ -872,7 +879,7 @@ def postprocess_code(rawanswer: str, k_fewshot: int = 0):
     try:
         # 1 removing starting wrap ```
         if "```python" in rawanswer:
-            code = rawanswer.split("```python")[-1]
+            rawanswer = rawanswer.split("```python")[-1]
         elif rawanswer.startswith("```"):
             rawanswer = rawanswer.split("```")[-1]
 
@@ -952,10 +959,12 @@ def parse_python_code_from_string(unparsed_txt: str):
 
 
 def get_func_name_from_string(codestring: str) -> str:
-    match = re.search(r"def (\w+)\(", codestring)
+    match = re.search(r"def (\w+)\(\):", codestring)
     if match:
         funcname = match.group(1)
-    return funcname
+        return funcname
+    else:
+        return None
 
 
 def _execute(code, code_return: str):

@@ -247,12 +247,12 @@ def rims_inference(
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
-    print(f"writing to {outpath}")
+    print(f"writing to \n\t{outpath}\n\n\n\n")
 
     # data to dataframe
     df = pd.DataFrame(records)
-    if "index" not in df.columns:
-        df["index"] = df.index # make index for later
+    if "index" in df.columns:
+         df = df.set_index("index", drop=False)
     if running_on_prev_result:
         # pick conflict only records to efficiently infer, keeping its order intact
         nonconflict_mask = df.selection_or_rims.apply(
@@ -425,7 +425,8 @@ def baseline_inference(
     else:
         records = pqdm(records, _func, n_jobs=8)
 
-    print(f"writing to {outpath}")
+    print(f"writing to \n\t{outpath}\n\n\n\n")
+
     with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
         for row in records:
             try:

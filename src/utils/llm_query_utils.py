@@ -269,11 +269,14 @@ def query_selection(
     def postprocess_selection(selection_str: str) -> str:
         ptn = r"\([A-C]\)"
         matches = re.findall(ptn, selection_str)
-        choice = matches[0]
+        if matches:
+            choice = matches[0]
 
-        choice2method = {"(A)": "cot", "(B)": "pal", "(C)": "p2c"}
+            choice2method = {"(A)": "cot", "(B)": "pal", "(C)": "p2c"}
 
-        return choice2method[choice]
+            return choice2method[choice]
+        else:
+            return None
 
     if backbone == "gpt4":
         model_name = "gpt-4"

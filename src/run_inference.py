@@ -251,8 +251,10 @@ def rims_inference(
 
     # data to dataframe
     df = pd.DataFrame(records)
-    if "index" in df.columns:
-         df = df.set_index("index", drop=False)
+    # resolve index problem (dataframe and record both have index column now)
+    if "index" not in df.columns:
+        df["index"] = df.index
+    df = df.set_index("index", drop=False)
     if running_on_prev_result:
         # pick conflict only records to efficiently infer, keeping its order intact
         nonconflict_mask = df.selection_or_rims.apply(
@@ -291,7 +293,7 @@ def rims_inference(
         df_done = df_done.set_index(
             "index", drop=False
         )  # if pqdm messed up the order, this will fix it.
-        df.loc[df_done.index] = df_done
+        df.loc[df_done.index] = df_done # updating only selection-done rows in the original df
         records_done = df.to_dict(orient="records")
 
     with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
@@ -344,13 +346,21 @@ def baseline_complete_row(
             pal_solution=solmap["pal"],
             p2c_plan_code_solution=solmap["p2c"],
         )
-        row["selection_or_rims"] = {
-            "good_method": chosen_method,
-            "good_answer": ansmap[chosen_method],
-            "good_solution": solmap[chosen_method],
-            "selection_str": selection_str,
-        }
-        row["majority_ans"] = ansmap[chosen_method]
+        if chosen_method is not None: 
+            row["selection_or_rims"] = {
+                "good_method": chosen_method,
+                "good_answer": ansmap[chosen_method],
+                "good_solution": solmap[chosen_method],
+                "selection_str": selection_str,
+            }
+        else:
+            row['selection_or_rims'] = {
+                "good_method": None,
+                "good_answer": None,
+                "good_solution": None,
+                "selection_str": selection_str,
+            }
+        row["majority_ans"] = row['selection_or_rims']['good_answer']
     else:
         row["selection_or_rims"] = {"majority_vote": True}
         row["majority_ans"] = majority_ans

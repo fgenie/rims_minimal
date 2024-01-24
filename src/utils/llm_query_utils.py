@@ -7,6 +7,7 @@ import func_timeout
 import openai
 import regex
 import yaml
+from collections import Counter
 
 from . import math_prompt, math_util
 
@@ -269,11 +270,14 @@ def query_selection(
     def postprocess_selection(selection_str: str) -> str:
         ptn = r"\([A-C]\)"
         matches = re.findall(ptn, selection_str)
-        choice = matches[0]
+        if matches:
+            choice = matches[0]
 
-        choice2method = {"(A)": "cot", "(B)": "pal", "(C)": "p2c"}
+            choice2method = {"(A)": "cot", "(B)": "pal", "(C)": "p2c"}
 
-        return choice2method[choice]
+            return choice2method[choice]
+        else:
+            return None
 
     if backbone == "gpt4":
         model_name = "gpt-4"
@@ -1111,29 +1115,44 @@ def get_concordant_answer(
 
     *recommend to put answers in the order of cot going first (usually they are intgers)
     """
-
-    answers_no_none = [a for a in answers if a is not None]
-    if dataset_type in ["svamp", "gsm"]:
-        if ensure_unanimity:
-            if len(set(answers_no_none)) == 1:
-                return answers_no_none.pop()
-            else:
-                return None
-
-        if len(answers_no_none) == 0:
+    if ensure_unanimity:
+        if len(set(answers_no_none)) == 1:
+            majority = answers_no_none.pop()
+            return majority if isinstance(majority, float) else None
+        else:
             return None
-        elif len(answers_no_none) == 1:
-            return answers_no_none.pop()
-        elif len(answers_no_none) == 2:
-            if abs(answers_no_none[0] - answers_no_none[1]) < 1e-3:
-                return answers_no_none[0]
-            else:
+        
+    answers_no_none = [a for a in answers if a is not None]
+    
+    if dataset_type in ["svamp", "gsm"]:
+        majority, count = Counter(answers_no_none).most_common(1)[0]
+        if count >=2:
+            return majority if isinstance(majority, float) else None
+        else: # count = 1 
+            # continue to check if 1e-3 tolerance same thing exist
+            if len(answers_no_none) == 0:
                 return None
-        else:  # >=3
-            for a1, a2 in combinations(answers_no_none, 2):
-                if abs(a1 - a2) < 1e-3:
-                    return a1
-            return None  # no concordant answers
+            elif len(answers_no_none) == 1:
+                majority = answers_no_none.pop()
+                return majority if isinstance(majority, float) else None 
+            elif len(answers_no_none) == 2:
+                try:
+                    if abs(answers_no_none[0] - answers_no_none[1]) < 1e-3:
+                        return answers_no_none[0] if isinstance(answers_no_none[0], float) else None 
+                    else:
+                        return None
+                except:
+                    return None
+            else:  # >=3
+                for a1, a2 in combinations(answers_no_none, 2):
+                    try:
+                        if abs(a1 - a2) < 1e-3:
+                            return a1
+                        else:
+                            return None
+                    except:
+                        continue
+                return None  # no concordant answers
     elif dataset_type in ["math"]:
         answers_normalized = [
             math_util.normalize_final_answer(str(a)) for a in answers_no_none
@@ -1160,8 +1179,31 @@ def get_concordant_answer(
                         return revert_normalized[a1]
                 return None  # no concordant answers
     elif dataset_type in ["ocw"]:
-        raise NotImplementedError("use the code appears on appendix of the paper")
-
+        answers_normalized = [
+            math_util.normalize_final_answer(str(a)) for a in answers_no_none
+        ]
+        if ensure_unanimity:
+            if len(set(answers_normalized)) == 1:
+                return answers_no_none.pop()
+            else:
+                return None
+        else:
+            if len(answers_normalized) == 0:
+                return None
+            elif len(answers_normalized) == 1:
+                return answers_no_none.pop()
+            elif len(answers_normalized) == 2:
+                if math_util.is_equiv_ocw(answers_normalized[0], answers_normalized[1]):
+                    return answers_no_none[0]
+                else:
+                    return None
+            else:  # len()==3
+                revert_normalized = dict(zip(answers_normalized, answers_no_none))
+                for a1, a2 in combinations(answers_normalized, 2):
+                    if math_util.is_equiv_ocw(a1, a2):
+                        return revert_normalized[a1]
+                return None  # no concordant answers
+            
 
 def solution2blurb(method: str = "", solution: str = "", ans: Any = ""):
     """

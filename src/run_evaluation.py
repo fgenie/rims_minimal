@@ -3,18 +3,38 @@ from typing import Literal
 import jsonlines as jsl
 import pandas as pd
 from fire import Fire
+import numpy as np
 
-from utils.math_util import is_equiv, normalize_final_answer
+from utils.math_util import is_equiv, is_equiv_ocw, normalize_final_answer
 
 
 def eval_gsm_svamp(df):
-    return ((df.majority_ans - df.answer).abs() < 1e-3).sum()
+    def diff_if_possible(a1, a2):
+        try:
+            return abs(a1-a2) < 1e-3
+        except:
+            return False 
+    v_diff = np.vectorize(diff_if_possible)
+    corrects = v_diff(df.majority_ans, df.answer).sum()
+    return corrects
 
 
-def eval_math_ocw(df):
+def eval_math(df):
     df["submission"] = df.majority_ans.astype("str")
     equiv_flag = df.apply(
         lambda row: is_equiv(
+            normalize_final_answer(row["answer"]),
+            normalize_final_answer(row["submission"]),
+        ),
+        axis=1,
+    )
+
+    return equiv_flag.sum()
+
+def eval_ocw(df):
+    df["submission"] = df.majority_ans.astype("str")
+    equiv_flag = df.apply(
+        lambda row: is_equiv_ocw(
             normalize_final_answer(row["answer"]),
             normalize_final_answer(row["submission"]),
         ),
@@ -39,12 +59,15 @@ def main(eval_jslf: str, eval_type: str = Literal["gsm", "math"]):
     total = len(df)
     failcount = fail_mask.sum()
 
-    if eval_type == "gsm":
+    if eval_type in ["gsm", "svamp"]:
         nonconf_correct = eval_gsm_svamp(df_nonconflict_only)
         conf_correct = eval_gsm_svamp(df_conflict_only)
     elif eval_type == "math":
-        nonconf_correct = eval_math_ocw(df_nonconflict_only)
-        conf_correct = eval_math_ocw(df_conflict_only)
+        nonconf_correct = eval_math(df_nonconflict_only)
+        conf_correct = eval_math(df_conflict_only)
+    elif eval_type == "ocw":
+        nonconf_correct = eval_ocw(df_nonconflict_only)
+        conf_correct = eval_ocw(df_conflict_only)
     else:
         raise ValueError
 

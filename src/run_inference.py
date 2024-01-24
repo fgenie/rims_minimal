@@ -52,7 +52,9 @@ def indiv_inference(
     n: int = 1,
     backbone: str = "chatgpt",  # [chatgpt, gpt4] # later mixtral / llama
     seed: int = 777,
+    dataset_type: str = "",
 ):
+    assert dataset_type in ["gsm", "svamp", "ocw", "math"], f"provide {dataset_type=}"
     """
     inference each method and return indiv results
     if there are already existing results, use them.
@@ -67,8 +69,10 @@ def indiv_inference(
         raise NotImplementedError(
             "n>1 will serve as a self-consistency parameter, not implemented yet"
         )
-
-    question = row["question"]
+    if dataset_type == "ocw":
+        question = row["problem"]
+    else:
+        question = row["question"]
 
     # check for already-done indiv methods
     if "ansmap" in row.keys() and "solmap" in row.keys():
@@ -136,11 +140,14 @@ def rims_complete_row(
     n: int,
     backbone: str,
     seed: int,
-    dataset_type: str,
+    dataset_type: Literal["gsm", "svamp", "ocw", "math"],
     prompt_f: str,
 ):
     try:
-        question = row["question"]
+        if dataset_type == "ocw":
+            question = row["problem"]
+        else:
+            question = row["question"]
 
         # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
         ansmap, solmap = indiv_inference(
@@ -150,6 +157,7 @@ def rims_complete_row(
             n=n,
             backbone=backbone,
             seed=seed,
+            dataset_type=dataset_type,
         )
         row["ansmap"] = ansmap
         row["solmap"] = solmap
@@ -314,11 +322,14 @@ def baseline_complete_row(
     n: int,
     backbone: Literal["chatgpt", "gpt4"],
     seed: int,
-    dataset_type: str,
     prompt_f: str,
     num_methods: int,
+    dataset_type: Literal["gsm", "svamp", "ocw", "math"],
 ):
-    question = row["question"]
+    if dataset_type == "ocw":
+        question = row["problem"]
+    else:
+        question = row["question"]
 
     # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
     ansmap, solmap = indiv_inference(
@@ -328,6 +339,7 @@ def baseline_complete_row(
         n=n,
         backbone=backbone,
         seed=seed,
+        dataset_type = dataset_type,
     )
 
     row["ansmap"] = ansmap
@@ -428,15 +440,15 @@ def baseline_inference(
         num_methods=num_methods,
     )
 
+    print(f"writing to \n\t{outpath}\n\n\n\n")
+
     if dbg:
         for row in tqdm(records):
             out = _func(row)
             row = out
     else:
         records = pqdm(records, _func, n_jobs=8)
-
-    print(f"writing to \n\t{outpath}\n\n\n\n")
-
+    
     with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
         for row in records:
             try:

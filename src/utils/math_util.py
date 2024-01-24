@@ -1,6 +1,7 @@
 import logging
 import re
 import signal
+import numpy as np
 
 try:
     import sympy
@@ -70,6 +71,64 @@ def is_equiv(x1: str, x2: str) -> bool:
         logging.debug(f"Failed comparing {x1} and {x2} with {e}")
         return False
 
+def numeric_equality_ocw(n1, n2, threshold=0.01):
+    '''
+    from appendix of the Minerva paper
+    '''
+    if n1 is None or n2 is None:
+        return False
+    if None in [n1, n2] or "None" in [n1, n2]:
+        return False
+    if np.isclose(n1,0) or np.isclose(n2,0) or np.isclose(n1-n2,0):
+        return np.abs(n1-n2) < threshold * (n1+n2)/2
+    else:
+        return np.isclose(n1, n2)
+
+def is_equiv_ocw(x1: str, x2: str)->bool: # to above, add numerical equivalence condition
+    """
+    x1 and x2 are normalized latex string (Minerva paper says it normalized OCW and MATH in the same way)
+    """
+    if x1 == "None":
+        x1 = None
+    if x2 == "None":
+        x2 = None
+    try:
+        with timeout(seconds=5):
+            try:
+                parsed_x1 = parse_latex(x1)
+                parsed_x2 = parse_latex(x2)
+            except (
+                sympy.parsing.latex.errors.LaTeXParsingError,
+                sympy.SympifyError,
+                TypeError,
+            ):
+                logging.debug(f"couldn't parse one of {x1} or {x2}")
+                return False
+
+            # try:
+            #     # diff = parsed_x1 - parsed_x2
+            # except TypeError:
+            #     logging.debug(f"couldn't subtract {x1} and {x2}")
+            #     return False
+
+            try:
+                if numeric_equality_ocw(parsed_x1, parsed_x2) == 0:
+                    return True
+                else:
+                    return False
+            except ValueError:
+                logging.debug(
+                    f"Had some trouble simplifying when comparing {x1} and {x2}"
+                )
+    except TimeoutError:
+        logging.debug(f"Timed out comparing {x1} and {x2}")
+        return False
+    except ImportError as e:
+        logging.error(e)
+        raise
+    except Exception as e:
+        logging.debug(f"Failed comparing {x1} and {x2} with {e}")
+        return False
 
 SUBSTITUTIONS = [
     ("an ", ""),

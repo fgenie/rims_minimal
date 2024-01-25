@@ -1121,8 +1121,8 @@ def get_concordant_answer(
             return majority if isinstance(majority, float) else None
         else:
             return None
-        
-    answers_no_none = [a for a in answers if a is not None]
+
+    answers_no_none = [a for a in answers if (a is not None and a != "None")]
     
     if dataset_type in ["svamp", "gsm"]:
         majority, count = Counter(answers_no_none).most_common(1)[0]

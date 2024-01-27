@@ -16,7 +16,7 @@ def eval_gsm_svamp(df):
             return False 
     v_diff = np.vectorize(diff_if_possible)
     corrects = v_diff(df.majority_ans, df.answer).sum()
-    return corrects
+    return corrects if len(df)>0 else 0
 
 
 def eval_math(df):
@@ -29,7 +29,7 @@ def eval_math(df):
         axis=1,
     )
 
-    return equiv_flag.sum()
+    return equiv_flag.sum() if len(df)>0 else 0
 
 def eval_ocw(df):
     df["submission"] = df.majority_ans.astype("str")
@@ -41,7 +41,7 @@ def eval_ocw(df):
         axis=1,
     )
 
-    return equiv_flag.sum()
+    return equiv_flag.sum() if len(df)>0 else 0
 
 
 def main(eval_jslf: str, eval_type: str = Literal["gsm", "math"]):

@@ -78,7 +78,7 @@ def query_cot(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo"
+        model_name = "gpt-3.5-turbo-0613"
 
     completions = []
     cot_solution = openai.ChatCompletion.create(
@@ -103,7 +103,7 @@ def query_cot(
 
 # actual llm query function for p2c method
 def _query(  # key,
-    model_name: str = "gpt-3.5-turbo",
+    model_name: str = "gpt-3.5-turbo-0613",
     max_tokens: int = 2048,
     stop: str = None,
     messages=None,
@@ -143,7 +143,7 @@ def query_plancode(
     question: str,  # data: dict,
     plan_temperature: float = 0.0,
     code_temperature: float = 0.0,
-    backbone: str = "gpt-3.5-turbo",
+    backbone: str = "gpt-3.5-turbo-0613",
     n=1,
     seed: int = 777,
 ):
@@ -161,12 +161,12 @@ def query_plancode(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo"
+        model_name = "gpt-3.5-turbo-0613"
 
     if model_name.startswith("gpt-4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
         k_fewshot = 5
-    elif model_name.startswith("gpt-3.5-turbo"):
+    elif model_name.startswith("gpt-3.5-turbo-0613"):
         # print(f'gpt-3.5 uses k_fewshot=8 as default (p2c fs-prompting)')
         k_fewshot = 8
 
@@ -235,7 +235,7 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo"
+        model_name = "gpt-3.5-turbo-0613"
     completions = []
     pal_solution = openai.ChatCompletion.create(
         model=model_name,
@@ -284,7 +284,7 @@ def query_selection(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo"
+        model_name = "gpt-3.5-turbo-0613"
 
     cot_pal_p2c_solution_list = [cot_solution, pal_solution, p2c_plan_code_solution]
     cot_pal_p2c_solution_list = [
@@ -325,7 +325,7 @@ def query_rims_inference(
 ) -> tuple:
     #   modif_prompt:bool=True) -> tuple:
     if backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-16k"
+        model_name = "gpt-3.5-turbo-16k-0613"
     elif backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
@@ -1179,29 +1179,28 @@ def get_concordant_answer(
                         return revert_normalized[a1]
                 return None  # no concordant answers
     elif dataset_type in ["ocw"]:
-        answers_normalized = [
-            math_util.normalize_final_answer(str(a)) for a in answers_no_none
-        ]
         if ensure_unanimity:
+            answers_normalized = [
+                math_util.normalize_final_answer(str(a)) for a in answers_no_none
+            ]
             if len(set(answers_normalized)) == 1:
                 return answers_no_none.pop()
             else:
                 return None
         else:
-            if len(answers_normalized) == 0:
+            if len(answers_no_none) == 0:
                 return None
-            elif len(answers_normalized) == 1:
+            elif len(answers_no_none) == 1:
                 return answers_no_none.pop()
-            elif len(answers_normalized) == 2:
-                if math_util.is_equiv_ocw(answers_normalized[0], answers_normalized[1]):
+            elif len(answers_no_none) == 2:
+                if math_util.is_equiv_ocw(answers_no_none[0], answers_no_none[1]):
                     return answers_no_none[0]
                 else:
                     return None
             else:  # len()==3
-                revert_normalized = dict(zip(answers_normalized, answers_no_none))
-                for a1, a2 in combinations(answers_normalized, 2):
+                for a1, a2 in combinations(answers_no_none, 2):
                     if math_util.is_equiv_ocw(a1, a2):
-                        return revert_normalized[a1]
+                        return a1
                 return None  # no concordant answers
             
 

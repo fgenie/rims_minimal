@@ -6,12 +6,16 @@ import numpy as np
 try:
     import sympy
     from sympy.parsing.latex import parse_latex
+    from sympy.core.sympify import SympifyError
 except ModuleNotFoundError:
     raise Exception(
         "`sympy` is required for generating translation task prompt templates. \
 please install sympy via pip install lm-eval[math] or pip install -e .[math]",
     )
 
+from typing import Callable, List, Optional, Any
+
+# ==== https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/tasks/minerva_math/utils.py ====
 
 class timeout:
     def __init__(self, seconds=1, error_message="Timeout"):
@@ -71,65 +75,7 @@ def is_equiv(x1: str, x2: str) -> bool:
         logging.debug(f"Failed comparing {x1} and {x2} with {e}")
         return False
 
-def numeric_equality_ocw(n1, n2, threshold=0.01):
-    '''
-    from appendix of the Minerva paper
-    '''
-    if n1 is None or n2 is None:
-        return False
-    if None in [n1, n2] or "None" in [n1, n2]:
-        return False
-    if np.isclose(n1,0) or np.isclose(n2,0) or np.isclose(n1-n2,0):
-        return np.abs(n1-n2) < threshold * (n1+n2)/2
-    else:
-        return np.isclose(n1, n2)
-
-def is_equiv_ocw(x1: str, x2: str)->bool: # to above, add numerical equivalence condition
-    """
-    x1 and x2 are normalized latex string (Minerva paper says it normalized OCW and MATH in the same way)
-    """
-    if x1 == "None":
-        x1 = None
-    if x2 == "None":
-        x2 = None
-    try:
-        with timeout(seconds=5):
-            try:
-                parsed_x1 = parse_latex(x1)
-                parsed_x2 = parse_latex(x2)
-            except (
-                sympy.parsing.latex.errors.LaTeXParsingError,
-                sympy.SympifyError,
-                TypeError,
-            ):
-                logging.debug(f"couldn't parse one of {x1} or {x2}")
-                return False
-
-            # try:
-            #     # diff = parsed_x1 - parsed_x2
-            # except TypeError:
-            #     logging.debug(f"couldn't subtract {x1} and {x2}")
-            #     return False
-
-            try:
-                if numeric_equality_ocw(parsed_x1, parsed_x2) == 0:
-                    return True
-                else:
-                    return False
-            except ValueError:
-                logging.debug(
-                    f"Had some trouble simplifying when comparing {x1} and {x2}"
-                )
-    except TimeoutError:
-        logging.debug(f"Timed out comparing {x1} and {x2}")
-        return False
-    except ImportError as e:
-        logging.error(e)
-        raise
-    except Exception as e:
-        logging.debug(f"Failed comparing {x1} and {x2} with {e}")
-        return False
-
+# these constants also used in OCW math below. do not detach this from here.
 SUBSTITUTIONS = [
     ("an ", ""),
     ("a ", ""),
@@ -224,3 +170,193 @@ def normalize_final_answer(final_answer: str) -> str:
         final_answer = final_answer.replace(",", "")
 
     return final_answer
+
+
+# ==== for OCW (from minerva appendix) ==== 
+INVALID_ANSWER = "[invalidanswer]"
+
+def is_equiv_ocw(x1: str, x2: str)->bool: # to above, add numerical equivalence condition
+    '''
+    code took from Minerva original repository and adjusted for our use
+    
+    see OCWCourses::process_results
+    https://github.com/wellecks/lm-evaluation-harness/blob/bec2172e72be4adc70e85957cc97a2fbe70c207b/lm_eval/tasks/ocw_courses.py#L153
+
+    expects x1 and x2 to be string (latex)
+    '''
+    # ensure x1, x2 be strings
+    x1 = str(x1)
+    x2 = str(x2)
+    try:
+        # original code checks if the reference answer is float() castable, but my case, x1, x2 are not certainly numberic or numeric with units --> normalize_numeric() to remove units and then float cast  
+        normalize_fn = normalize_numeric
+        _is_equiv = numeric_equality_ocw
+        float(normalize_fn(x1))
+        float(normalize_fn(x2))
+        # answer_type = "numeric"
+    except ValueError as ve:
+        if "=" in x1 or "=" in x2:
+            normalize_fn = normalize_symbolic_equation
+            _is_equiv =  lambda x, y: x==y
+            # answer_type = "equation" 
+        else:
+            normalize_fn = normalize_final_answer # normalize_tex
+            _is_equiv = is_tex_equiv
+            # answer_type = "expression"
+    
+    if INVALID_ANSWER in (x1, x2):
+        return False
+    return _is_equiv(normalize_fn(x1), normalize_fn(x2))
+    
+    
+
+    
+def numeric_equality_ocw(n1, n2, threshold=0.01):
+    '''
+    from appendix of the Minerva paper
+    '''
+    # this assumes n1, n2 are numerics. so cast it into float
+    n1, n2 = map(float, [n1, n2])
+    if n1 is None or n2 is None:
+        return False
+    if "None" in [n1, n2]:
+        return False
+    if n1 == n2: # exact match covered here
+        return n1==n2 
+    if np.isclose(n1,0) or np.isclose(n2,0) or np.isclose(n1-n2,0):
+        return np.abs(n1-n2) < threshold * np.abs(n1+n2)/2 # original code cannot cover negative numbers, so added np.abs to threshold condition to cover it.
+    else:
+        return np.isclose(n1, n2)
+
+def normalize_symbolic_equation(s: Optional[str]):
+    if not isinstance(s, str):
+        return INVALID_ANSWER
+    if s.startswith("\\["):
+        s = s[2:]
+    if s.endswith("\\]"):
+        s = s[:-2]
+    s = s.replace("\\left(", "(")
+    s = s.replace("\\right)", ")")
+    s = s.replace("\\\\", "\\")
+    if s.startswith("$") or s.endswith("$"):
+        s = s.strip("$")
+    try:
+        maybe_expression = parse_latex(s)
+        if not isinstance(maybe_expression, sympy.core.relational.Equality):
+            # we have equation, not expression
+            return INVALID_ANSWER
+        else:
+            return maybe_expression
+    except:
+        return INVALID_ANSWER
+
+def is_exp_equiv(x1: sympy.Basic, x2: sympy.Basic, time_limit=5) -> bool:
+    """
+    Determines whether two sympy expressions are equal.
+    """
+    try:
+        with timeout(seconds=time_limit):
+            try:
+                diff = x1 - x2
+            except (SympifyError, ValueError, TypeError) as e:
+                print(
+                    f"Couldn't subtract {x1} and {x2} with exception {e}"
+                )
+                return False
+
+            try:
+                if sympy.simplify(diff) == 0:
+                    return True
+                else:
+                    return False
+            except (SympifyError, ValueError, TypeError) as e:
+                print(f"Failed to simplify {x1}-{x2} with {e}")
+                return False
+    except TimeoutError as e:
+        print(f"Timed out comparing {x1} and {x2}")
+        return False
+    except Exception as e:
+        print(f"failed on unrecognized exception {e}")
+        return False
+
+def is_tex_equiv(x1: str, x2: str, time_limit=5) -> bool:
+    """
+    Determines whether two (ideally normalized using `normalize_text`) TeX expressions are equal.
+
+    Does so by first checking for string exact-match, then falls back on sympy-equivalence,
+    following the (Lewkowycz et al. 2022) methodology.
+    """
+    if x1 == x2:
+        # don't resort to sympy if we have full string match, post-normalization 
+        return True
+
+    parsed_x2 = parse_tex(x2)
+    if not parsed_x2:
+        # if our reference fails to parse into a Sympy object, 
+        # we forgo parsing + checking our generated answer.
+        return False
+    return is_exp_equiv(parse_tex(x1), parsed_x2, time_limit=time_limit)
+
+
+def parse_tex(text: str, time_limit: int = 5) -> sympy.Basic:
+    """
+    Wrapper around `sympy.parse_text` that outputs a SymPy expression.
+    Typically, you want to apply `normalize_text` as a preprocessing step.
+    """
+    try:
+        with timeout(seconds=time_limit):
+            parsed = parse_latex(text)
+    except (
+        # general error handling: there is a long tail of possible sympy/other 
+        # errors we would like to catch
+        Exception
+    ) as e:
+        print(f"failed to parse {text} with exception {e}")
+        return None
+
+    return parsed
+
+def normalize_numeric(s):
+    if s is None:
+        return None
+    for unit in [
+        "eV",
+        " \\mathrm{~kg} \\cdot \\mathrm{m} / \\mathrm{s}",
+        " kg m/s",
+        "kg*m/s",
+        "kg",
+        "m/s",
+        "m / s",
+        "m s^{-1}",
+        "\\text{ m/s}",
+        " \\mathrm{m/s}",
+        " \\text{ m/s}",
+        "g/mole",
+        "g/mol",
+        "\\mathrm{~g}",
+        "\\mathrm{~g} / \\mathrm{mol}",
+        "W",
+        "erg/s",
+        "years",
+        "year",
+        "cm",
+    ]:
+        s = s.replace(unit, "")
+        s = s.strip()
+    for maybe_unit in ["m", "s", "cm"]:
+        s = s.replace("\\mathrm{" + maybe_unit + "}", "")
+        s = s.replace("\\mathrm{~" + maybe_unit + "}", "")
+        s = s.strip()
+    s = s.strip("$")
+    try:
+        return float(eval(s))
+    except:
+        try:
+            expr = parse_latex(s)
+            if expr.is_number:
+                return float(expr)
+            return INVALID_ANSWER
+        except:
+            return INVALID_ANSWER
+        
+

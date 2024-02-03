@@ -38,17 +38,17 @@ python run_inference.py  rims_inference  \
 
 ### 3 evaluate
 ```bash
-# baseline result
-python run_evaluation.py --eval_jslf dbgoutdir/chatgpt_01_18_04_48_model_selection3_startidx0.jsonl
-# rims result
-python run_evaluation.py --eval_jslf dbgoutdir/chatgpt_rims_01_18_04_49_startidx0.jsonl
+# baseline/rims result
+python run_evaluation.py --eval_jslf dbgoutdir/chatgpt_rims_01_18_04_49_startidx0.jsonl --eval_type [gsm|svamp|ocw|math]
+# individual method (i.e. cot, pal, p2c) results
+python run_evaluation_each.py --eval_jslf dbgoutdir/chatgpt_rims_01_18_04_49_startidx0.jsonl --eval_type [gsm|svamp|ocw|math]
 ```
 
 
-## todo
- - add
-    - [x] `NameError` when running baseline_inference on MATH dataset?
-    - [ ] ocw, (math) symbolic including prompts
+## todo candids
+ - prompts with symbolic examples (math ocw)
+ - openLLM experiments
+ - analyses on the results so far
 
 ## algorithm
 TBA

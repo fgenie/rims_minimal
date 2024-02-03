@@ -6,7 +6,6 @@ PLAN_F = "/Users/seonils/dev/llm-reasoners/examples/Model-Selection-Reasoning/sr
 CODE_F = "/Users/seonils/dev/llm-reasoners/examples/Model-Selection-Reasoning/src/prompts/prompts_code_v2.yaml"
 from openai import OpenAI
 
-client = OpenAI(api_key=KEY)
 
 KEY = (
     open(
@@ -15,7 +14,9 @@ KEY = (
     .read()
     .strip()
 )
-  # set key
+client = OpenAI(api_key=KEY)
+
+
 PLAN_PROMPTS_D = yaml.full_load(open(PLAN_F))
 CODE_PROMPTS_D = yaml.full_load(open(CODE_F))
 

@@ -7,7 +7,6 @@ from string import Template
 import jsonlines as jsl
 from openai import OpenAI
 
-client = OpenAI(api_key=open("../../openai_key.txt").read().strip())
 import pandas as pd
 import yaml
 from fire import Fire
@@ -16,6 +15,7 @@ from tqdm import tqdm
 # from ..tool import parse_python_code_from_string
 
 
+client = OpenAI(api_key=open("../../openai_key.txt").read().strip())
 ABB2FULL = {
     "pal": "Program-aided Language Modeling",
     "cot": "Chain-of-Thought",

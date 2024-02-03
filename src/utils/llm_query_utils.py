@@ -6,7 +6,6 @@ from typing import Any, Literal
 import func_timeout
 from openai import OpenAI
 
-client = OpenAI(api_key=open(key_file_path).read().strip())
 import regex
 import yaml
 from collections import Counter
@@ -17,13 +16,15 @@ from . import math_prompt, math_util
 THIS_PARENT = Path(__file__).parent.resolve()
 
 # Construct the path to the openai_key.txt file
-key_file_path = THIS_PARENT / "openai_key.txt"
-
-# Read the API key from the file
 try:
+    key_file_path = THIS_PARENT / "openai_key.txt"
+    client = OpenAI(api_key=open(key_file_path).read().strip())
 except Exception as e:
     print(e)
     print(f"place your openai_key.txt inside utils/")
+
+# Read the API key from the file
+
 
 
 def exception_handler(func):
@@ -82,15 +83,16 @@ def query_cot(
         model_name = "gpt-3.5-turbo-0613"
 
     completions = []
-    cot_solution = client.chat.completions.create(# api_key=key,
-    model=model_name,
-    max_tokens=500,
-    stop="\n\n\n",
-    messages=query_message,
-    temperature=temperature,
-    top_p=1.0,
-    seed=seed,
-    n=n)
+    cot_solution = client.chat.completions.create(
+        model=model_name,
+        max_tokens=500,
+        stop="\n\n\n",
+        messages=query_message,
+        temperature=temperature,
+        top_p=1.0,
+        seed=seed,
+        n=n
+        )
     if n == 1:
         completions = [cot_solution.choices[0].message.content]
     else:
@@ -130,7 +132,7 @@ def _query(  # key,
             code = postprocess_code(content)
             return code
     else:  # n>1
-        contents = [ch["message"]["content"] for ch in resp.choices]
+        contents = [ch.message.content for ch in resp.choices]
         postprocess = postprocess_plan if mode == "plan" else postprocess_code
         res_strs = [postprocess(c) for c in contents]
         return res_strs
@@ -236,17 +238,18 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
         model_name = "gpt-3.5-turbo-0613"
     completions = []
     pal_solution = client.chat.completions.create(model=model_name,
-    max_tokens=500,
-    stop="\n\n\n",
-    messages=query_message,
-    temperature=temperature,
-    top_p=1.0,
-    seed=777,
-    n=n)
+        max_tokens=500,
+        stop="\n\n\n",
+        messages=query_message,
+        temperature=temperature,
+        top_p=1.0,
+        seed=777,
+        n=n
+        )
 
     if n == 1:
         completions.extend(
-            [choice["message"]["content"] for choice in pal_solution.choices]
+            [choice.message.content for choice in pal_solution.choices]
         )  # wtf this code...
         completions = completions[:1]
     else:  # this line might not be compatible with self-consistency setting in the original code
@@ -293,13 +296,13 @@ def query_selection(
         question, cot_pal_p2c_solution_d, backbone=backbone
     )
     select_str = client.chat.completions.create(model=model_name,
-    max_tokens=200,
-    seed=777,  # added on dec 21
-    stop="\n\n",
-    messages=selection_message,
-    temperature=0.0,
-    top_p=1.0,
-    n=1)["choices"][0]["message"]["content"]
+        max_tokens=200,
+        seed=777,  # added on dec 21
+        stop="\n\n",
+        messages=selection_message,
+        temperature=0.0,
+        top_p=1.0,
+        n=1).choices[0].message.content
 
     final_answer = postprocess_selection(select_str)
     return final_answer, select_str  # 'pal'|'p2c'|'cot'
@@ -529,15 +532,13 @@ def query_rims_inference(
         ]  # could be a list or a single string object. Defaults: None
     if n == 1:
         raw_query_out = client.chat.completions.create(# api_key=key,
-        seed=777,
-        model=model_name,
-        max_tokens=max_tokens,
-        stop=stop_tok,
-        messages=messages,
-        temperature=temperature,
-        n=n)["choices"][0]["message"][
-            "content"
-        ]  # str
+            seed=777,
+            model=model_name,
+            max_tokens=max_tokens,
+            stop=stop_tok,
+            messages=messages,
+            temperature=temperature,
+            n=n).choices[0].message.content # str
         if continue_writing_gpt_messages is not None:
             msgs_except_inst = continue_writing_gpt_messages[:-1]
             if (
@@ -566,7 +567,7 @@ def query_rims_inference(
             stop=stop_tok,
             messages=messages,
             temperature=temperature,
-            n=n)["choices"][i]["message"]["content"]
+            n=n).choices[i].message.content
             for i in range(n)
         ]  # str
         if continue_writing_gpt_messages is not None:

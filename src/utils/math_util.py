@@ -188,10 +188,11 @@ def is_equiv_ocw(x1: str, x2: str)->bool: # to above, add numerical equivalence 
     x1 = str(x1)
     x2 = str(x2)
     try:
-        float(x1)
-        float(x2)
+        # original code checks if the reference answer is float() castable, but my case, x1, x2 are not certainly numberic or numeric with units --> normalize_numeric() to remove units and then float cast  
         normalize_fn = normalize_numeric
         _is_equiv = numeric_equality_ocw
+        float(normalize_fn(x1))
+        float(normalize_fn(x2))
         # answer_type = "numeric"
     except ValueError as ve:
         if "=" in x1 or "=" in x2:
@@ -214,12 +215,16 @@ def numeric_equality_ocw(n1, n2, threshold=0.01):
     '''
     from appendix of the Minerva paper
     '''
+    # this assumes n1, n2 are numerics. so cast it into float
+    n1, n2 = map(float, [n1, n2])
     if n1 is None or n2 is None:
         return False
     if "None" in [n1, n2]:
         return False
+    if n1 == n2: # exact match covered here
+        return n1==n2 
     if np.isclose(n1,0) or np.isclose(n2,0) or np.isclose(n1-n2,0):
-        return np.abs(n1-n2) < threshold * (n1+n2)/2
+        return np.abs(n1-n2) < threshold * np.abs(n1+n2)/2 # original code cannot cover negative numbers, so added np.abs to threshold condition to cover it.
     else:
         return np.isclose(n1, n2)
 

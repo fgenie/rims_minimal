@@ -4,7 +4,9 @@ from pathlib import Path
 from typing import Any, Literal
 
 import func_timeout
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=open(key_file_path).read().strip())
 import regex
 import yaml
 from collections import Counter
@@ -19,7 +21,6 @@ key_file_path = THIS_PARENT / "openai_key.txt"
 
 # Read the API key from the file
 try:
-    openai.api_key = open(key_file_path).read().strip()
 except Exception as e:
     print(e)
     print(f"place your openai_key.txt inside utils/")
@@ -81,22 +82,20 @@ def query_cot(
         model_name = "gpt-3.5-turbo-0613"
 
     completions = []
-    cot_solution = openai.ChatCompletion.create(
-        # api_key=key,
-        model=model_name,
-        max_tokens=500,
-        stop="\n\n\n",
-        messages=query_message,
-        temperature=temperature,
-        top_p=1.0,
-        seed=seed,
-        n=n,
-    )
+    cot_solution = client.chat.completions.create(# api_key=key,
+    model=model_name,
+    max_tokens=500,
+    stop="\n\n\n",
+    messages=query_message,
+    temperature=temperature,
+    top_p=1.0,
+    seed=seed,
+    n=n)
     if n == 1:
-        completions = [cot_solution["choices"][0]["message"]["content"]]
+        completions = [cot_solution.choices[0].message.content]
     else:
         completions = [
-            cot_solution["choices"][i]["message"]["content"] for i in range(n)
+            cot_solution.choices[i].message.content for i in range(n)
         ]
     return completions, query_message
 
@@ -113,7 +112,7 @@ def _query(  # key,
     mode="plan",
     seed=777,
 ):  # mode = plan or code
-    resp = openai.ChatCompletion.create(  # api_key=key,
+    resp = client.chat.completions.create(# api_key=key,
         model=model_name,
         max_tokens=max_tokens,
         stop=stop,
@@ -121,10 +120,9 @@ def _query(  # key,
         temperature=temperature,
         top_p=top_p,
         n=n,
-        seed=seed,
-    )
+        seed=seed)
     if n == 1:
-        content = resp["choices"][0]["message"]["content"]  # str
+        content = resp.choices[0].message.content  # str
         if mode == "plan":
             plan = postprocess_plan(content)  # it will complain when failing
             return plan
@@ -132,7 +130,7 @@ def _query(  # key,
             code = postprocess_code(content)
             return code
     else:  # n>1
-        contents = [ch["message"]["content"] for ch in resp["choices"]]
+        contents = [ch["message"]["content"] for ch in resp.choices]
         postprocess = postprocess_plan if mode == "plan" else postprocess_code
         res_strs = [postprocess(c) for c in contents]
         return res_strs
@@ -237,25 +235,23 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     elif backbone == "chatgpt":
         model_name = "gpt-3.5-turbo-0613"
     completions = []
-    pal_solution = openai.ChatCompletion.create(
-        model=model_name,
-        max_tokens=500,
-        stop="\n\n\n",
-        messages=query_message,
-        temperature=temperature,
-        top_p=1.0,
-        seed=777,
-        n=n,
-    )
+    pal_solution = client.chat.completions.create(model=model_name,
+    max_tokens=500,
+    stop="\n\n\n",
+    messages=query_message,
+    temperature=temperature,
+    top_p=1.0,
+    seed=777,
+    n=n)
 
     if n == 1:
         completions.extend(
-            [choice["message"]["content"] for choice in pal_solution["choices"]]
+            [choice["message"]["content"] for choice in pal_solution.choices]
         )  # wtf this code...
         completions = completions[:1]
     else:  # this line might not be compatible with self-consistency setting in the original code
         completions = [
-            pal_solution["choices"][i]["message"]["content"] for i in range(n)
+            pal_solution.choices[i].message.content for i in range(n)
         ]
     return completions, query_message
 
@@ -296,16 +292,14 @@ def query_selection(
     selection_message = get_select_prompt(
         question, cot_pal_p2c_solution_d, backbone=backbone
     )
-    select_str = openai.ChatCompletion.create(
-        model=model_name,
-        max_tokens=200,
-        seed=777,  # added on dec 21
-        stop="\n\n",
-        messages=selection_message,
-        temperature=0.0,
-        top_p=1.0,
-        n=1,
-    )["choices"][0]["message"]["content"]
+    select_str = client.chat.completions.create(model=model_name,
+    max_tokens=200,
+    seed=777,  # added on dec 21
+    stop="\n\n",
+    messages=selection_message,
+    temperature=0.0,
+    top_p=1.0,
+    n=1)["choices"][0]["message"]["content"]
 
     final_answer = postprocess_selection(select_str)
     return final_answer, select_str  # 'pal'|'p2c'|'cot'
@@ -534,17 +528,14 @@ def query_rims_inference(
             "Evaluation: Correct",
         ]  # could be a list or a single string object. Defaults: None
     if n == 1:
-        raw_query_out = openai.ChatCompletion.create(
-            # api_key=key,
-            seed=777,
-            model=model_name,
-            max_tokens=max_tokens,
-            stop=stop_tok,
-            messages=messages,
-            temperature=temperature,
-            n=n,
-            # top_p=1.0,
-        )["choices"][0]["message"][
+        raw_query_out = client.chat.completions.create(# api_key=key,
+        seed=777,
+        model=model_name,
+        max_tokens=max_tokens,
+        stop=stop_tok,
+        messages=messages,
+        temperature=temperature,
+        n=n)["choices"][0]["message"][
             "content"
         ]  # str
         if continue_writing_gpt_messages is not None:
@@ -568,17 +559,14 @@ def query_rims_inference(
 
     else:  # later unify into the below format. --> Need to correct the code uses inside `src/portable/`
         raw_query_outs = [
-            openai.ChatCompletion.create(
-                # api_key=key,
-                seed=777,
-                model=model_name,
-                max_tokens=1024,
-                stop=stop_tok,
-                messages=messages,
-                temperature=temperature,
-                n=n,
-                # top_p=1.0,
-            )["choices"][i]["message"]["content"]
+            client.chat.completions.create(# api_key=key,
+            seed=777,
+            model=model_name,
+            max_tokens=1024,
+            stop=stop_tok,
+            messages=messages,
+            temperature=temperature,
+            n=n)["choices"][i]["message"]["content"]
             for i in range(n)
         ]  # str
         if continue_writing_gpt_messages is not None:
@@ -963,7 +951,7 @@ def parse_python_code_from_string(unparsed_txt: str):
 
 
 def get_func_name_from_string(codestring: str) -> str:
-    match = re.search(r"def (\w+)\(\):", codestring)
+    match = re.search(r"def (\w+)\(\):", codestring) # kwargs만으로 정의되며 default가 포함된 함수는 처리하지 않음. 아쉬운 부분이지만 문제는 없음.
     if match:
         funcname = match.group(1)
         return funcname

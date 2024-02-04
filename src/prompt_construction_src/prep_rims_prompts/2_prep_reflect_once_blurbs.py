@@ -5,7 +5,8 @@ from pathlib import Path
 from string import Template
 
 import jsonlines as jsl
-import openai
+from openai import OpenAI
+
 import pandas as pd
 import yaml
 from fire import Fire
@@ -14,7 +15,7 @@ from tqdm import tqdm
 # from ..tool import parse_python_code_from_string
 
 
-openai.api_key = open("../../openai_key.txt").read().strip()
+client = OpenAI(api_key=open("../../openai_key.txt").read().strip())
 ABB2FULL = {
     "pal": "Program-aided Language Modeling",
     "cot": "Chain-of-Thought",
@@ -50,16 +51,14 @@ def query_llm(
     else:
         raise ValueError(f"backbone {backbone} not supported")
 
-    resp = openai.ChatCompletion.create(
-        messages=msgs,
-        model=model,
-        stop=stop,
-        temperature=T,
-        seed=seed,
-        max_tokens=max_tokens,
-        n=n,
-    )
-    content = resp["choices"][0]["message"]["content"]
+    resp = client.chat.completions.create(messages=msgs,
+    model=model,
+    stop=stop,
+    temperature=T,
+    seed=seed,
+    max_tokens=max_tokens,
+    n=n)
+    content = resp.choices[0].message.content
     return content
 
 

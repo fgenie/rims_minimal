@@ -4,7 +4,8 @@ import yaml
 
 PLAN_F = "/Users/seonils/dev/llm-reasoners/examples/Model-Selection-Reasoning/src/prompts/prompts_plan_v2.yaml"
 CODE_F = "/Users/seonils/dev/llm-reasoners/examples/Model-Selection-Reasoning/src/prompts/prompts_code_v2.yaml"
-import openai
+from openai import OpenAI
+
 
 KEY = (
     open(
@@ -13,7 +14,9 @@ KEY = (
     .read()
     .strip()
 )
-openai.api_key = KEY  # set key
+client = OpenAI(api_key=KEY)
+
+
 PLAN_PROMPTS_D = yaml.full_load(open(PLAN_F))
 CODE_PROMPTS_D = yaml.full_load(open(CODE_F))
 
@@ -158,9 +161,7 @@ if __name__ == "__main__":
         "question": "Guesstimate the how many times more the ladies' toilet needed to make the same line length for both gender (it is well-known that the line for the ladies' are much lengthier)?"
     }
     pp2 = get_plan_prompt(data, k_fewshot=8)
-    pp2r = openai.ChatCompletion.create(
-        messages=pp2, model="gpt-3.5-turbo", stop="Question:"
-    )["choices"][0]["message"]["content"]
+    pp2r = client.chat.completions.create(messages=pp2, model="gpt-3.5-turbo", stop="Question:")["choices"][0]["message"]["content"]
     print(f"{pp2r=}")
 
     cp2 = get_plan2code_prompt(data, plan=pp2r, k_fewshot=8)
@@ -169,9 +170,7 @@ if __name__ == "__main__":
     print("===========")
     kvprint(cp2)
     print("===========")
-    cp2r = openai.ChatCompletion.create(
-        messages=cp2, model="gpt-3.5-turbo", stop="Question:"
-    )["choices"][0]["message"]["content"]
+    cp2r = client.chat.completions.create(messages=cp2, model="gpt-3.5-turbo", stop="Question:")["choices"][0]["message"]["content"]
 
     print(cp2r)
 

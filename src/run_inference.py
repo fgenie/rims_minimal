@@ -142,6 +142,7 @@ def rims_complete_row(
     seed: int,
     dataset_type: Literal["gsm", "svamp", "ocw", "math"],
     prompt_f: str,
+    turn_based: bool,
 ):
     try:
         if dataset_type == "ocw":
@@ -178,6 +179,7 @@ def rims_complete_row(
             ) = query_rims_inference(
                 question,
                 prompt_f,
+                turn_based=turn_based,
                 backbone=backbone,
                 temperature=temperature,
             )
@@ -213,6 +215,7 @@ def rims_inference(
         "gsm", "svamp", "ocw", "math"
     ] = "gsm",  # affects get_concordant_answer
     running_on_prev_result: bool = True,  # if False, running on the whole, undone, dataset
+    turn_based: bool = False, # if True, convert the prompt into turn-based format and proceeds with it. 
     # llm options
     temperature: float = 0.0,
     n: int = 1,  # later for self-consistency
@@ -250,7 +253,8 @@ def rims_inference(
     dt_string = datetime.now().strftime("%m_%d_%H_%M")
     outpath = (
         outdir
-        / f"{'dbg_' if dbg else ''}{backbone}_{dt_string}_{Path(gsm_jslf).stem}_rims_startidx{start_idx}.jsonl"
+        / f"{'dbg_' if dbg else ''}{backbone}_rims_{dataset_type}.jsonl"
+        # / f"{'dbg_' if dbg else ''}{backbone}_{dt_string}_{Path(gsm_jslf).stem}_rims_startidx{start_idx}.jsonl"
     )
 
     # load_gsm_dataset to infer on
@@ -286,6 +290,7 @@ def rims_inference(
         seed=seed,
         dataset_type=dataset_type,
         prompt_f=prompt_f,
+        turn_based=turn_based,
     )
 
     if dbg:
@@ -293,7 +298,7 @@ def rims_inference(
             row = _func(row)  # updates rows in records_cleansed
         records_done = records_cleansed
     else:
-        records_done = pqdm(records_cleansed, _func, n_jobs=8)
+        records_done = pqdm(records_cleansed, _func, n_jobs=16)
 
     # nonconflict and processed conflict set of records remerged w/o index change
     if running_on_prev_result:
@@ -426,7 +431,8 @@ def baseline_inference(
     dt_string = datetime.now().strftime("%m_%d_%H_%M")
     outpath = (
         outdir
-        / f"{backbone}_{Path(gsm_jslf).stem}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
+        / f"{backbone}_model_selection{num_methods}_{dataset_type}.jsonl"
+        # / f"{backbone}_{Path(gsm_jslf).stem}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
     )
 
     _func = partial(
@@ -447,7 +453,7 @@ def baseline_inference(
             out = _func(row)
             row = out
     else:
-        records = pqdm(records, _func, n_jobs=8)
+        records = pqdm(records, _func, n_jobs=16)
     
     with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
         for row in records:

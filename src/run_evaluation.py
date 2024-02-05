@@ -76,7 +76,7 @@ def main(eval_jslf: str, eval_type: str = Literal["gsm", "math"]):
         f"fail: {failcount} / {total}",
     )
     print(f"nonconflict: {nonconf_correct} / {nonconflict_mask.sum()}")
-    print(f"conflict: {conf_correct} / {conflict_mask.sum()}")
+    print(f"conflict: {conf_correct} / {conflict_mask.sum()+failcount}")
 
 
 if __name__ == "__main__":

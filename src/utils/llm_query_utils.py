@@ -1,5 +1,6 @@
 import re
-from itertools import combinations
+from itertools import combinations, chain
+
 from pathlib import Path
 from typing import Any, Literal
 
@@ -80,7 +81,10 @@ def query_cot(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
+
 
     completions = []
     cot_solution = client.chat.completions.create(
@@ -104,7 +108,7 @@ def query_cot(
 
 # actual llm query function for p2c method
 def _query(  # key,
-    model_name: str = "gpt-3.5-turbo-0613",
+    model_name: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-16k-0613",
     max_tokens: int = 2048,
     stop: str = None,
     messages=None,
@@ -143,7 +147,7 @@ def query_plancode(
     question: str,  # data: dict,
     plan_temperature: float = 0.0,
     code_temperature: float = 0.0,
-    backbone: str = "gpt-3.5-turbo-0613",
+    backbone: str = "chatgpt", # "gpt-3.5-turbo-16k-0613",
     n=1,
     seed: int = 777,
 ):
@@ -161,12 +165,14 @@ def query_plancode(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" 
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
 
     if model_name.startswith("gpt-4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
         k_fewshot = 5
-    elif model_name.startswith("gpt-3.5-turbo-0613"):
+    elif model_name.startswith("gpt-3.5-turbo"): # ("gpt-3.5-turbo-16k-0613"):
         # print(f'gpt-3.5 uses k_fewshot=8 as default (p2c fs-prompting)')
         k_fewshot = 8
 
@@ -235,7 +241,9 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
     completions = []
     pal_solution = client.chat.completions.create(model=model_name,
         max_tokens=500,
@@ -283,7 +291,9 @@ def query_selection(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
 
     cot_pal_p2c_solution_list = [cot_solution, pal_solution, p2c_plan_code_solution]
     cot_pal_p2c_solution_list = [
@@ -322,21 +332,56 @@ def query_rims_inference(
 ) -> tuple:
     #   modif_prompt:bool=True) -> tuple:
     if backbone == "chatgpt":
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
     elif backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
 
-    def get_turn_based_prompt(prompt_f: str, q: str = "") -> list:
-        # n_fewshot:int=8)->list:
-        prompt_f
-        q
+    def convert_to_turns(prompt:str, q:str='') -> list:
+        assert q, f"question should be given {q=}"
+        chunks = prompt.split("\n"*4)
+        __origsys, *blurbs, qoi = chunks
 
-        raise NotImplementedError(
-            "see 99_*yaml to implement here + query_enhanced_coh:get_turn_based_prompt()"
-        )
+        def _blurb2usr_asst(blurbstr:str)->list:
+            idx = blurbstr.find("`Method`") # find from the left
+            user = blurbstr[:idx].strip()
+            asst = blurbstr[idx:].strip()
+            usr_asst_messages = [
+                {"role": "user", "content": user},
+                {"role": "assistant", "content": asst}
+            ]
+            return usr_asst_messages
+        
+        def _qoi2questiononly(blurbstr:str)->list:
+            idx = blurbstr.rfind("`Question`") # find from the left
+            others = blurbstr[:idx].strip()
+            q = blurbstr[idx:].strip()
+            return others, q 
+        #SYS4TURN is actually, a recombination of part of instruction and original system message part
+        SYS4TURN = \
+        """You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
+    - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+    - Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
+    - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+
+    Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Workaround Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt."""
+            
+        
+
+
+        blurbs = [_blurb2usr_asst(b.strip()) for b in blurbs]
+        ___, qoi = _qoi2questiononly(qoi.replace("[QUESTION]", q))
+        messages = [
+            {"role": "system", "content": SYS4TURN},
+            *chain(*blurbs),
+            {"role": "user", "content": qoi}
+        ]
+        return messages
+    
     def parse_raw_modif(rawqueryout: str) -> dict:
         """
         helper for Attempt 1,2,3... variants
@@ -512,9 +557,7 @@ def query_rims_inference(
         )
         return eval_friendly_d
 
-    if turn_based:  # *.yaml
-        messages = get_turn_based_prompt(prompt_f, q=question, n_fewshot=n_fewshot)
-    else:  # *.txt  # DEC4 exps
+    if not turn_based:  # *.txt  # DEC4 exps
         rawprompt = open(prompt_f).read().strip()
         prompt_tmp = PromptStr(rawprompt)
         prompt = prompt_tmp.sub("QUESTION", question)  # data['question'])
@@ -525,9 +568,14 @@ def query_rims_inference(
                 continue_writing_gpt_messages, list
             ), f"continue_writing_gpt_messages should be a list of messages to openai chat create {continue_writing_gpt_messages=}"
             messages.extend(continue_writing_gpt_messages)
+    else:
+        rawprompt = open(prompt_f).read().strip()
+        messages = convert_to_turns(rawprompt, q=question)
+
     if stop_tok is None:  # decode until it faces correct answer
         stop_tok = [
             "\n`Evaluation`: Correct",
+            "`Evaluation`: Correct",
             "Evaluation: Correct",
         ]  # could be a list or a single string object. Defaults: None
     if n == 1:
@@ -601,7 +649,7 @@ def get_select_prompt(
             system_message = math_prompt.GPT4_SELECT_SYSTEM3
             user_message = math_prompt.GPT4_SELECT_USER3
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT3
-        elif backbone == "chatgpt":
+        elif "chatgpt" in backbone:
             system_message = math_prompt.TURBO_SELECT_SYSTEM3
             user_message = math_prompt.TURBO_SELECT_USER3
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT3
@@ -610,7 +658,7 @@ def get_select_prompt(
             system_message = math_prompt.GPT4_SELECT_SYSTEM
             user_message = math_prompt.GPT4_SELECT_USER
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT
-        elif backbone == "chatgpt":
+        elif "chatgpt" in backbone:
             system_message = math_prompt.TURBO_SELECT_SYSTEM
             user_message = math_prompt.TURBO_SELECT_USER
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT
@@ -719,7 +767,7 @@ def get_cot_prompt(question: str, backbone: str):
         system_message = math_prompt.GPT4_COT_SYSTEM
         user_message = math_prompt.GPT4_COT_USER
         assistant_message = math_prompt.GPT4_COT_ASSISTANT
-    elif backbone == "chatgpt":
+    elif "chatgpt" in backbone:
         system_message = math_prompt.TURBO_COT_SYSTEM
         user_message = math_prompt.TURBO_COT_USER
         assistant_message = math_prompt.TURBO_COT_ASSISTANT
@@ -748,7 +796,7 @@ def get_pal_prompt(question: str, backbone: str):
             {"role": "user", "content": f"Question: {question}\n\n# solution in Python"}
         ]
 
-    elif backbone == "chatgpt":
+    elif "chatgpt" in backbone:
         system_message = math_prompt.TURBO_PAL_SYSTEM
         user_message = math_prompt.TURBO_PAL_USER
         assistant_message = math_prompt.TURBO_PAL_ASSISTANT

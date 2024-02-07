@@ -64,10 +64,10 @@ def main(eval_jslf: str, eval_type: str = Literal["gsm", "math", "ocw", "svamp"]
             corrects = eval_ocw(df)
         else:
             raise ValueError(f"eval_type {eval_type} not supported")
-        
-        print(f"### {method}")
-        print(f"{corrects}  / {total} ({corrects/total*100:.1f}%)")
-        # print(f"api fail: {failcount})")
+        with open('result.txt', 'a') as f:
+            print(f"### {method}", file=f)
+            print(f"{corrects}  / {total} ({corrects/total*100:.1f}%)", file=f)
+            # print(f"api fail: {failcount})")
         
 
 

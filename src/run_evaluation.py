@@ -52,6 +52,9 @@ def main(eval_jslf: str, eval_type: str = Literal["gsm", "math"]):
     fail_mask = df.selection_or_rims.apply(
         lambda d: d["error"] if "error" in d.keys() else False
     )  # api error
+    fail_mask = df.selection_or_rims.apply(
+        lambda d: (d["good_method"] is None) if "good_method" in d.keys() else False
+    )  # parsing method error
     conflict_mask = ~(nonconflict_mask | fail_mask)
     df_conflict_only = df[conflict_mask]
     df_nonconflict_only = df[nonconflict_mask]
@@ -76,7 +79,7 @@ def main(eval_jslf: str, eval_type: str = Literal["gsm", "math"]):
         f"fail: {failcount} / {total}",
     )
     print(f"nonconflict: {nonconf_correct} / {nonconflict_mask.sum()}")
-    print(f"conflict: {conf_correct} / {conflict_mask.sum()}")
+    print(f"conflict: {conf_correct} / {conflict_mask.sum()+failcount}")
 
 
 if __name__ == "__main__":

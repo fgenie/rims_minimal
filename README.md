@@ -44,11 +44,18 @@ python run_evaluation.py --eval_jslf dbgoutdir/chatgpt_rims_01_18_04_49_startidx
 python run_evaluation_each.py --eval_jslf dbgoutdir/chatgpt_rims_01_18_04_49_startidx0.jsonl --eval_type [gsm|svamp|ocw|math]
 ```
 
+## last tweaks
+ - MATH-prealgebra -> MATH-full (invokes context length problem)
+    - [x] gpt-3.5-turbo or 16k --> gpt-3.5-turbo-1106 (all 16k context length)
+        - [x] verified the same trend (rims>ablation>baseline) on svamp, ocw. 
+ - prompt engineering
+    - [x] test the best-before prompts (current results are from soso-performant rims prompt)
+    - [x] ~~convert to turn-based~~
+      - worse 
+ - [ ] if a call takes too long, (especially gsm last one...?)
+ - [ ] md-table from results files
 
 ## todo candids
  - prompts with symbolic examples (math ocw)
  - openLLM experiments
  - analyses on the results so far
-
-## algorithm
-TBA

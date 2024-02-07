@@ -81,7 +81,10 @@ def query_cot(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
+
 
     completions = []
     cot_solution = client.chat.completions.create(
@@ -105,7 +108,7 @@ def query_cot(
 
 # actual llm query function for p2c method
 def _query(  # key,
-    model_name: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-0613",
+    model_name: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-16k-0613",
     max_tokens: int = 2048,
     stop: str = None,
     messages=None,
@@ -144,7 +147,7 @@ def query_plancode(
     question: str,  # data: dict,
     plan_temperature: float = 0.0,
     code_temperature: float = 0.0,
-    backbone: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-0613",
+    backbone: str = "chatgpt", # "gpt-3.5-turbo-16k-0613",
     n=1,
     seed: int = 777,
 ):
@@ -162,12 +165,14 @@ def query_plancode(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" 
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
 
     if model_name.startswith("gpt-4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
         k_fewshot = 5
-    elif model_name.startswith("gpt-3.5-turbo-1106"): # ("gpt-3.5-turbo-0613"):
+    elif model_name.startswith("gpt-3.5-turbo"): # ("gpt-3.5-turbo-16k-0613"):
         # print(f'gpt-3.5 uses k_fewshot=8 as default (p2c fs-prompting)')
         k_fewshot = 8
 
@@ -236,7 +241,9 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
     completions = []
     pal_solution = client.chat.completions.create(model=model_name,
         max_tokens=500,
@@ -284,7 +291,9 @@ def query_selection(
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
     elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
 
     cot_pal_p2c_solution_list = [cot_solution, pal_solution, p2c_plan_code_solution]
     cot_pal_p2c_solution_list = [
@@ -324,6 +333,8 @@ def query_rims_inference(
     #   modif_prompt:bool=True) -> tuple:
     if backbone == "chatgpt":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
     elif backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
@@ -638,7 +649,7 @@ def get_select_prompt(
             system_message = math_prompt.GPT4_SELECT_SYSTEM3
             user_message = math_prompt.GPT4_SELECT_USER3
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT3
-        elif backbone == "chatgpt":
+        elif "chatgpt" in backbone:
             system_message = math_prompt.TURBO_SELECT_SYSTEM3
             user_message = math_prompt.TURBO_SELECT_USER3
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT3
@@ -647,7 +658,7 @@ def get_select_prompt(
             system_message = math_prompt.GPT4_SELECT_SYSTEM
             user_message = math_prompt.GPT4_SELECT_USER
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT
-        elif backbone == "chatgpt":
+        elif "chatgpt" in backbone:
             system_message = math_prompt.TURBO_SELECT_SYSTEM
             user_message = math_prompt.TURBO_SELECT_USER
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT
@@ -756,7 +767,7 @@ def get_cot_prompt(question: str, backbone: str):
         system_message = math_prompt.GPT4_COT_SYSTEM
         user_message = math_prompt.GPT4_COT_USER
         assistant_message = math_prompt.GPT4_COT_ASSISTANT
-    elif backbone == "chatgpt":
+    elif "chatgpt" in backbone:
         system_message = math_prompt.TURBO_COT_SYSTEM
         user_message = math_prompt.TURBO_COT_USER
         assistant_message = math_prompt.TURBO_COT_ASSISTANT
@@ -785,7 +796,7 @@ def get_pal_prompt(question: str, backbone: str):
             {"role": "user", "content": f"Question: {question}\n\n# solution in Python"}
         ]
 
-    elif backbone == "chatgpt":
+    elif "chatgpt" in backbone:
         system_message = math_prompt.TURBO_PAL_SYSTEM
         user_message = math_prompt.TURBO_PAL_USER
         assistant_message = math_prompt.TURBO_PAL_ASSISTANT

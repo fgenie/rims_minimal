@@ -28,11 +28,11 @@ dataset = load_dataset("hendrycks/competition_math")
 
 num_proc = 2
 test_data = dataset["test"]
-test_data = test_data.filter(
-    lambda example: example["type"] == "Prealgebra",
-    batched=False,
-    num_proc=num_proc,
-)
+# test_data = test_data.filter(
+#     lambda example: example["type"] == "Prealgebra",
+#     batched=False,
+#     num_proc=num_proc,
+# )
 test_data = test_data.map(
     lambda example: {"answer": extract(example["solution"])},
     batched=False,
@@ -40,4 +40,4 @@ test_data = test_data.map(
 )
 test_data = test_data.rename_column("problem", "question")
 
-test_data.to_json("MATH-prealgebra.jsonl", lines=True)
+test_data.to_json("MATH-full.jsonl", lines=True)

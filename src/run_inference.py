@@ -197,6 +197,8 @@ def rims_complete_row(
             row["selection_or_rims"] = {"majority_vote": True}
             row["majority_ans"] = majority_ans
         row["prompt_file"] = str(prompt_f)
+        if turn_based:
+            row["prompt_file"] += "_turn_based"
         row["inference_mode"] = "rims"
     except Exception as e:
         print(e)
@@ -250,10 +252,10 @@ def rims_inference(
 
     if not outdir.exists():
         outdir.mkdir(parents=True)
-    dt_string = datetime.now().strftime("%m_%d_%H_%M")
+    # dt_string = datetime.now().strftime("%m_%d_%H_%M")
     outpath = (
         outdir
-        / f"{'dbg_' if dbg else ''}{backbone}_rims_{dataset_type}.jsonl"
+        / f"{'dbg_' if dbg else ''}{backbone}_rims{'_turn' if turn_based else ''}_{dataset_type}.jsonl"
         # / f"{'dbg_' if dbg else ''}{backbone}_{dt_string}_{Path(gsm_jslf).stem}_rims_startidx{start_idx}.jsonl"
     )
 
@@ -298,7 +300,7 @@ def rims_inference(
             row = _func(row)  # updates rows in records_cleansed
         records_done = records_cleansed
     else:
-        records_done = pqdm(records_cleansed, _func, n_jobs=16)
+        records_done = pqdm(records_cleansed, _func, n_jobs=6)
 
     # nonconflict and processed conflict set of records remerged w/o index change
     if running_on_prev_result:
@@ -428,7 +430,7 @@ def baseline_inference(
 
     if not outdir.exists():
         outdir.mkdir(parents=True)
-    dt_string = datetime.now().strftime("%m_%d_%H_%M")
+    # dt_string = datetime.now().strftime("%m_%d_%H_%M")
     outpath = (
         outdir
         / f"{backbone}_model_selection{num_methods}_{dataset_type}.jsonl"
@@ -453,17 +455,19 @@ def baseline_inference(
             out = _func(row)
             row = out
     else:
-        records = pqdm(records, _func, n_jobs=16)
+        records = pqdm(records, _func, n_jobs=6)
     
-    with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
-        for row in records:
+    with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err, open(f"{outpath}.error_idxs", "w") as writer_err_idx:
+        for i, row in enumerate(records):
             try:
                 writer.write(row)
             except Exception as e:
                 writer_err.write(str(row) + "\n")
                 writer_err.write(str(e) + "\n")
+                writer_err_idx.write(str(i)+"\n")
                 print(e)
                 print(f"{outpath}.errors")
+                print(f"{outpath}.error_idx")
 
         return
 

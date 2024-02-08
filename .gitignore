@@ -2,6 +2,8 @@ openai_key.txt
 
 **/*.pyc
 
+src/eval_each.sh
+src/result.txt
 
 
 #  local only

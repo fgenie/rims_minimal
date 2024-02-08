@@ -95,7 +95,8 @@ def query_cot(
         temperature=temperature,
         top_p=1.0,
         seed=seed,
-        n=n
+        n=n,
+        timeout=30,
         )
     if n == 1:
         completions = [cot_solution.choices[0].message.content]
@@ -126,7 +127,9 @@ def _query(  # key,
         temperature=temperature,
         top_p=top_p,
         n=n,
-        seed=seed)
+        seed=seed,
+        timeout=30,
+        )
     if n == 1:
         content = resp.choices[0].message.content  # str
         if mode == "plan":
@@ -252,7 +255,8 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
         temperature=temperature,
         top_p=1.0,
         seed=777,
-        n=n
+        n=n,
+        timeout=30,
         )
 
     if n == 1:
@@ -312,7 +316,9 @@ def query_selection(
         messages=selection_message,
         temperature=0.0,
         top_p=1.0,
-        n=1).choices[0].message.content
+        n=1,
+        timeout=30,
+        ).choices[0].message.content
 
     final_answer = postprocess_selection(select_str)
     return final_answer, select_str  # 'pal'|'p2c'|'cot'
@@ -586,7 +592,9 @@ def query_rims_inference(
             stop=stop_tok,
             messages=messages,
             temperature=temperature,
-            n=n).choices[0].message.content # str
+            n=n,
+            timeout=30,
+            ).choices[0].message.content # str
         if continue_writing_gpt_messages is not None:
             msgs_except_inst = continue_writing_gpt_messages[:-1]
             if (
@@ -615,7 +623,9 @@ def query_rims_inference(
             stop=stop_tok,
             messages=messages,
             temperature=temperature,
-            n=n).choices[i].message.content
+            n=n,
+            timeout=30,
+            ).choices[i].message.content
             for i in range(n)
         ]  # str
         if continue_writing_gpt_messages is not None:
@@ -1023,6 +1033,11 @@ def _execute(code, code_return: str):
 
     try:
         locals_ = locals()
+        if "import matplotlib" in code or "import matplotlib.pyplot" in code or "plt.figure" in code:
+            code = "import matplotlib\nmatplotlib.use('Agg')\n" + code
+            # exec("import matplotlib\nmatplotlib.use('Agg')\n", locals_) # to prevent matplotlib drawing on subthread error
+            # raise ValueError("avoid matplotlib (semaphore, NSException)")
+
         exec(code, locals_)  # code로 local_ 딕셔너리 업데이트
         solution = locals_.get("solution", None)
         funcname = get_func_name_from_string(code)  # for nontrivial function names

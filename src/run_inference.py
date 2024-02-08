@@ -1,4 +1,4 @@
-from datetime import datetime
+# from datetime import datetime
 from functools import partial
 from typing import Any, Literal
 
@@ -43,6 +43,12 @@ row:
 
 
 """
+
+def split_records_into_chunks(records: list, chunksize:int=30)->list:
+    """
+    split records into chunks of size `chunksize`
+    """
+    return [records[i:i+chunksize] for i in range(0, len(records), chunksize)]
 
 
 def indiv_inference(
@@ -224,6 +230,7 @@ def rims_inference(
     backbone: str = "chatgpt",  # [chatgpt, gpt4] # later mixtral / llama
     seed: int = 777,
     start_idx: int = 0,
+    err_idxs_f: str ="",
     outdir: str = "",
     # dev option
     dbg: bool = False,
@@ -255,12 +262,30 @@ def rims_inference(
     # dt_string = datetime.now().strftime("%m_%d_%H_%M")
     outpath = (
         outdir
-        / f"{'dbg_' if dbg else ''}{backbone}_rims{'_turn' if turn_based else ''}_{dataset_type}.jsonl"
-        # / f"{'dbg_' if dbg else ''}{backbone}_{dt_string}_{Path(gsm_jslf).stem}_rims_startidx{start_idx}.jsonl"
+        / f"{'dbg_' if dbg else ''}{backbone}_rims{'_turn' if turn_based else ''}_{dataset_type}.jsonl" #{'' if gsm_jslf.endswith('.jsonl') else gsm_jslf.split('.jsonl')[-1]}" # tail 처리
     )
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
+    if err_idxs_f:
+        assert start_idx==0, "err_idxs_f is only supported when start_idx is 0"
+        idxs = [int(i) for i in open(err_idxs_f).read().strip().split("\n")]
+        records = [records[i] for i in idxs]
+        outpath = str(outpath).replace(".jsonl", ".jsonl_leftovers")
+        while Path(outpath).exists():
+            outpath += "_"
+        outpath = Path(outpath)
+    
+    # remove duplicative rows (by question)
+    print("dropping possible duplicates")
+    df = pd.DataFrame(records)
+    print("initiailly ", len(df), "records")
+    k = "question" if "question" in df.columns else "problem"
+    assert k in df.columns, f"{k} not in df.columns, {df}"
+    df = df.drop_duplicates(subset=k)
+    records = df.to_dict(orient="records")
+    print("after dropping duplicates, ", len(df), "records")
+
     print(f"writing to \n\t{outpath}\n\n\n\n")
 
     # data to dataframe
@@ -300,7 +325,12 @@ def rims_inference(
             row = _func(row)  # updates rows in records_cleansed
         records_done = records_cleansed
     else:
-        records_done = pqdm(records_cleansed, _func, n_jobs=6)
+        chunks = split_records_into_chunks(records_cleansed, chunksize=30)
+        records_done = []
+        for i, ch in enumerate(chunks, 1):
+            print(f"doing: {i} / {len(chunks)} chunks\n")
+            ch_done = pqdm(ch, _func, n_jobs=6)
+            records_done.extend(ch_done)
 
     # nonconflict and processed conflict set of records remerged w/o index change
     if running_on_prev_result:
@@ -333,59 +363,65 @@ def baseline_complete_row(
     num_methods: int,
     dataset_type: Literal["gsm", "svamp", "ocw", "math"],
 ):
-    if dataset_type == "ocw":
-        question = row["problem"]
-    else:
-        question = row["question"]
-
-    # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
-    ansmap, solmap = indiv_inference(
-        row,
-        num_methods=3,
-        temperature=temperature,
-        n=n,
-        backbone=backbone,
-        seed=seed,
-        dataset_type = dataset_type,
-    )
-
-    row["ansmap"] = ansmap
-    row["solmap"] = solmap
-
-    # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
-    majority_ans = get_concordant_answer(
-        list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-    )
-
-    if majority_ans is None:  # do selection
-        chosen_method, selection_str = query_selection(
-            question,
-            backbone=backbone,
-            cot_solution=solmap["cot"],
-            pal_solution=solmap["pal"],
-            p2c_plan_code_solution=solmap["p2c"],
-        )
-        if chosen_method is not None: 
-            row["selection_or_rims"] = {
-                "good_method": chosen_method,
-                "good_answer": ansmap[chosen_method],
-                "good_solution": solmap[chosen_method],
-                "selection_str": selection_str,
-            }
+    try:
+        if dataset_type == "ocw":
+            question = row["problem"]
         else:
-            row['selection_or_rims'] = {
-                "good_method": None,
-                "good_answer": None,
-                "good_solution": None,
-                "selection_str": selection_str,
-            }
-        row["majority_ans"] = row['selection_or_rims']['good_answer']
-    else:
-        row["selection_or_rims"] = {"majority_vote": True}
-        row["majority_ans"] = majority_ans
-    row["prompt_file"] = prompt_f
-    row["inference_mode"] = f"baseline {num_methods} methods"
+            question = row["question"]
 
+        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+        ansmap, solmap = indiv_inference(
+            row,
+            num_methods=3,
+            temperature=temperature,
+            n=n,
+            backbone=backbone,
+            seed=seed,
+            dataset_type = dataset_type,
+        )
+
+        row["ansmap"] = ansmap
+        row["solmap"] = solmap
+
+        # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
+        majority_ans = get_concordant_answer(
+            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
+        )
+
+        if majority_ans is None:  # do selection
+            chosen_method, selection_str = query_selection(
+                question,
+                backbone=backbone,
+                cot_solution=solmap["cot"],
+                pal_solution=solmap["pal"],
+                p2c_plan_code_solution=solmap["p2c"],
+            )
+            if chosen_method is not None: 
+                row["selection_or_rims"] = {
+                    "good_method": chosen_method,
+                    "good_answer": ansmap[chosen_method],
+                    "good_solution": solmap[chosen_method],
+                    "selection_str": selection_str,
+                }
+            else:
+                row['selection_or_rims'] = {
+                    "good_method": None,
+                    "good_answer": None,
+                    "good_solution": None,
+                    "selection_str": selection_str,
+                }
+            row["majority_ans"] = row['selection_or_rims']['good_answer']
+        else:
+            row["selection_or_rims"] = {"majority_vote": True}
+            row["majority_ans"] = majority_ans
+        row["prompt_file"] = prompt_f
+        row["inference_mode"] = f"baseline {num_methods} methods"
+    except Exception as e:
+        print(e)
+        row["selection_or_rims"] = {"error": True, "exception": str(e)}
+        row["majority_ans"] = None
+        row["prompt_file"] = prompt_f
+        row["inference_mode"] = f"baseline {num_methods} methods"
     return row
 
 
@@ -397,6 +433,7 @@ def baseline_inference(
     ] = "gsm",  # affects get_concordant_answer
     num_methods: int = 3,  # number of methods (3-> cot pal p2c / 2-> cot pal )
     start_idx: int = 0,
+    err_idxs_f: str ="",
     outdir: str = "",
     # llm options
     temperature: float = 0.0,
@@ -437,6 +474,25 @@ def baseline_inference(
         # / f"{backbone}_{Path(gsm_jslf).stem}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
     )
 
+    if err_idxs_f:
+        assert start_idx==0, "err_idxs_f is only supported when start_idx is 0"
+        idxs = [int(i) for i in open(err_idxs_f).read().strip().split("\n")]
+        records = [records[i] for i in idxs]
+        outpath = str(outpath).replace(".jsonl", ".jsonl_leftovers")
+        while Path(outpath).exists():
+            outpath += "_"
+        outpath = Path(outpath)
+
+    # remove duplicative rows (by question)
+    print("dropping possible duplicates")
+    df = pd.DataFrame(records)
+    print("initiailly ", len(df), "records")
+    k = "question" if "question" in df.columns else "problem"
+    assert k in df.columns
+    df = df.drop_duplicates(subset=k)
+    records = df.to_dict(orient="records")
+    print("after dropping duplicates, ", len(df), "records")
+
     _func = partial(
         baseline_complete_row,
         temperature=temperature,
@@ -455,10 +511,16 @@ def baseline_inference(
             out = _func(row)
             row = out
     else:
-        records = pqdm(records, _func, n_jobs=6)
+        chunks = split_records_into_chunks(records, chunksize=30)
+        records_done = []
+        for i, ch in enumerate(chunks, 1):
+            print(f"doing: {i} / {len(chunks)} chunks\n")
+            ch_done = pqdm(ch, _func, n_jobs=6)
+            records_done.extend(ch_done)
+        # records = pqdm(records, _func, n_jobs=6)
     
     with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err, open(f"{outpath}.error_idxs", "w") as writer_err_idx:
-        for i, row in enumerate(records):
+        for i, row in enumerate(records_done):
             try:
                 writer.write(row)
             except Exception as e:

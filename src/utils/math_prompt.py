@@ -112,7 +112,7 @@ So the answer is 39.
 """.strip()
 
 
-TURBO_PAL_SYSTEM = "You are a helpful assistant that generates Python code to answer arithmetic questions. "
+TURBO_PAL_SYSTEM = "You are a helpful assistant that generates Python code to answer arithmetic questions."
 
 TURBO_PAL_USER = '''
 Let's use python to solve math problems. You need to write python code to answer these math questions. Here is one example how to do it,

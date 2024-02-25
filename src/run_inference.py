@@ -97,7 +97,8 @@ def indiv_inference(
 
     if "cot" in missing_methods:
         cot_lst, _msgs = query_cot(
-            question, temperature=temperature, n=n, backbone=backbone, seed=seed
+            question, dataset_type=dataset_type,
+            temperature=temperature, n=n, backbone=backbone, seed=seed
         )
         cot_sol = cot_lst.pop()  # solution: str
         cot_ans = extract_num_turbo(cot_sol)
@@ -136,6 +137,18 @@ def indiv_inference(
 
             ansmap["p2c"] = p2c_ans
             solmap["p2c"] = p2c_solution
+
+    # heuristic for MATH/OCW problematic answer by PAL/P2C (never-endingly long execution result)
+    # OCW max answer length = 210; MATH max answer length = 81
+    if dataset_type in ["gsm", "ocw", "math"]:
+        if len(pal_ans) > 300: # over 300 --> truncate
+            print(f"truncating PAL result to 300 chars ({len(pal_ans)=})")
+            pal_ans = pal_ans[:300]
+            ansmap["pal"] = pal_ans
+        if len(p2c_ans) > 300: # over 300 --> truncate
+            print(f"truncating PAL result to 300 chars ({len(pal_ans)=})")
+            p2c_ans = p2c_ans[:300]
+            ansmap["p2c"] = p2c_ans
 
     return ansmap, solmap  # updated ones
 
@@ -474,7 +487,7 @@ def baseline_inference(
         # / f"{backbone}_{Path(gsm_jslf).stem}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
     )
 
-    if err_idxs_f:
+    if Path(err_idxs_f).exists():
         assert start_idx==0, "err_idxs_f is only supported when start_idx is 0"
         idxs = [int(i) for i in open(err_idxs_f).read().strip().split("\n")]
         records = [records[i] for i in idxs]

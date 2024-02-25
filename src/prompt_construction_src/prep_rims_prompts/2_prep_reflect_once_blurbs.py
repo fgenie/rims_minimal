@@ -5,7 +5,7 @@ from pathlib import Path
 from string import Template
 
 import jsonlines as jsl
-from openai import OpenAI
+from openai import OpenAI, AzureOpenAI
 
 import pandas as pd
 import yaml
@@ -15,7 +15,12 @@ from tqdm import tqdm
 # from ..tool import parse_python_code_from_string
 
 
-client = OpenAI(api_key=open("../../openai_key.txt").read().strip())
+# client = OpenAI(api_key=open("../../openai_key.txt").read().strip())
+client = AzureOpenAI(
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    api_version="2023-07-01-preview",
+)
 ABB2FULL = {
     "pal": "Program-aided Language Modeling",
     "cot": "Chain-of-Thought",

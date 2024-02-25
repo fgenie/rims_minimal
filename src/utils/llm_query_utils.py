@@ -5,10 +5,11 @@ from pathlib import Path
 from typing import Any, Literal
 
 import func_timeout
-from openai import OpenAI
+from openai import OpenAI, AzureOpenAI
 
 import regex
 import yaml
+from omegaconf import OmegaConf
 from collections import Counter
 
 from . import math_prompt, math_util
@@ -18,8 +19,13 @@ THIS_PARENT = Path(__file__).parent.resolve()
 
 # Construct the path to the openai_key.txt file
 try:
-    key_file_path = THIS_PARENT / "openai_key.txt"
-    client = OpenAI(api_key=open(key_file_path).read().strip())
+    # key_file_path = THIS_PARENT / "openai_key.txt"
+    # client = OpenAI(api_key=open(key_file_path).read().strip())
+    client = AzureOpenAI(
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        api_version="2023-07-01-preview",
+    )
 except Exception as e:
     print(e)
     print(f"place your openai_key.txt inside utils/")
@@ -60,7 +66,8 @@ class PromptStr(str):
 
 ### llm query functions ###
 def query_cot(
-    question: str, temperature: float = 0.0, backbone: str = "chatgpt", n=1, seed=777
+    question: str, dataset_type:Literal["gsm", "ocw", "math"], 
+    temperature: float = 0.0, backbone: str = "chatgpt", n=1, seed=777
 ):
     """
     This function is used to query OpenAI for CoT solutions.
@@ -74,7 +81,10 @@ def query_cot(
     Returns:
         completions: a list containing the CoT solution
     """
-    query_message = get_cot_prompt(question, backbone=backbone)
+    query_message = get_cot_prompt(question, 
+                                   backbone=backbone,
+                                   dataset_type=dataset_type
+                                   )
     # print(query_message)
     if backbone == "gpt4":
         model_name = "gpt-4"
@@ -330,7 +340,7 @@ def query_rims_inference(
     backbone: str,
     temperature: float = 0.0,
     n: int = 1,
-    max_tokens: int = 2048,
+    max_tokens: int = 1024,
     turn_based: bool = False,
     continue_writing_gpt_messages: list = None,  # list of messages to invoke continue writing down the rims prompt format.
     stop_tok=None,
@@ -614,7 +624,7 @@ def query_rims_inference(
 
         return eval_friendly_d, parsed_dict, raw_query_out, messages
 
-    else:  # later unify into the below format. --> Need to correct the code uses inside `src/portable/`
+    else:  # guess this part is for self-consistency setting of RIMS prompting... should we explore here? 
         raw_query_outs = [
             client.chat.completions.create(# api_key=key,
             seed=777,
@@ -768,24 +778,51 @@ def get_user_assistant_messages(
     return messages
 
 
-def get_cot_prompt(question: str, backbone: str):
+def get_cot_prompt(
+        question: str, 
+        backbone: str,
+        dataset_type: Literal["gsm", "ocw", "math"],
+        ):
     """
     This function is used to generate the CoT prompt.
     append "Question: " to the `question`
     """
-    if backbone == "gpt4" or backbone == "gpt4turbo":
-        system_message = math_prompt.GPT4_COT_SYSTEM
-        user_message = math_prompt.GPT4_COT_USER
-        assistant_message = math_prompt.GPT4_COT_ASSISTANT
-    elif "chatgpt" in backbone:
-        system_message = math_prompt.TURBO_COT_SYSTEM
-        user_message = math_prompt.TURBO_COT_USER
-        assistant_message = math_prompt.TURBO_COT_ASSISTANT
-
-    messages = get_user_assistant_messages(
-        system_message, user_message, assistant_message
-    )
-    messages += [{"role": "user", "content": f"Question: {question}"}]
+    if dataset_type == "gsm":
+        if backbone == "gpt4" or backbone == "gpt4turbo":
+            system_message = math_prompt.GPT4_COT_SYSTEM
+            user_message = math_prompt.GPT4_COT_USER
+            assistant_message = math_prompt.GPT4_COT_ASSISTANT
+        elif "chatgpt" in backbone:
+            system_message = math_prompt.TURBO_COT_SYSTEM
+            user_message = math_prompt.TURBO_COT_USER
+            assistant_message = math_prompt.TURBO_COT_ASSISTANT
+        messages = get_user_assistant_messages(
+            system_message, user_message, assistant_message
+        )
+        messages += [{"role": "user", "content": f"Question: {question}"}]
+    
+    elif dataset_type in ["ocw", "math"]:
+        # open ocw/MATH targeted CoT prompts
+        ymlf = "ocw_MATH_propts.yaml"
+        prompt_d = OmegaConf.load(ymlf)
+        pmpt_d = prompt_d[f"{dataset_type}_cot"]
+        system_message = pmpt_d.system
+        user_msgs = pmpt_d.user
+        # make it to a chat-history
+        assistant_msgs = pmpt_d.assistant
+        messages = [
+            {"role": "system", "content": system_message},
+        ]
+        assert len(user_msgs) == len(assistant_msgs), f"{len(user_msgs)=} should be equal to {len(assistant_msgs)=}"
+        for u, a in zip(user_msgs, assistant_msgs):
+            messages.append({"role": "user", "content": u})
+            messages.append({"role": "assistant", "content": a})
+        # add question of interest with the template
+        user_attempt = pmpt_d.user_tmp.replace("{QUESTION}", question)
+        messages += [{"role": "user", "content": user_attempt}]
+        
+    else:
+        assert False, f"{dataset_type=} must be in ['gsm', 'ocw', 'math']"    
 
     return messages
 
@@ -826,10 +863,10 @@ def get_pal_prompt(question: str, backbone: str):
 def get_plan_prompt(question: str, k_fewshot: int = 0) -> str:
     """
     prep prompt for plan generation
-    put "Question: " in front of the `question`
+    # put "Question: " in front of the `question`
 
     """
-    PLAN_F = THIS_PARENT / "prompts_plan_v2.yaml"
+    PLAN_F = THIS_PARENT / "new_p2c_plan_prompt.yaml"#"prompts_plan_v2.yaml"
     PLAN_PROMPTS_D = yaml.full_load(open(PLAN_F))
     prompt_d = PLAN_PROMPTS_D
 
@@ -837,7 +874,7 @@ def get_plan_prompt(question: str, k_fewshot: int = 0) -> str:
     q = question
     system = prompt_d["system_msg"]
     user_tmp = prompt_d["user_template"]
-    user_attempt = user_tmp.replace("{QUESTION}", f"Question: {q}")
+    user_attempt = user_tmp.replace("{QUESTION}", q) #f"Question: {q}")
 
     fewshots_user = prompt_d["fewshots_user"][
         :k_fewshot
@@ -863,21 +900,19 @@ def get_plan2code_prompt(
     k_fewshot: int = 0,
     custom_idxs: list = None,
 ):
-    # little bit revision from PAL prompt.
-    # `solution()` is returned (can execute with solution() call w/o argument
+    
     """
-    prep prompt for plan generation
-    put "Qu
-    estion: " in front of the `question`
+    prep prompt for code generation
     """
-    CODE_F = THIS_PARENT / "prompts_code_v2.yaml"
+    CODE_F = THIS_PARENT / "new_p2c_code_prompts.yaml"#"prompts_code_v2.yaml"
     prompt_d = yaml.full_load(open(CODE_F))
 
     q = question  # data['question']
     system = prompt_d["system_msg"]
     user_tmp = prompt_d["user_template"]
-    user_attempt = user_tmp.replace("{PLAN}", plan).replace(
-        "{QUESTION}", f"Question: {q}"
+    plan_with_tabs = plan.replace("\n", "\n" + " "*4)
+    user_attempt = user_tmp.replace("{PLAN}", plan_with_tabs).replace(
+        "{QUESTION}", q
     )
 
     if not custom_idxs:
@@ -950,6 +985,7 @@ def postprocess_code(rawanswer: str, k_fewshot: int = 0):
 def separate_plan_code(rawstr: str) -> tuple:
     # used for 5_cohlike_prompt
     # p2c results in plan\ncode so split it.
+    # new p2c result will not be affected by this. so let it be here still in case of revert
     rawstr = rawstr.strip()
     lines = rawstr.split("\n")
     found_code = False
@@ -962,8 +998,7 @@ def separate_plan_code(rawstr: str) -> tuple:
         code = "\n".join(lines[i:])
     else:
         plan, code = None, None
-    return plan, code
-
+    return plan, code # plan never used...
 
 # method name normalization for rimsprompt
 def parse_method2(methodstr: str) -> str:

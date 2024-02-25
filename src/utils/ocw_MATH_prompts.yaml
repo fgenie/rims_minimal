@@ -1,0 +1,135 @@
+ocw_cot:
+  system: ""
+  user_tmp: |
+    Problem:
+    {QUESTION}
+  user:
+    - |
+      Problem:                                                                                
+      Subproblem 0: What is the net charge of arginine in a solution of $\mathrm{pH} 1.0$? 
+      Please format your answer as +n or -n.  
+    - |
+      Problem:
+      Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+      $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.    
+    - |
+      Problem:
+      Preamble: For each Laplace Transform \(Y(s)\), find the function \(y(t)\):
+      Subproblem 0: 
+      \[Y(s)=\boxed{\frac{1}{(s+a)(s+b)}}\]
+    - |
+      Problem:
+      Preamble: The following subproblems refer to the differential equation 
+      $\ddot{x}+b \dot{x}+x=0$.
+      Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+      $\ddot{x}+b \dot{x}+x=0$?
+  assistant: 
+    - |                     
+      Solution:
+      The answer is +2.                                                     
+      Final answer: The final answer is +2. I hope it is correct.
+    - |
+      Solution:
+      $z^{4}$ has argument $4 \pi / 3$ and radius 16 , so it's equal to $-8-8 \sqrt{3} i$. 
+      Thus $a = -8, b = -8\sqrt 3$, and our answer is $\boxed{(-8, -8\sqrt{3})}$.
+      Final answer: The final answer is (-8, -8\sqrt{3}). I hope it is correct.
+    - |
+      Solution:
+      We can simplify with partial fractions:
+      \[Y(s)=\\frac{1}{(s+a)(s+b)}=\\frac{C}{s+a}+\\frac{D}{s+b}\]\nfind the constants 
+      \(C\) and \(D\) by setting \(s=-a\) and \(s=-b\)
+      \[
+        \begin{aligned}
+        \frac{1}{(s+a)(s+b)} &=\\frac{C}{s+a}+\\frac{D}{s+b} \\\\
+        1 &=C(s+b)+D(s+a) \\
+        C &=\\frac{1}{b-a} \\
+        D &=\\frac{1}{a-b}
+        \end{aligned}
+      \]
+      therefore
+      \[\nY(s)=\frac{1}{b-a} \frac{1}{s+a}-\frac{1}{b-a} \frac{1}{s+b}
+      \]
+      By looking up the inverse Laplace Transform of \(\frac{1}{s+b}\), we find the total 
+      solution \(y(t)\)
+      \[
+        y(t)=\boxed{\frac{1}{b-a}\left(e^{-a t}-e^{-b t}\right)}
+      \].
+      Final answer: The final answer is \[\frac{1}{b-a}\left(e^{-a t}-e^{-b t}\right)\]. I hope it is correct.
+    - |
+      Solution:
+      The characteristic polynomial is $p(s)=\\boxed{s^{2}+b s+1}$.
+      Final answer: The final answer is $s^{2}+b s+1$. I hope it is correct.
+ocw_select:
+  system:
+  user_tmp:
+  user:
+  assistant:  
+
+
+
+
+math_cot:
+  system: ""
+  user_tmp: |
+    Problem:
+    {QUESTION}
+  user:
+    - |
+      Problem:
+      Find the domain of the expression  $\frac{\sqrt{x-2}}{\sqrt{5-x}}$.}
+    - |
+      Problem:
+      If $\det \mathbf{A} = 2$ and $\det \mathbf{B} = 12,$ then find $\det (\mathbf{A} \mathbf{B}).$
+    - |
+      Problem:
+      Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+    - |
+      Problem:
+      If the system of equations
+
+      \begin{align*}
+      6x-4y&=a,\\
+      6y-9x &=b.
+      \end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,
+      find $\frac{a}{b},$ assuming $b$ is nonzero.
+  assistant:
+    - |
+      Solution:
+      The expressions inside each square root must be non-negative. Therefore, $x-2 \ge 0$, so $x\ge2$, and $5 - x \ge 0$, so $x \le 5$. Also, the denominator cannot be equal to zero, so $5-x>0$, which gives $x<5$. Therefore, the domain of the expression is $\boxed{[2,5)}$.
+      Final Answer: The final answer is $[2,5)$. I hope it is correct.
+    - |
+      Solution:
+      We have that $\det (\mathbf{A} \mathbf{B}) = (\det \mathbf{A})(\det \mathbf{B}) = (2)(12) = \boxed{24}.$
+      Final Answer: The final answer is $24$. I hope it is correct.
+    - |
+      Solution:
+      If Terrell lifts two 20-pound weights 12 times, he lifts a total of $2\cdot 12\cdot20=480$ pounds of weight.  If he lifts two 15-pound weights instead for $n$ times, he will lift a total of $2\cdot15\cdot n=30n$ pounds of weight.  Equating this to 480 pounds, we can solve for $n$:
+      \begin{align*}
+      30n&=480\\
+      \Rightarrow\qquad n&=480/30=\boxed{16}
+      \end{align*}
+      Final Answer: The final answer is $16$. I hope it is correct.
+    - |
+      Solution:
+      If we multiply the first equation by $-\frac{3}{2}$, we obtain
+
+      $$6y-9x=-\frac{3}{2}a.$$Since we also know that $6y-9x=b$, we have
+
+      $$-\frac{3}{2}a=b\Rightarrow\frac{a}{b}=\boxed{-\frac{2}{3}}.$$
+      Final Answer: The final answer is $-\frac{2}{3}$. I hope it is correct.
+math_select:
+  system:
+  user_tmp:
+  user:
+  assistant:  
+
+
+
+
+
+
+
+
+
+
+

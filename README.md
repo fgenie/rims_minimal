@@ -19,39 +19,55 @@ see `greedy_experiment_example_script.sh` it provides one-pot experiment example
 ```bash
 python run_inference.py  baseline_inference \
                 --backbone chatgpt0613long \
-                --outdir dbgoutdir/ \
-                --gsm_jslf ../dataset/dbg_gsm.jsonl \ # must contain dataset_type in its name 
-                --dataset_type gsm # [ocw, math, gsm, svamp] # this will affect majority voting
-                [--start_idx 0 ] # can start running from the middle of the data
-                [--dbg] # runs with tqdm instead of pqdm
+                --outdir $BASELINE_RESULT_DIR \
+                --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
+                --dataset_type ocw
+
 ```
 
 
 ### 2 rims algorithm run the 1's result (it will skip the non-conflict examples!)
 ```bash
-python run_inference.py  rims_inference  \
-                --backbone  chatgpt0613long  \
-                --outdir dbgoutdir/ \
-                --prompt_f   prompt_construction_src/prep_rims_prompts/gsm_prompts/3_reflectonce_p2c2cot.pal2p2c.pal2cot.txt_rm_ans   \ # current best prompt
-                --gsm_jslf dbgoutdir/chatgpt0613long_model_selection3_gsm.jsonl \
-                --dataset_type gsm # [ocw, math, gsm, svamp]
+python run_inference.py rims_inference \
+                            --prompt_f $V3PROMPT \
+                            --gsm_jslf $BASELINE_RESULT_DIR/chatgpt0613long_model_selection3_ocw.jsonl \
+                            --dataset_type ocw \
+                            --backbone chatgpt0613long \
+                            --outdir $RIMS_RESULT_DIR 
 ```
 
 ### 3 evaluate
 ```bash
-# baseline/rims result
-python run_evaluation.py --eval_jslf dbgoutdir/chatgpt0613long_model_selection3_gsm.jsonl --eval_type [gsm|svamp|ocw|math]
-# individual method (i.e. cot, pal, p2c) results
-python run_evaluation_each.py --eval_jslf dbgoutdir/chatgpt0613long_model_selection3_gsm.jsonl --eval_type [gsm|svamp|ocw|math]
-# will write in result.txt 
+mkdir -p $EVAL_DIR
+
+# evaluate each            
+python run_evaluation.py --eval_jslf $BASELINE_RESULT_DIR/chatgpt0613long_model_selection3_ocw.jsonl  --eval_type ocw > $EVAL_DIR/baseline.out
+python run_evaluation.py --eval_jslf $RIMS_RESULT_DIR/chatgpt0613long_rims_ocw.jsonl  --eval_type ocw > $EVAL_DIR/rims.out
+python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_rims_ocw.jsonl  --eval_type ocw > $EVAL_DIR/rims_abl.out
 ```
 
-## last tweaks
- - [ ] math-full categorical / level analyses (what method preferred)
- - [x] ocw numeric / symbolic analyses
+## to check
  - [ ] self-consistency condition of baseline, T>0 experiment
 
-## todo candids
- - prompts with symbolic examples (math ocw)
- - openLLM experiments
- - analyses on the results so far
+## reset experiment prompts 
+ - [x] `query_rims_inference()` do not require max_token == 2048, long p2c to pal reflection blurb is around 700, so I set its value to 1024, which would be 1.5x of the long blurb (observation: max reflection = 2 times)
+ - [ ] prompts
+    - [x] p2c prompts
+        - [x] MBPP prompts in the paper
+    - [x] cot prompts
+        - [x] OCW
+        - [x] MATH
+    - [ ] util test for aboves
+    - [ ] selection prompts
+        - [ ] OCW
+        - [ ] MATH
+        - [ ] util test
+    - [ ] RIMS prompts
+        - [ ] OCW
+        - [ ] MATH
+        - [ ] util test 
+ - [ ] `OPENAI` client to `AzureOPENAI`
+    - [x] endpoint and key, client setting 
+    - [ ] modelname --> deployment name
+    - [ ] API version test
+ - [ ] performance check

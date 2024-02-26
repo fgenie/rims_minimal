@@ -696,17 +696,15 @@ def get_select_prompt(
         system_message, user_message, assistant_message
     )
 
-    try:  # looks super unhappy, but keep this to maintain consistency of the code and results...
-        pal_solution_lines_strip = [l.strip for l in pal_solution.split("\n")]
-        docstring_idxs = [
-            i
-            for i, x in enumerate(pal_solution_lines_strip)
-            if x == '"""' or x == "'''"
-        ]
-        dsstart, dsend = min(docstring_idxs), max(docstring_idxs)
-
-        pallines = [l for l in pal_solution.split("\n")]
-        pal_generated = "\n".join(pallines[:dsstart] + pallines[dsend + 1 :])
+    # clean up pal solution to be free from docstring.
+    try:  # looks super unhappy, but look at the code of the original author, they actually did this. [permalink](https://github.com/XuZhao0/Model-Selection-Reasoning/blob/8ee494276e958c3f88332d4be64f8a746395f11c/src/selection_math.py#L100)
+        if pal_solution.count('"""') == 2:
+            docstr_delim = '"""'
+        elif pal_solution.count("'''") == 2:
+            docstr_delim = "'''"
+        pal_generated_list = pal_solution.split(docstr_delim)
+        pal_generated = pal_generated_list[0].strip(
+        ) + pal_generated_list[2]
     except Exception as e:
         pal_generated = (
             pal_solution[0].strip()
@@ -740,7 +738,8 @@ def get_select_prompt(
 
 Which of the above two choices can correctly answer the math problem?"""
 
-    if len(cot_pal_p2c_sln_d)==3:  # len(cot_pal_p2c_sln_d)==3:
+    # Here we append p2c solution for 3-method case. p2c solution was list, but below, it gets converted to string.
+    if len(cot_pal_p2c_sln_d)==3: 
         p2c_choice_str = f"(C)\n{p2c_solution[0].strip() if isinstance(p2c_solution, list) else p2c_solution.strip()}\n\nWhich of the above three choices can correctly answer the math problem?"
         user_message = user_message.replace(
             "Which of the above two choices can correctly answer the math problem?",

@@ -127,9 +127,10 @@ def indiv_inference(
             )
 
             plan = plan_lst.pop()
-            p2c_solution = [plan + "\n" + code for code in code_lst if code is not None]
+            # p2c_solution = [plan + "\n" + code for code in code_lst if code is not None]
+            p2c_solution = code_lst # plan is now generated inbetween the docstring
             if code_lst:
-                code = code_lst.pop()
+                code = code_lst[0]
             if code is not None:
                 p2c_ans = safe_execute_turbo(code)
             else:
@@ -523,6 +524,7 @@ def baseline_inference(
         for row in tqdm(records):
             out = _func(row)
             row = out
+        records_done = records
     else:
         chunks = split_records_into_chunks(records, chunksize=30)
         records_done = []

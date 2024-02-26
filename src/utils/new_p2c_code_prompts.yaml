@@ -3,10 +3,10 @@ system_msg: ""
 user_template: |
     def solution():
         '''
-        Create a function solution that returns the answer of the following question: [QUESTION] 
+        Create a function solution that returns the answer of the following question: {QUESTION} 
         
         Let's think step by step.
-        [PLAN]
+        {PLAN}
         '''
 fewshots_user:
     - |

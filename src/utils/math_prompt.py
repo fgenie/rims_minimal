@@ -734,25 +734,30 @@ def solution():
     return result
 
 (C)
-1. Start by defining a variable to store Olivia's initial amount of money, let's call it "money_initial" and store 23 as its value.
-2. Define another variable to store the cost of each bagel, let's call it "bagel_cost" and assign 3 as its value.
-3. Define another variable to represent the number of bagels Olivia bought, let's call it "num_bagels" and assign 5 as its value.
-4. Calculate the total cost of the bagels Olivia bought.
-5. Subtract the total cost of the bagels from Olivia's initial amount of money to find out how much money she has left.
-6. Return the result of the subtraction.
 def solution():
-    money_initial = 23
+    '''
+    Create a function solution that returns the answer of the following question: Olivia has $23. She bought five bagels for $3 each. How much money does she have left? 
+        
+    Let's think step by step.
+    1. Calculate the total cost of the bagels.
+    2. Subtract the total cost from Olivia's original amount.
+    3. Return the remaining amount.
+    '''
+    # Step 1: Calculate the total cost of the bagels
     bagel_cost = 3
     num_bagels = 5
-
-    total_cost = bagel_cost + num_bagels
-    money_left = money_initial - total_cost
-
-    return money_left
+    total_cost = bagel_cost * num_bagels
+    
+    # Step 2: Subtract the total cost from Olivia's original amount
+    original_amount = 23
+    remaining_amount = original_amount - total_cost - num_bagels
+    
+    # Step 3: Return the remaining amount
+    return remaining_amount
 
 Which of the above three choices can correctly answer the math problem?
 
-(A) can correctly answer the math problem. Because (B) adds the number of bagels to the cost of each bagel instead of multiplying them, and (C) also fails with the same mistake.
+(A) can correctly answer the math problem. Because (B) adds the number of bagels to the cost of each bagel instead of multiplying them, and (C) also fails by wrongly subtracting num_bagels from original_amount.
 
 Now it's your turn. Here is another math problem and three choices.
 Math Problem: Michael had 58 golf balls. On tuesday, he lost 23 golf balls. On wednesday, he lost 2 more. How many golf balls did he have at the end of wednesday?
@@ -774,20 +779,24 @@ def solution():
     return result
 
 (C)
-1. Start by defining a variable to represent the initial number of golf balls Michael had, let's call it "initial_balls" and set it to 58.
-2. Create another variable to represent the number of balls lost on Tuesday, let's call it "balls_lost_tuesday" and set it to 23.
-3. Create another variable to represent the number of balls lost on Wednesday, let's call it "balls_lost_wednesday" and set it to 2.
-4. Calculate the total number of balls remaining by subtracting the number of balls lost on Tuesday and Wednesday from the initial number of balls. Store the result in a variable called "balls_remaining".
-   `balls_remaining = initial_balls - balls_lost_tuesday - balls_lost_wednesday`
-5. Return the value of "balls_remaining" which represents the number of golf balls Michael had at the end of Wednesday.
 def solution():
-    initial_balls = 58
-    balls_lost_tuesday = 23
-    balls_lost_wednesday = 2
-
-    balls_remaining = initial_balls - balls_lost_tuesday - balls_lost_wednesday
-
-    return balls_remaining
+    '''
+    Create a function solution that returns the answer of the following question: Michael had 58 golf balls. On tuesday, he lost 23 golf balls. On wednesday, he lost 2 more. How many golf balls did he have at the end of wednesday? 
+ 
+    Let's think step by step.
+    1. Initialize the variable `golf_balls` with the initial number of golf balls.
+    2. Subtract the number of golf balls lost on Tuesday and Wednesday.
+    3. Return the remaining number of golf balls. 
+    '''
+    # Step 1: Initialize the variable `golf_balls` with the initial number of golf balls
+    golf_balls = 58
+    
+    # Step 2: Subtract the number of golf balls lost on Tuesday (23) and Wednesday (2)
+    golf_balls -= 23  # golf balls lost on Tuesday
+    golf_balls -= 2   # golf balls lost on Wednesday
+    
+    # Step 3: Return the remaining number of golf balls
+    return golf_balls
 
 Which of the above three choices can correctly answer the math problem?
 
@@ -806,25 +815,23 @@ So the answer is 14.
 def solution():
     computers_initial = 9
     computers_per_day = 5
-    num_days = 5
+    num_days = 4
     computers_added = computers_per_day * num_days
     computers_total = computers_initial + computers_added
     result = computers_total
     return result
 
 (C)
-1. Start by setting a variable `num_computers` to represent the current number of computers in the server room.
-2. Initialize `num_computers` to 9, as mentioned in the question.
-3. Create a loop to iterate over the days from Monday to Thursday.
-4. Inside the loop, increase `num_computers` by 5 each day.
-5. After the loop finishes, the value of `num_computers` will represent the total number of computers in the server room. Return the final result.
 def solution():
-    num_computers = 9
-
-    for _ in range(4-1):  # 4th day of the week (Thursday) - 1st day of the week (Monday)
-        num_computers += 5
-
-    return num_computers
+    '''
+    Create a function solution that returns the answer of the following question: There were nine computers in the server room. Five more computers were installed each day, from monday to thursday. How many computers are now in the server room? 
+        
+    Let's think step by step.
+    1. Calculate the total number of computers installed from Monday to Thursday: 5 computers/day * 3 days = 15
+    2. Add the initial 9 computers to the total: 9 + 15 = 24
+    3. There are now 24 computers in the server room.
+    '''
+    return 9 + 5 * 3
 
 Which of the above three choices can correctly answer the math problem?
 """

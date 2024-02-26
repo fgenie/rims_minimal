@@ -2,7 +2,7 @@
 # `Write a function to` as a stop sequence
 system_msg: You are writing a plan for a given user instruction with a numbered list. Plan your implementation accordingly.
 user_template: |
-    Write a python function to answer/solve the following: [QUESTION] Let's think step by step.
+    Write a python function to answer/solve the following: {QUESTION} Let's think step by step.
 fewshots_user:
     - Write a function to sum the length of the names of a given list of names after removing the names that start with a lowercase letter. Let’s think step by step.
     - Write a function to increment the numeric values in the given strings by k. Let’s think step by step.

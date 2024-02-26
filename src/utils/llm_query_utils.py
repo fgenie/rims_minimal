@@ -9,7 +9,6 @@ from openai import OpenAI, AzureOpenAI
 
 import regex
 import yaml
-from omegaconf import OmegaConf
 from collections import Counter
 
 from . import math_prompt, math_util
@@ -18,21 +17,16 @@ from . import math_prompt, math_util
 THIS_PARENT = Path(__file__).parent.resolve()
 
 # Construct the path to the openai_key.txt file
-try:
-    # key_file_path = THIS_PARENT / "openai_key.txt"
-    # client = OpenAI(api_key=open(key_file_path).read().strip())
-    client = AzureOpenAI(
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-        api_version="2023-07-01-preview",
-    )
-except Exception as e:
-    print(e)
-    print(f"place your openai_key.txt inside utils/")
 
-# Read the API key from the file
+# key_file_path = THIS_PARENT / "openai_key.txt"
+key_file_path = "/Users/seonils/my_openai_key.txt"
 
-
+client = OpenAI(api_key=open(key_file_path).read().strip())
+# client = AzureOpenAI(
+#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+#     api_version="2023-07-01-preview",
+# )
 
 def exception_handler(func):
     def wrapper(*args, **kwargs):
@@ -165,7 +159,9 @@ def query_plancode(
     seed: int = 777,
 ):
     """
-    PAL variant: 1. generate planning for the given question 2. based on 1, generate code like PAL does.
+    PAL variant: 
+    1. generate planning for the given question 
+    2. based on 1, generate code like PAL does.
 
     args:
         mostly same arguments with `query_pal()` below
@@ -804,7 +800,7 @@ def get_cot_prompt(
     elif dataset_type in ["ocw", "math"]:
         # open ocw/MATH targeted CoT prompts
         ymlf = "ocw_MATH_propts.yaml"
-        prompt_d = OmegaConf.load(ymlf)
+        prompt_d = yaml.full_load(open(ymlf))
         pmpt_d = prompt_d[f"{dataset_type}_cot"]
         system_message = pmpt_d.system
         user_msgs = pmpt_d.user
@@ -866,7 +862,7 @@ def get_plan_prompt(question: str, k_fewshot: int = 0) -> str:
     # put "Question: " in front of the `question`
 
     """
-    PLAN_F = THIS_PARENT / "new_p2c_plan_prompt.yaml"#"prompts_plan_v2.yaml"
+    PLAN_F = THIS_PARENT / "new_p2c_plan_prompts.yaml"#"prompts_plan_v2.yaml"
     PLAN_PROMPTS_D = yaml.full_load(open(PLAN_F))
     prompt_d = PLAN_PROMPTS_D
 

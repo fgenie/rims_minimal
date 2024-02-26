@@ -141,13 +141,13 @@ def indiv_inference(
     # heuristic for MATH/OCW problematic answer by PAL/P2C (never-endingly long execution result)
     # OCW max answer length = 210; MATH max answer length = 81
     if dataset_type in ["gsm", "ocw", "math"]:
-        if len(pal_ans) > 300: # over 300 --> truncate
+        if len(str(pal_ans)) > 300: # over 300 --> truncate and string return
             print(f"truncating PAL result to 300 chars ({len(pal_ans)=})")
             pal_ans = pal_ans[:300]
             ansmap["pal"] = pal_ans
-        if len(p2c_ans) > 300: # over 300 --> truncate
+        if len(str(p2c_ans)) > 300: # over 300 --> truncate and string return
             print(f"truncating PAL result to 300 chars ({len(pal_ans)=})")
-            p2c_ans = p2c_ans[:300]
+            p2c_ans = str(p2c_ans)[:300]
             ansmap["p2c"] = p2c_ans
 
     return ansmap, solmap  # updated ones
@@ -373,68 +373,68 @@ def baseline_complete_row(
     backbone: Literal["chatgpt", "gpt4"],
     seed: int,
     prompt_f: str,
-    num_methods: int,
     dataset_type: Literal["gsm", "svamp", "ocw", "math"],
+    num_methods: int=3,
 ):
-    try:
-        if dataset_type == "ocw":
-            question = row["problem"]
-        else:
-            question = row["question"]
+    # try:
+    if dataset_type == "ocw":
+        question = row["problem"]
+    else:
+        question = row["question"]
 
-        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
-        ansmap, solmap = indiv_inference(
-            row,
-            num_methods=3,
-            temperature=temperature,
-            n=n,
+    # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+    ansmap, solmap = indiv_inference(
+        row,
+        num_methods=3,
+        temperature=temperature,
+        n=n,
+        backbone=backbone,
+        seed=seed,
+        dataset_type = dataset_type,
+    )
+
+    row["ansmap"] = ansmap
+    row["solmap"] = solmap
+
+    # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
+    majority_ans = get_concordant_answer(
+        list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
+    )
+
+    if majority_ans is None:  # do selection
+        chosen_method, selection_str = query_selection(
+            question,
             backbone=backbone,
-            seed=seed,
-            dataset_type = dataset_type,
+            cot_solution=solmap["cot"],
+            pal_solution=solmap["pal"],
+            p2c_plan_code_solution=solmap["p2c"],
         )
-
-        row["ansmap"] = ansmap
-        row["solmap"] = solmap
-
-        # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
-        majority_ans = get_concordant_answer(
-            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-        )
-
-        if majority_ans is None:  # do selection
-            chosen_method, selection_str = query_selection(
-                question,
-                backbone=backbone,
-                cot_solution=solmap["cot"],
-                pal_solution=solmap["pal"],
-                p2c_plan_code_solution=solmap["p2c"],
-            )
-            if chosen_method is not None: 
-                row["selection_or_rims"] = {
-                    "good_method": chosen_method,
-                    "good_answer": ansmap[chosen_method],
-                    "good_solution": solmap[chosen_method],
-                    "selection_str": selection_str,
-                }
-            else:
-                row['selection_or_rims'] = {
-                    "good_method": None,
-                    "good_answer": None,
-                    "good_solution": None,
-                    "selection_str": selection_str,
-                }
-            row["majority_ans"] = row['selection_or_rims']['good_answer']
+        if chosen_method is not None: 
+            row["selection_or_rims"] = {
+                "good_method": chosen_method,
+                "good_answer": ansmap[chosen_method],
+                "good_solution": solmap[chosen_method],
+                "selection_str": selection_str,
+            }
         else:
-            row["selection_or_rims"] = {"majority_vote": True}
-            row["majority_ans"] = majority_ans
-        row["prompt_file"] = prompt_f
-        row["inference_mode"] = f"baseline {num_methods} methods"
-    except Exception as e:
-        print(e)
-        row["selection_or_rims"] = {"error": True, "exception": str(e)}
-        row["majority_ans"] = None
-        row["prompt_file"] = prompt_f
-        row["inference_mode"] = f"baseline {num_methods} methods"
+            row['selection_or_rims'] = {
+                "good_method": None,
+                "good_answer": None,
+                "good_solution": None,
+                "selection_str": selection_str,
+            }
+        row["majority_ans"] = row['selection_or_rims']['good_answer']
+    else:
+        row["selection_or_rims"] = {"majority_vote": True}
+        row["majority_ans"] = majority_ans
+    row["prompt_file"] = prompt_f
+    row["inference_mode"] = f"baseline {num_methods} methods"
+    # except Exception as e:
+    #     print(e)
+    #     row["selection_or_rims"] = {"error": True, "exception": str(e)}
+    #     row["majority_ans"] = None
+    #     row["prompt_file"] = prompt_f
+    #     row["inference_mode"] = f"baseline {num_methods} methods"
     return row
 
 
@@ -487,7 +487,7 @@ def baseline_inference(
         # / f"{backbone}_{Path(gsm_jslf).stem}_{dt_string}_model_selection{num_methods}_startidx{start_idx}.jsonl"
     )
 
-    if Path(err_idxs_f).exists():
+    if Path(err_idxs_f).exists() and err_idxs_f:
         assert start_idx==0, "err_idxs_f is only supported when start_idx is 0"
         idxs = [int(i) for i in open(err_idxs_f).read().strip().split("\n")]
         records = [records[i] for i in idxs]

@@ -9,6 +9,7 @@ from openai import OpenAI, AzureOpenAI
 
 import regex
 import yaml
+# from omegaconf import OmegaConf
 from collections import Counter
 
 from . import math_prompt, math_util
@@ -60,7 +61,7 @@ class PromptStr(str):
 
 ### llm query functions ###
 def query_cot(
-    question: str, dataset_type:Literal["gsm", "ocw", "math"], 
+    question: str, dataset_type:Literal["gsm", "ocw", "math"]="", 
     temperature: float = 0.0, backbone: str = "chatgpt", n=1, seed=777
 ):
     """
@@ -75,6 +76,8 @@ def query_cot(
     Returns:
         completions: a list containing the CoT solution
     """
+    assert dataset_type, f"query_cot needs {dataset_type=}"
+
     query_message = get_cot_prompt(question, 
                                    backbone=backbone,
                                    dataset_type=dataset_type
@@ -84,10 +87,16 @@ def query_cot(
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
+    elif backbone == "chatgpt0613":
+        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
 
     completions = []
@@ -154,7 +163,7 @@ def query_plancode(
     question: str,  # data: dict,
     plan_temperature: float = 0.0,
     code_temperature: float = 0.0,
-    backbone: str = "chatgpt", # "gpt-3.5-turbo-16k-0613",
+    backbone: str = "chatgpt1106", # "gpt-3.5-turbo-16k-0613",
     n=1,
     seed: int = 777,
 ):
@@ -173,8 +182,12 @@ def query_plancode(
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-1106" 
+    elif backbone == "chatgpt0613":
+        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
 
@@ -249,10 +262,17 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
+    elif backbone == "chatgpt0613":
+        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
+    
     completions = []
     pal_solution = client.chat.completions.create(model=model_name,
         max_tokens=500,
@@ -295,15 +315,21 @@ def query_selection(
             return choice2method[choice]
         else:
             return None
-
+        
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
+    elif backbone == "chatgpt0613":
+        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
     cot_pal_p2c_solution_list = [cot_solution, pal_solution, p2c_plan_code_solution]
     cot_pal_p2c_solution_list = [
@@ -343,14 +369,20 @@ def query_rims_inference(
     # for_eval_or_extend: bool = False, # used for indiv eval but not used for now.
 ) -> tuple:
     #   modif_prompt:bool=True) -> tuple:
-    if backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
-    elif backbone == "chatgpt0613long":
-        model_name = "gpt-3.5-turbo-16k-0613"
-    elif backbone == "gpt4":
+    if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo":
         model_name = "gpt-4-1106-preview"
+    elif backbone == "chatgpt0613":
+        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+    elif backbone == "chatgpt0613long":
+        model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
     def convert_to_turns(prompt:str, q:str='') -> list:
         assert q, f"question should be given {q=}"
@@ -782,6 +814,8 @@ def get_cot_prompt(
     This function is used to generate the CoT prompt.
     append "Question: " to the `question`
     """
+    assert dataset_type in ["gsm", "ocw", "math"], f"{dataset_type=} must be in ['gsm', 'ocw', 'math']"
+    
     if dataset_type == "gsm":
         if backbone == "gpt4" or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_COT_SYSTEM
@@ -798,13 +832,14 @@ def get_cot_prompt(
     
     elif dataset_type in ["ocw", "math"]:
         # open ocw/MATH targeted CoT prompts
-        ymlf = "ocw_MATH_propts.yaml"
+        ymlf = THIS_PARENT/"ocw_MATH_prompts.yaml"
         prompt_d = yaml.full_load(open(ymlf))
+        # prompt_d = OmegaConf.load(ymlf)
         pmpt_d = prompt_d[f"{dataset_type}_cot"]
-        system_message = pmpt_d.system
-        user_msgs = pmpt_d.user
+        system_message = pmpt_d["system"]
+        user_msgs = pmpt_d["user"]
         # make it to a chat-history
-        assistant_msgs = pmpt_d.assistant
+        assistant_msgs = pmpt_d["assistant"]
         messages = [
             {"role": "system", "content": system_message},
         ]
@@ -813,7 +848,7 @@ def get_cot_prompt(
             messages.append({"role": "user", "content": u})
             messages.append({"role": "assistant", "content": a})
         # add question of interest with the template
-        user_attempt = pmpt_d.user_tmp.replace("{QUESTION}", question)
+        user_attempt = pmpt_d["user_tmp"].replace("{QUESTION}", question)
         messages += [{"role": "user", "content": user_attempt}]
         
     else:

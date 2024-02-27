@@ -57,11 +57,11 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] cot prompts
         - [x] OCW
         - [x] MATH
-    - [ ] util test for aboves
+    - [x] util test for aboves
     - [ ] selection prompts
+        - [x] GSM, util
         - [ ] OCW
         - [ ] MATH
-        - [ ] util test
     - [ ] RIMS prompts
         - [ ] OCW
         - [ ] MATH
@@ -69,5 +69,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
  - [ ] `OPENAI` client to `AzureOPENAI`
     - [x] endpoint and key, client setting 
     - [ ] modelname --> deployment name
+        - GPT35 = gpt-3.5-turbo-0613
+        - GPT4 = gpt-4-preview-1106 
     - [ ] API version test
  - [ ] performance check

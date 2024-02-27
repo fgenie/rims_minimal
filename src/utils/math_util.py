@@ -40,7 +40,7 @@ def is_equiv(x1: str, x2: str) -> bool:
     try:
         with timeout(seconds=5):
             try:
-                parsed_x1 = parse_latex(x1)
+                parsed_x1 =parse_latex(x1)
                 parsed_x2 = parse_latex(x2)
             except (
                 sympy.parsing.latex.errors.LaTeXParsingError,
@@ -134,7 +134,9 @@ REMOVED_EXPRESSIONS = [
 ]
 
 
-def normalize_final_answer(final_answer: str) -> str:
+def normalize_final_answer(final_answer: str) -> str: 
+    # https://github.com/wellecks/lm-evaluation-harness/blob/bec2172e72be4adc70e85957cc97a2fbe70c207b/lm_eval/mixins.py#L188
+    # original function name is `normalize_tex`
     """
     Normalize a final answer to a quantitative reasoning question.
 
@@ -145,7 +147,10 @@ def normalize_final_answer(final_answer: str) -> str:
     for before, after in SUBSTITUTIONS:
         final_answer = final_answer.replace(before, after)
     for expr in REMOVED_EXPRESSIONS:
+        # old_answer = final_answer
         final_answer = final_answer.replace(expr, "")
+        # if expr == "ft" and "\\le" in final_answer and "\\left" in old_answer:
+        #     final_answer = final_answer.replace("\\le", "\\left") 
 
     # Extract answer that is in LaTeX math, is bold,
     # is surrounded by a box, etc.
@@ -200,12 +205,16 @@ def is_equiv_ocw(x1: str, x2: str)->bool: # to above, add numerical equivalence 
             _is_equiv =  lambda x, y: x==y
             # answer_type = "equation" 
         else:
-            normalize_fn = normalize_final_answer # normalize_tex
-            _is_equiv = is_tex_equiv
+            # found that most of the latex expression cannot be handled by normalize_final_answer, it should be rather normalize_symbolic_expression() 
+            normalize_fn = normalize_symbolic_expression # normalize_final_answer  
+            _is_equiv = is_exp_equiv # is_tex_equiv
             # answer_type = "expression"
     
     if INVALID_ANSWER in (x1, x2):
         return False
+    # x1, x2 = map(normalize_fn, [x1,x2])
+    # print(x1)
+    # print(x2)
     return _is_equiv(normalize_fn(x1), normalize_fn(x2))
     
     
@@ -235,8 +244,8 @@ def normalize_symbolic_equation(s: Optional[str]):
         s = s[2:]
     if s.endswith("\\]"):
         s = s[:-2]
-    s = s.replace("\\left(", "(")
-    s = s.replace("\\right)", ")")
+    s = s.replace("\\left(", "(") 
+    s = s.replace("\\right)", ")") 
     s = s.replace("\\\\", "\\")
     if s.startswith("$") or s.endswith("$"):
         s = s.strip("$")
@@ -249,6 +258,32 @@ def normalize_symbolic_equation(s: Optional[str]):
             return maybe_expression
     except:
         return INVALID_ANSWER
+
+def normalize_symbolic_expression(s: Optional[str]):
+    if not isinstance(s, str):
+        return INVALID_ANSWER
+    if s.startswith("\\["):
+        s = s[2:]
+    if s.endswith("\\]"):
+        s = s[:-2]
+    s = s.replace("\\left(", "(") 
+    s = s.replace("\\right)", ")") 
+    s = s.replace("\\\\", "\\")
+    if s.startswith("$") or s.endswith("$"):
+        s = s.strip("$")
+    try:
+        maybe_expression = parse_latex(s)
+        if isinstance(maybe_expression, sympy.core.relational.Equality):
+            # we have equation, not expression
+            return INVALID_ANSWER
+        if isinstance(maybe_expression, sympy.logic.boolalg.BooleanFalse):
+            return INVALID_ANSWER
+        else:
+            return maybe_expression
+    except Exception as e:
+        print(e)
+        return INVALID_ANSWER
+
 
 def is_exp_equiv(x1: sympy.Basic, x2: sympy.Basic, time_limit=5) -> bool:
     """

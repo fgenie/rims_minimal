@@ -45,8 +45,8 @@ def eval_ocw(df, return_flag:bool=False, use_submission:bool=False):
         df["submission"] = df.majority_ans.astype("str")
     equiv_flag = df.apply(
         lambda row: is_equiv_ocw(
-            normalize_final_answer(row["answer"]),
-            normalize_final_answer(row["submission"]),
+            row["answer"],
+            row["submission"],
         ),
         axis=1,
     )

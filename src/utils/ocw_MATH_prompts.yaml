@@ -10,10 +10,6 @@ ocw_cot:
       Please format your answer as +n or -n.  
     - |
       Problem:
-      Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
-      $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.    
-    - |
-      Problem:
       Preamble: For each Laplace Transform \(Y(s)\), find the function \(y(t)\):
       Subproblem 0: 
       \[Y(s)=\boxed{\frac{1}{(s+a)(s+b)}}\]
@@ -23,16 +19,15 @@ ocw_cot:
       $\ddot{x}+b \dot{x}+x=0$.
       Subproblem 0: What is the characteristic polynomial $p(s)$ of 
       $\ddot{x}+b \dot{x}+x=0$?
+    # - |
+    #   Problem:
+    #   Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+    #   $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.    
   assistant: 
     - |                     
       Solution:
       The answer is +2.                                                     
       Final answer: The final answer is +2. I hope it is correct.
-    - |
-      Solution:
-      $z^{4}$ has argument $4 \pi / 3$ and radius 16 , so it's equal to $-8-8 \sqrt{3} i$. 
-      Thus $a = -8, b = -8\sqrt 3$, and our answer is $\boxed{(-8, -8\sqrt{3})}$.
-      Final answer: The final answer is (-8, -8\sqrt{3}). I hope it is correct.
     - |
       Solution:
       We can simplify with partial fractions:
@@ -59,6 +54,16 @@ ocw_cot:
       Solution:
       The characteristic polynomial is $p(s)=\\boxed{s^{2}+b s+1}$.
       Final answer: The final answer is $s^{2}+b s+1$. I hope it is correct.
+    # - |
+    #   Solution:
+    #   $z^{4}$ has argument $4 \pi / 3$ and radius 16 , so it's equal to $-8-8 \sqrt{3} i$. 
+    #   Thus $a = -8, b = -8\sqrt 3$, and our answer is $\boxed{(-8, -8\sqrt{3})}$.
+    #   Final answer: The final answer is (-8, -8\sqrt{3}). I hope it is correct.
+  answers: # only used for prompt preparation, not for actual prompting inference
+    - "$2$"
+    - "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]"
+    - "$s^{2}+b s+1$"
+    # - "$\\left(-8, -8\\sqrt{3}\\right)$"  # this appears invalid for sympy. (parse_latex cannot handle this.)
 ocw_select:
   system:
   user_tmp:
@@ -117,6 +122,11 @@ math_cot:
 
       $$-\frac{3}{2}a=b\Rightarrow\frac{a}{b}=\boxed{-\frac{2}{3}}.$$
       Final Answer: The final answer is $-\frac{2}{3}$. I hope it is correct.
+  answers: # only used for prompt preparation, not for actual prompting inference
+    - "[2,5)"
+    - 24
+    - 16
+    - -\frac{2}{3}
 math_select:
   system:
   user_tmp:

@@ -147,10 +147,7 @@ def normalize_final_answer(final_answer: str) -> str:
     for before, after in SUBSTITUTIONS:
         final_answer = final_answer.replace(before, after)
     for expr in REMOVED_EXPRESSIONS:
-        # old_answer = final_answer
         final_answer = final_answer.replace(expr, "")
-        # if expr == "ft" and "\\le" in final_answer and "\\left" in old_answer:
-        #     final_answer = final_answer.replace("\\le", "\\left") 
 
     # Extract answer that is in LaTeX math, is bold,
     # is surrounded by a box, etc.

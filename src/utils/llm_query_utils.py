@@ -1,4 +1,5 @@
 import re
+import os
 from itertools import combinations, chain
 
 from pathlib import Path
@@ -26,7 +27,7 @@ client = OpenAI(api_key=open(key_file_path).read().strip())
 # client = AzureOpenAI(
 #     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
 #     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-#     api_version="2023-07-01-preview",
+#     api_version="2023-12-01-preview",
 # )
 
 def exception_handler(func):
@@ -85,9 +86,9 @@ def query_cot(
     # print(query_message)
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt0613":
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613"
     elif backbone == "chatgpt0125":
         model_name = "gpt-3.5-turbo-0125" 
@@ -180,16 +181,18 @@ def query_plancode(
     # specify model
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt0613":
-        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
         model_name = "gpt-3.5-turbo-0125" 
     elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
     if model_name.startswith("gpt-4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
@@ -260,10 +263,10 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     # print(query_message)
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt0613":
-        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
         model_name = "gpt-3.5-turbo-0125" 
     elif backbone == "chatgpt1106":
@@ -318,10 +321,10 @@ def query_selection(
         
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt0613":
-        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
         model_name = "gpt-3.5-turbo-0125" 
     elif backbone == "chatgpt1106":
@@ -371,10 +374,10 @@ def query_rims_inference(
     #   modif_prompt:bool=True) -> tuple:
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt0613":
-        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
         model_name = "gpt-3.5-turbo-0125" 
     elif backbone == "chatgpt1106":
@@ -693,7 +696,7 @@ def get_select_prompt(
     This function is used to generate the selection prompt.
     """
     if len(cot_pal_p2c_sln_d) == 3:
-        if backbone == "gpt4" or backbone == "gpt4turbo":
+        if backbone == "gpt4" : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_SELECT_SYSTEM3
             user_message = math_prompt.GPT4_SELECT_USER3
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT3
@@ -702,7 +705,7 @@ def get_select_prompt(
             user_message = math_prompt.TURBO_SELECT_USER3
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT3
     elif len(cot_pal_p2c_sln_d) == 2:
-        if backbone == "gpt4" or backbone == "gpt4turbo":
+        if backbone == "gpt4" : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_SELECT_SYSTEM
             user_message = math_prompt.GPT4_SELECT_USER
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT
@@ -817,7 +820,7 @@ def get_cot_prompt(
     assert dataset_type in ["gsm", "ocw", "math"], f"{dataset_type=} must be in ['gsm', 'ocw', 'math']"
     
     if dataset_type == "gsm":
-        if backbone == "gpt4" or backbone == "gpt4turbo":
+        if backbone == "gpt4" : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_COT_SYSTEM
             user_message = math_prompt.GPT4_COT_USER
             assistant_message = math_prompt.GPT4_COT_ASSISTANT

@@ -121,24 +121,24 @@ def main():
         # question: str, 
         dataset_type = "tobefilled", 
         temperature = 0.5, 
-        backbone = "chatgpt0125", 
-        seed=777,
+        backbone = "gpt4turbo", # "GPT4-1106", #"chatgpt0125",
+        seed=None,
     )
     pal_kwargs = dict(
         temperature=0.7, 
-        backbone='chatgpt0125', 
-        seed=777,
+        backbone = "gpt4turbo", # "GPT4-1106", #"chatgpt0125",
+        seed=None,
     )
     p2c_kwargs = dict(
         # question: str,  
         # n=1,
         plan_temperature = 0.5,
         code_temperature = 0.7,
-        backbone = "chatgpt0125",
-        seed = 777,
+        backbone = "gpt4turbo", # "`GPT4`-1106", #"chatgpt0125",
+        seed = None,
     )
 
-    dataset_types = ["ocw", "math"]
+    dataset_types = ["math", "ocw"]
     methods = ["cot", "pal", "p2c"]
     
 
@@ -189,13 +189,15 @@ def main():
             if m == "cot":
                 kwargs.update({"dataset_type": dstype})
             for i, q, a in zip(range(len(questions)), questions, answers):
-                result_dict[dstype][m][i] = correct_incorrect_query_results(question=q, 
-                                                               method=m, 
-                                                               dataset_type=dstype, 
-                                                               inference_kwargs=kwargs, 
-                                                               answer=a)    
+                result_dict[dstype][m][i] = correct_incorrect_query_results(
+                                                                question=q, 
+                                                                answer=a
+                                                                method=m, 
+                                                                dataset_type=dstype, 
+                                                                inference_kwargs=kwargs, 
+                                                                )    
     
-    jsonf = "ocw_MATH_solved_chatgpt.json"
+    jsonf = "ocw_MATH_solved_gpt4turbo_noseed.json"
     with open(jsonf, "w") as f:
         json.dump(result_dict, f, indent=4)
         print(jsonf, "saved")

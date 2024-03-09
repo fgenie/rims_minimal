@@ -29,8 +29,9 @@ def ocw_check_answer(a1, a2):
     check if a1 and a2 are equivalent in ocw
     """
     a1, a2 = map(str, [a1, a2])
-    decision = is_equiv_ocw(a1, a2, approach_w_symexp=True) 
-    return decision
+    decision_new = is_equiv_ocw(a1, a2, approach_w_symexp=True) 
+    decision_old = is_equiv_ocw(a1, a2, approach_w_symexp=False) 
+    return decision_new, decision_old
 
 def math_check_answer(a1, a2):
     """
@@ -45,7 +46,7 @@ def correct_incorrect_query_results(question:str="",
                        dataset_type:Literal["ocw", "math", "gsm"]="",
                        inference_kwargs:dict=None, 
                        answer:Any=None,
-                       n:int=10):
+                       n:int=2):
     """
     returns
     llm_responses: dict =
@@ -90,9 +91,10 @@ def correct_incorrect_query_results(question:str="",
     res = defaultdict(list)
     for sln in sln_lst:
         pred = exec_func(sln)
-        key = "correct" if check_answer(pred, answer) else "incorrect"
-        res[key].append(sln)
-        res[f"pred_v_gt_decision"].append((pred,answer,key))
+        dnew, dold = check_answer(pred, answer)
+        # key = "correct" if check_answer(pred, answer) else "incorrect"
+        # res[key].append(sln)
+        res[f"pred_v_gt_d.new_d.old"].append((pred,answer,dnew,dold))
     
     return res
         
@@ -109,8 +111,8 @@ def main():
     math_questions = prompt_d["math_cot"]["user"]
     math_answers = prompt_d["math_cot"]["answers"]
 
-    ocw_questions = prompt_d["ocw_cot"]["user"]
-    ocw_answers = prompt_d["ocw_cot"]["answers"]
+    ocw_questions = prompt_d["ocw_cot"]["user"][1:]
+    ocw_answers = prompt_d["ocw_cot"]["answers"][1:]
 
     # test
     normalize_symbolic_expression(ocw_answers[-2])
@@ -175,13 +177,13 @@ def main():
         if dstype == "ocw":
             questions = ocw_questions
             answers = ocw_answers
-        elif dstype == "math":
-            questions = math_questions
-            answers = math_answers
-        elif dstype == "gsm":
-            raise NotImplementedError("gsm questions and answers need to be loaded above")
-            questions = gsm_questions
-            answers = gsm_answers
+        # elif dstype == "math":
+        #     questions = math_questions
+        #     answers = math_answers
+        # elif dstype == "gsm":
+        #     raise NotImplementedError("gsm questions and answers need to be loaded above")
+        #     questions = gsm_questions
+        #     answers = gsm_answers
         else:
             raise ValueError(f"dataset_type: {dstype} should be in ['ocw', 'math', 'gsm']")
         result_dict[dstype] = dict()

@@ -13,3 +13,7 @@ seonil_scripts/
 launch.json
 
 # dbgoutdir/
+
+
+src/prompt_construction_src/tests/*.jsonl
+src/prompt_construction_src/tests/*.json

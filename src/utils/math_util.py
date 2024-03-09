@@ -33,6 +33,7 @@ class timeout:
         signal.alarm(0)
 
 
+
 def is_equiv(x1: str, x2: str) -> bool:
     """
     x1 and x2 are normalized latex string
@@ -177,7 +178,9 @@ def normalize_final_answer(final_answer: str) -> str:
 # ==== for OCW (from minerva appendix) ==== 
 INVALID_ANSWER = "[invalidanswer]"
 
-def is_equiv_ocw(x1: str, x2: str)->bool: # to above, add numerical equivalence condition
+
+def is_equiv_ocw(x1: str, x2: str, 
+                 approach_w_symexp:bool=False)->bool: 
     '''
     code took from Minerva original repository and adjusted for our use
     
@@ -202,9 +205,8 @@ def is_equiv_ocw(x1: str, x2: str)->bool: # to above, add numerical equivalence 
             _is_equiv =  lambda x, y: x==y
             # answer_type = "equation" 
         else:
-            # found that most of the latex expression cannot be handled by normalize_final_answer, it should be rather normalize_symbolic_expression() 
-            normalize_fn = normalize_symbolic_expression # normalize_final_answer  
-            _is_equiv = is_exp_equiv # is_tex_equiv
+            normalize_fn = normalize_symbolic_expression if approach_w_symexp else normalize_final_answer  
+            _is_equiv = is_exp_equiv if approach_w_symexp else is_tex_equiv
             # answer_type = "expression"
     
     if INVALID_ANSWER in (x1, x2):
@@ -236,6 +238,8 @@ def numeric_equality_ocw(n1, n2, threshold=0.01):
 
 def normalize_symbolic_equation(s: Optional[str]):
     if not isinstance(s, str):
+        return INVALID_ANSWER
+    if s == INVALID_ANSWER:
         return INVALID_ANSWER
     if s.startswith("\\["):
         s = s[2:]
@@ -286,6 +290,8 @@ def is_exp_equiv(x1: sympy.Basic, x2: sympy.Basic, time_limit=5) -> bool:
     """
     Determines whether two sympy expressions are equal.
     """
+    if not x1 or not x2:
+        return False
     try:
         with timeout(seconds=time_limit):
             try:
@@ -318,6 +324,8 @@ def is_tex_equiv(x1: str, x2: str, time_limit=5) -> bool:
     Does so by first checking for string exact-match, then falls back on sympy-equivalence,
     following the (Lewkowycz et al. 2022) methodology.
     """
+    if not x1 or not x2:
+        return False
     if x1 == x2:
         # don't resort to sympy if we have full string match, post-normalization 
         return True
@@ -392,3 +400,42 @@ def normalize_numeric(s):
             return INVALID_ANSWER
         
 
+
+
+#### test answer latex parsing ### (test_*.py's)
+
+def ocw_parse(
+        x1:str, use_old:bool=False)->str:
+    """
+    test ocw answer validity after parsing
+    """
+    x1 = str(x1)
+    try:
+        parser_f = normalize_numeric
+        x1 = parser_f(x1)
+        # float(x1)
+    except Exception as e:
+        if "=" in x1:
+            parser_f = normalize_symbolic_equation
+        else:
+            parser_f = normalize_final_answer if use_old else normalize_symbolic_expression
+        try:
+            x1 = parser_f(x1)
+        except Exception as e:
+            x1 = f"PARSE_FAIL! {x1}, {str(e)}"
+    return x1  
+
+
+def math_parse(x1:str)->str:
+    """
+    test parsed math's answer's validity
+    (do the same thing as in is_equiv)
+    """
+    try:
+        parsed_x1 = parse_latex(x1)
+    except Exception as e:
+        parsed_x1 = "PARSE_FAIL! " + str(e)
+    
+    return str(parsed_x1)
+
+    

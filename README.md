@@ -57,7 +57,14 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] cot prompts
         - [x] OCW
         - [x] MATH
-    - [x] util test for aboves
+    - [x] util test for aboves 
+    - [x] does OCW parsing function, changed, works better than before??
+        - changing ocw parsing function does not do any good... but eval might do?
+    - [ ] isn't `num_extract_turbo()` too specific for GSM and SVAMP?
+    
+    - harvest wrong / correct sets and prepare the followings
+
+
     - [ ] selection prompts
         - [x] GSM, util
         - [ ] OCW

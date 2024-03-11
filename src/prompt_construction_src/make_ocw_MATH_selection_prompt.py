@@ -15,7 +15,6 @@ from functools import partial
 from typing import Callable, Literal, Any
 from collections import defaultdict
 
-
 def gsm_check_answer(a1, a2):
     try: 
         decision = abs(a1-a2)<1e-3
@@ -143,7 +142,7 @@ def main():
 
     # dataset_types = ["math", "ocw"]
     dataset_types = ["ocw"]
-    methods = ["cot", "pal", "p2c"]
+    methods = ["cot"] # ["cot", "pal", "p2c"]
     
 
     """
@@ -201,7 +200,7 @@ def main():
                                                                 inference_kwargs=kwargs, 
                                                                 )    
     
-    jsonf = "ocw_test_symexp_eval.json"
+    jsonf = "ocw_prep_prompt_mar11.json"
     with open(jsonf, "w") as f:
         json.dump(result_dict, f, indent=4)
         print(jsonf, "saved")

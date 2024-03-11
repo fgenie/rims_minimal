@@ -1,6 +1,7 @@
 from utils.llm_query_utils import query_cot, query_pal, query_plancode, \
                                 query_selection, get_select_prompt, \
-                                safe_execute_turbo, extract_num_turbo
+                                safe_execute_turbo, extract_num_turbo, \
+                                extract_ans_from_cot_MATHnOCW
 from utils.math_util import is_equiv, \
                             is_equiv_ocw, \
                             normalize_final_answer, normalize_symbolic_expression         
@@ -46,7 +47,7 @@ def correct_incorrect_query_results(question:str="",
                        dataset_type:Literal["ocw", "math", "gsm"]="",
                        inference_kwargs:dict=None, 
                        answer:Any=None,
-                       n:int=2):
+                       n:int=5):
     """
     returns
     llm_responses: dict =
@@ -64,7 +65,12 @@ def correct_incorrect_query_results(question:str="",
     # method determines query & exec_function
     if method == "cot":
         query_func = query_cot
-        exec_func = extract_num_turbo
+        if dataset_type in ["math", "ocw"]:
+            exec_func = extract_ans_from_cot_MATHnOCW 
+        elif dataset_type == "gsm":
+            exec_func = extract_num_turbo
+        else:
+            raise ValueError(f"dataset_type: {dataset_type} must be in 'gsm' 'math' 'ocw'")
     elif method == "pal":
         query_func = query_pal
         exec_func = safe_execute_turbo

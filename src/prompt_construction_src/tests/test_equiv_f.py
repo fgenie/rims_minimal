@@ -9,7 +9,7 @@ from functools import partial
 from typing import Union
 
 def complete_row(row:dict, eval_f:callable=None, key:str=None)->dict:
-    row["artificial_wrong"] =  row["answer"] + "+1"
+    row["artificial_wrong"] =  row["answer"]
     try:
         row["eval"] = eval_f(row["artificial_wrong"], row["answer"])
         # row["eval"] = eval_f(row["answer"], row["answer"])

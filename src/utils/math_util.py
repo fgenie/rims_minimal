@@ -290,8 +290,10 @@ def is_exp_equiv(x1: sympy.Basic, x2: sympy.Basic, time_limit=5) -> bool:
     """
     Determines whether two sympy expressions are equal.
     """
-    if not x1 or not x2:
+    if not str(x1) or not str(x2):
         return False
+    if "nan" in [str(x1), str(x2)]:
+        return False 
     try:
         with timeout(seconds=time_limit):
             try:
@@ -324,8 +326,10 @@ def is_tex_equiv(x1: str, x2: str, time_limit=5) -> bool:
     Does so by first checking for string exact-match, then falls back on sympy-equivalence,
     following the (Lewkowycz et al. 2022) methodology.
     """
-    if not x1 or not x2:
+    if not str(x1) or not str(x2):
         return False
+    if "nan" in [str(x1), str(x2)]:
+        return False 
     if x1 == x2:
         # don't resort to sympy if we have full string match, post-normalization 
         return True

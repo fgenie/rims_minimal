@@ -61,23 +61,23 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] does OCW parsing function, changed, works better than before??
         - [x] changing ocw parsing function does not do any good...
         - updating eval makes sense
-    - [ ] isn't `num_extract_turbo()` too specific for GSM and SVAMP?
-    
-    - [ ] harvest wrong / correct sets and prepare the followings
-        - almost done
+    - [x] isn't `num_extract_turbo()` too specific for GSM and SVAMP?
+        - [x] indeed! and found it does not parse scientific-formatting as well so I've fixed it.   
+        - [ ] re-evaluate the previous `MATH`, `ocw_courses` results 
+    - [x] harvest wrong / correct sets and prepare the followings
+        - done
 
     - [ ] selection prompts
         - [x] GSM, util
         - [ ] OCW
         - [ ] MATH
+        - [ ] double check if the cot path of the solution is also appropriate (not correct by chance)
     - [ ] RIMS prompts
         - [ ] OCW
         - [ ] MATH
         - [ ] util test 
  - [ ] `OPENAI` client to `AzureOPENAI`
     - [x] endpoint and key, client setting 
-    - [ ] modelname --> deployment name
-        - GPT35 = gpt-3.5-turbo-0613
-        - GPT4 = gpt-4-preview-1106 
-    - [ ] API version test
- - [ ] performance check
+    - [x] modelname --> deployment name
+        - see `rims_minimal/src/prompt_construction_src/tests/test_azure.py`
+    - [x] API version test

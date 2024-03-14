@@ -17,8 +17,8 @@ def complete_row(row:dict, eval_f:callable=None, key:str=None)->dict:
         row["eval"] = f"EVAL_FAIL! {str(e)}"
     if key == "ocw": # if ocw, try another eval method 
         try:
-            row["eval_new"] = eval_f(row["artificial_wrong"], row["answer"], approach_w_symexp=True)
-            # row["eval_new"] = eval_f(row["answer"], row["answer"], approach_w_symexp=True)
+            row["eval_new"] = eval_f(row["artificial_wrong"], row["answer"], use_sym_exp_normalizer=True)
+            # row["eval_new"] = eval_f(row["answer"], row["answer"], use_sym_exp_normalizer=True)
         except Exception as e:
             row["eval_new"] = f"EVAL_FAIL! {str(e)}"
     return row
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         #         try:
         #             row["eval"] = eval_f(row["answer"], row["answer"])
         #             if key == "ocw": # if ocw, try another eval method 
-        #                 row["eval_new"] = eval_f(row["answer"], row["answer"], approach_w_symexp=True)
+        #                 row["eval_new"] = eval_f(row["answer"], row["answer"], use_sym_exp_normalizer=True)
         #         except Exception as e:
         #             row["eval"] = f"EVAL_FAIL! {str(e)}"
 

@@ -3,7 +3,7 @@ import os
 from itertools import combinations, chain
 
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, Union, List
 
 import func_timeout
 from openai import OpenAI, AzureOpenAI
@@ -14,6 +14,8 @@ import yaml
 from collections import Counter
 
 from . import math_prompt, math_util
+
+from sympy.parsing.latex import parse_latex
 
 # Get the absolute path of the current script
 THIS_PARENT = Path(__file__).parent.resolve()
@@ -63,7 +65,7 @@ class PromptStr(str):
 ### llm query functions ###
 def query_cot(
     question: str, dataset_type:Literal["gsm", "ocw", "math"]="", 
-    temperature: float = 0.0, backbone: str = "chatgpt", n=1, seed=777
+    temperature: float = 0.0, backbone: str = "chatgpt", n:int=1, seed:int=777, max_tokens:int=1024,
 ):
     """
     This function is used to query OpenAI for CoT solutions.
@@ -103,7 +105,7 @@ def query_cot(
     completions = []
     cot_solution = client.chat.completions.create(
         model=model_name,
-        max_tokens=500,
+        max_tokens=max_tokens,
         stop="\n\n\n",
         messages=query_message,
         temperature=temperature,
@@ -124,7 +126,7 @@ def query_cot(
 # actual llm query function for p2c method
 def _query(  # key,
     model_name: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-16k-0613",
-    max_tokens: int = 2048,
+    max_tokens: int = 1024,
     stop: str = None,
     messages=None,
     temperature=0.0,
@@ -167,6 +169,7 @@ def query_plancode(
     backbone: str = "chatgpt1106", # "gpt-3.5-turbo-16k-0613",
     n=1,
     seed: int = 777,
+    max_tokens: int = 1024, 
 ):
     """
     PAL variant: 
@@ -206,7 +209,7 @@ def query_plancode(
     # print(plan_query_msg)
     plan = _query(
         model_name=model_name,
-        max_tokens=1024,
+        max_tokens=max_tokens,
         stop="Question: ",
         messages=plan_query_msg,
         temperature=plan_temperature,
@@ -1200,14 +1203,71 @@ def safe_execute_turbo(code_string: str):
     return ans
 
 
-# parsing (executing) cot result into a float
+
+def _find_the_last_numbers(txt: str) -> Union[str, List]:
+    # Regex pattern to match numbers with optional commas as thousand separators
+    # and optional scientific notation
+    pattern = r"[+\-]?(?:\d{1,3}(?:,\d{3})*|\d+)(?:\.\d+)?(?:[eE][+\-]?\d+)?"
+    matches = re.findall(pattern, txt)
+    
+    if matches:
+        # Replace commas to handle the number correctly as a standard numeric format
+        return matches[-1].replace(',', '')
+    else:
+        return []
+
+def _find_the_last_latex_expression(txt:str)->Union[str,List]:
+    latex_pattern = r'(?:\\\[|\\\(|\$).+?(?:\\\]|\\\)|\$)' #r'\\(?:\[|\().*?\\(?:\]|\))'
+    matches = re.findall(latex_pattern, txt, re.DOTALL)
+    if matches:
+        found = matches[-1]
+    else:
+        found = []
+    return found
+
+
+def extract_ans_from_cot_MATHnOCW(solution:str)->str: 
+    """
+    parsing symbolic or any form answer-string of interest from CoT result
+    this is for parsing answers from cot solution of MATH/ocw_courses prompt
+    see the corresponding prompt at `rims_minimal/src/utils/ocw_MATH_prompts.yaml`
+    """
+    prefix1 = "Final answer:"
+    prefix2 = "The final answer is"
+    suffix = ". I hope it is correct." # this does not appear frequently in response... but let us use it just in case. 
+    
+    # assume the solution followed the few-shot format
+    # 1. Answer strictly followed the format in the few-shot examples
+    solution = solution.split(prefix1)[-1].strip()
+    # 2. answer partly followed the format 
+    solution = solution.split(prefix2)[-1].strip()
+    solution = solution.split(suffix)[0].strip()
+    
+    # parsed above might still have unnecessary natural languages 
+    # 3-1. try to find some math expressions that is in latex format
+    found_latex = _find_the_last_latex_expression(solution)
+    if found_latex:
+        part_of_interest = found_latex
+    else: # 3-2. last resort: find the last numbers
+        found_numbers = _find_the_last_numbers(solution)
+        if found_numbers:
+            part_of_interest = found_numbers
+        else: # preserve the minimal-processed-string as a parsed result
+            part_of_interest = solution
+    return part_of_interest 
+
+
 def extract_num_turbo(solution: str):
+    """
+    parsing (executing) cot result into a float
+    see the prompt at `src/utils/math_prompt.py`
+    This is for GSM prompt (from Automatic Model Selection Reasoning https://arxiv.org/pdf/2305.14333.pdf)
+    """
     ans = solution.strip().split("\n")[-1].replace("So the answer is ", "")
-    prd = [x[0] for x in regex.finditer(r"[\d\.,]+", ans) if regex.search(r"\d", x[0])]
-    if len(prd) > 2:
+    # prd = [x[0] for x in regex.finditer(r"[\d\.,]+", ans) if regex.search(r"\d", x[0])]
+    prd = _find_the_last_numbers(ans)
+    if prd:
         prd = prd[-1]
-    elif len(prd):
-        prd = prd[0]
     else:
         prd = None
     try:

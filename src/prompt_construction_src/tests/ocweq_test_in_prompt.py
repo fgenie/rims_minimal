@@ -30,8 +30,8 @@ def ocw_check_answer(a1, a2):
     check if a1 and a2 are equivalent in ocw
     """
     a1, a2 = map(str, [a1, a2])
-    decision_new = is_equiv_ocw(a1, a2, approach_w_symexp=True) 
-    decision_old = is_equiv_ocw(a1, a2, approach_w_symexp=False) 
+    decision_new = is_equiv_ocw(a1, a2, use_sym_exp_normalizer=True) 
+    decision_old = is_equiv_ocw(a1, a2, use_sym_exp_normalizer=False) 
     return decision_new, decision_old
 
 def math_check_answer(a1, a2):

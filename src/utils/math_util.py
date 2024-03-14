@@ -180,7 +180,7 @@ INVALID_ANSWER = "[invalidanswer]"
 
 
 def is_equiv_ocw(x1: str, x2: str, 
-                 approach_w_symexp:bool=False)->bool: 
+                 use_sym_exp_normalizer:bool=False)->bool:
     '''
     code took from Minerva original repository and adjusted for our use
     
@@ -189,6 +189,11 @@ def is_equiv_ocw(x1: str, x2: str,
 
     expects x1 and x2 to be string (latex)
     '''
+    if use_sym_exp_normalizer:
+        raise ValueError("`use_sym_exp_normalizer=True` is considered unreliable (tested, looks more suspicious about its evaluation \
+                         \
+                         \n\nsee `src/prompt_construction_src/tests/test_diff_by_parsing_cot.ipynb`")
+
     # ensure x1, x2 be strings
     x1 = str(x1)
     x2 = str(x2)
@@ -205,8 +210,8 @@ def is_equiv_ocw(x1: str, x2: str,
             _is_equiv =  lambda x, y: x==y
             # answer_type = "equation" 
         else:
-            normalize_fn = normalize_symbolic_expression if approach_w_symexp else normalize_final_answer  
-            _is_equiv = is_exp_equiv if approach_w_symexp else is_tex_equiv
+            normalize_fn = normalize_symbolic_expression if use_sym_exp_normalizer else normalize_final_answer  
+            _is_equiv = is_tex_equiv
             # answer_type = "expression"
     
     if INVALID_ANSWER in (x1, x2):
@@ -214,7 +219,11 @@ def is_equiv_ocw(x1: str, x2: str,
     # x1, x2 = map(normalize_fn, [x1,x2])
     # print(x1)
     # print(x2)
-    return _is_equiv(normalize_fn(x1), normalize_fn(x2))
+    try:
+        return _is_equiv(normalize_fn(x1), normalize_fn(x2))
+    except Exception as e:
+        print(e)
+        return False
     
     
 
@@ -326,19 +335,20 @@ def is_tex_equiv(x1: str, x2: str, time_limit=5) -> bool:
     Does so by first checking for string exact-match, then falls back on sympy-equivalence,
     following the (Lewkowycz et al. 2022) methodology.
     """
-    if not str(x1) or not str(x2):
+    if not str(x1) or not str(x2): # added
         return False
-    if "nan" in [str(x1), str(x2)]:
+    if "nan" in [str(x1), str(x2)]: # added
         return False 
     if x1 == x2:
         # don't resort to sympy if we have full string match, post-normalization 
         return True
-
+    
     parsed_x2 = parse_tex(x2)
-    if not parsed_x2:
-        # if our reference fails to parse into a Sympy object, 
-        # we forgo parsing + checking our generated answer.
-        return False
+    # if not parsed_x2: # this line invokes error (Some sympy objects are not boolean-decisive)
+    #     # if our reference fails to parse into a Sympy object, 
+    #     # we forgo parsing + checking our generated answer.
+    #     return False
+    
     return is_exp_equiv(parse_tex(x1), parsed_x2, time_limit=time_limit)
 
 

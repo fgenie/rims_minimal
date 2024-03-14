@@ -1,6 +1,6 @@
 from utils.llm_query_utils import query_cot, query_pal, query_plancode, \
                                 query_selection, get_select_prompt, \
-                                safe_execute_turbo, extract_num_turbo
+                                safe_execute_turbo, extract_num_turbo, extract_ans_from_cot_MATHnOCW
 from utils.math_util import is_equiv, \
                             is_equiv_ocw, \
                             normalize_final_answer, normalize_symbolic_expression         
@@ -28,7 +28,7 @@ def ocw_check_answer(a1, a2):
     check if a1 and a2 are equivalent in ocw
     """
     a1, a2 = map(str, [a1, a2])
-    decision = is_equiv_ocw(a1, a2, approach_w_symexp=True) 
+    decision = is_equiv_ocw(a1, a2, use_sym_exp_normalizer=True) 
     return decision
 
 def math_check_answer(a1, a2):
@@ -62,7 +62,10 @@ def correct_incorrect_query_results(question:str="",
     # method determines query & exec_function
     if method == "cot":
         query_func = query_cot
-        exec_func = extract_num_turbo
+        if dataset_type == "gsm":
+            exec_func = extract_num_turbo
+        else: # ocw, math
+            exec_func = extract_ans_from_cot_MATHnOCW
     elif method == "pal":
         query_func = query_pal
         exec_func = safe_execute_turbo
@@ -122,13 +125,13 @@ def main():
     cot_kwargs = dict(
         # question: str, 
         dataset_type = "tobefilled", 
-        temperature = 0.5, 
-        backbone = "gpt4turbo", # "GPT4-1106", #"chatgpt0125",
+        temperature = 0.9, 
+        backbone = "chatgpt0125", # "GPT4-1106", #"chatgpt0125",
         seed=None,
     )
     pal_kwargs = dict(
         temperature=0.7, 
-        backbone = "gpt4turbo", # "GPT4-1106", #"chatgpt0125",
+        backbone = "chatgpt0125", # "GPT4-1106", #"chatgpt0125",
         seed=None,
     )
     p2c_kwargs = dict(
@@ -136,13 +139,13 @@ def main():
         # n=1,
         plan_temperature = 0.5,
         code_temperature = 0.7,
-        backbone = "gpt4turbo", # "`GPT4`-1106", #"chatgpt0125",
+        backbone = "chatgpt0125", # "`GPT4`-1106", #"chatgpt0125",
         seed = None,
     )
 
     # dataset_types = ["math", "ocw"]
     dataset_types = ["ocw"]
-    methods = ["cot"] # ["cot", "pal", "p2c"]
+    methods = ["cot", "pal", "p2c"]
     
 
     """
@@ -200,7 +203,7 @@ def main():
                                                                 inference_kwargs=kwargs, 
                                                                 )    
     
-    jsonf = "ocw_prep_prompt_mar11.json"
+    jsonf = "chatgpt0125_ocw_prep_prompt_mar11.json"
     with open(jsonf, "w") as f:
         json.dump(result_dict, f, indent=4)
         print(jsonf, "saved")

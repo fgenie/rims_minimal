@@ -43,7 +43,7 @@ def eval_ocw(df):
         lambda row: is_equiv_ocw(
             row["answer"],
             row["submission"],
-            approach_w_symexp=True
+            use_sym_exp_normalizer=True
         ),
         axis=1,
     )
@@ -51,7 +51,7 @@ def eval_ocw(df):
         lambda row: is_equiv_ocw(
             row["answer"],
             row["submission"],
-            approach_w_symexp=False
+            use_sym_exp_normalizer=False
         ),
         axis=1,
     )

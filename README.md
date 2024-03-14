@@ -63,7 +63,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
         - updating eval makes sense
     - [x] isn't `num_extract_turbo()` too specific for GSM and SVAMP?
         - [x] indeed! and found it does not parse scientific-formatting as well so I've fixed it.   
-        - [ ] re-evaluate the previous `MATH`, `ocw_courses` results 
+        - [x] re-evaluate the previous `MATH`, `ocw_courses` results 
     - [x] harvest wrong / correct sets and prepare the followings
         - done
 

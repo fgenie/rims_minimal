@@ -1,32 +1,36 @@
 import re
+import os
 from itertools import combinations, chain
 
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, Union, List
 
 import func_timeout
-from openai import OpenAI
+from openai import OpenAI, AzureOpenAI
 
 import regex
 import yaml
+# from omegaconf import OmegaConf
 from collections import Counter
 
 from . import math_prompt, math_util
+
+from sympy.parsing.latex import parse_latex
 
 # Get the absolute path of the current script
 THIS_PARENT = Path(__file__).parent.resolve()
 
 # Construct the path to the openai_key.txt file
-try:
-    key_file_path = THIS_PARENT / "openai_key.txt"
-    client = OpenAI(api_key=open(key_file_path).read().strip())
-except Exception as e:
-    print(e)
-    print(f"place your openai_key.txt inside utils/")
 
-# Read the API key from the file
+# key_file_path = THIS_PARENT / "openai_key.txt"
+key_file_path = "/Users/seonils/my_openai_key.txt"
 
-
+client = OpenAI(api_key=open(key_file_path).read().strip())
+# client = AzureOpenAI(
+#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+#     api_version="2023-12-01-preview",
+# )
 
 def exception_handler(func):
     def wrapper(*args, **kwargs):
@@ -60,7 +64,8 @@ class PromptStr(str):
 
 ### llm query functions ###
 def query_cot(
-    question: str, temperature: float = 0.0, backbone: str = "chatgpt", n=1, seed=777
+    question: str, dataset_type:Literal["gsm", "ocw", "math"]="", 
+    temperature: float = 0.0, backbone: str = "chatgpt", n:int=1, seed:int=777, max_tokens:int=1024,
 ):
     """
     This function is used to query OpenAI for CoT solutions.
@@ -74,22 +79,33 @@ def query_cot(
     Returns:
         completions: a list containing the CoT solution
     """
-    query_message = get_cot_prompt(question, backbone=backbone)
+    assert dataset_type, f"query_cot needs {dataset_type=}"
+
+    query_message = get_cot_prompt(question, 
+                                   backbone=backbone,
+                                   dataset_type=dataset_type
+                                   )
     # print(query_message)
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613"
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
 
     completions = []
     cot_solution = client.chat.completions.create(
         model=model_name,
-        max_tokens=500,
+        max_tokens=max_tokens,
         stop="\n\n\n",
         messages=query_message,
         temperature=temperature,
@@ -110,7 +126,7 @@ def query_cot(
 # actual llm query function for p2c method
 def _query(  # key,
     model_name: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-16k-0613",
-    max_tokens: int = 2048,
+    max_tokens: int = 1024,
     stop: str = None,
     messages=None,
     temperature=0.0,
@@ -150,12 +166,15 @@ def query_plancode(
     question: str,  # data: dict,
     plan_temperature: float = 0.0,
     code_temperature: float = 0.0,
-    backbone: str = "chatgpt", # "gpt-3.5-turbo-16k-0613",
+    backbone: str = "chatgpt1106", # "gpt-3.5-turbo-16k-0613",
     n=1,
     seed: int = 777,
+    max_tokens: int = 1024, 
 ):
     """
-    PAL variant: 1. generate planning for the given question 2. based on 1, generate code like PAL does.
+    PAL variant: 
+    1. generate planning for the given question 
+    2. based on 1, generate code like PAL does.
 
     args:
         mostly same arguments with `query_pal()` below
@@ -165,12 +184,18 @@ def query_plancode(
     # specify model
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
-        model_name = "gpt-3.5-turbo-1106" 
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
+        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
     if model_name.startswith("gpt-4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
@@ -184,7 +209,7 @@ def query_plancode(
     # print(plan_query_msg)
     plan = _query(
         model_name=model_name,
-        max_tokens=1024,
+        max_tokens=max_tokens,
         stop="Question: ",
         messages=plan_query_msg,
         temperature=plan_temperature,
@@ -241,12 +266,19 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     # print(query_message)
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
+    
     completions = []
     pal_solution = client.chat.completions.create(model=model_name,
         max_tokens=500,
@@ -289,15 +321,21 @@ def query_selection(
             return choice2method[choice]
         else:
             return None
-
+        
     if backbone == "gpt4":
         model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
         model_name = "gpt-4-1106-preview"
-    elif backbone == "chatgpt":
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
     cot_pal_p2c_solution_list = [cot_solution, pal_solution, p2c_plan_code_solution]
     cot_pal_p2c_solution_list = [
@@ -330,21 +368,27 @@ def query_rims_inference(
     backbone: str,
     temperature: float = 0.0,
     n: int = 1,
-    max_tokens: int = 2048,
+    max_tokens: int = 1024,
     turn_based: bool = False,
     continue_writing_gpt_messages: list = None,  # list of messages to invoke continue writing down the rims prompt format.
     stop_tok=None,
     # for_eval_or_extend: bool = False, # used for indiv eval but not used for now.
 ) -> tuple:
     #   modif_prompt:bool=True) -> tuple:
-    if backbone == "chatgpt":
+    if backbone == "gpt4":
+        model_name = "gpt-4"
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
+        model_name = "gpt-4-1106-preview"
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
+    elif backbone == "chatgpt0125":
+        model_name = "gpt-3.5-turbo-0125" 
+    elif backbone == "chatgpt1106":
         model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
     elif backbone == "chatgpt0613long":
         model_name = "gpt-3.5-turbo-16k-0613"
-    elif backbone == "gpt4":
-        model_name = "gpt-4"
-    elif backbone == "gpt4turbo":
-        model_name = "gpt-4-1106-preview"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
 
     def convert_to_turns(prompt:str, q:str='') -> list:
         assert q, f"question should be given {q=}"
@@ -614,7 +658,7 @@ def query_rims_inference(
 
         return eval_friendly_d, parsed_dict, raw_query_out, messages
 
-    else:  # later unify into the below format. --> Need to correct the code uses inside `src/portable/`
+    else:  # guess this part is for self-consistency setting of RIMS prompting... should we explore here? 
         raw_query_outs = [
             client.chat.completions.create(# api_key=key,
             seed=777,
@@ -655,7 +699,7 @@ def get_select_prompt(
     This function is used to generate the selection prompt.
     """
     if len(cot_pal_p2c_sln_d) == 3:
-        if backbone == "gpt4" or backbone == "gpt4turbo":
+        if backbone == "gpt4" : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_SELECT_SYSTEM3
             user_message = math_prompt.GPT4_SELECT_USER3
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT3
@@ -664,7 +708,7 @@ def get_select_prompt(
             user_message = math_prompt.TURBO_SELECT_USER3
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT3
     elif len(cot_pal_p2c_sln_d) == 2:
-        if backbone == "gpt4" or backbone == "gpt4turbo":
+        if backbone == "gpt4" : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_SELECT_SYSTEM
             user_message = math_prompt.GPT4_SELECT_USER
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT
@@ -690,17 +734,15 @@ def get_select_prompt(
         system_message, user_message, assistant_message
     )
 
-    try:  # looks super unhappy, but keep this to maintain consistency of the code and results...
-        pal_solution_lines_strip = [l.strip for l in pal_solution.split("\n")]
-        docstring_idxs = [
-            i
-            for i, x in enumerate(pal_solution_lines_strip)
-            if x == '"""' or x == "'''"
-        ]
-        dsstart, dsend = min(docstring_idxs), max(docstring_idxs)
-
-        pallines = [l for l in pal_solution.split("\n")]
-        pal_generated = "\n".join(pallines[:dsstart] + pallines[dsend + 1 :])
+    # clean up pal solution to be free from docstring.
+    try:  # looks super unhappy, but look at the code of the original author, they actually did this. [permalink](https://github.com/XuZhao0/Model-Selection-Reasoning/blob/8ee494276e958c3f88332d4be64f8a746395f11c/src/selection_math.py#L100)
+        if pal_solution.count('"""') == 2:
+            docstr_delim = '"""'
+        elif pal_solution.count("'''") == 2:
+            docstr_delim = "'''"
+        pal_generated_list = pal_solution.split(docstr_delim)
+        pal_generated = pal_generated_list[0].strip(
+        ) + pal_generated_list[2]
     except Exception as e:
         pal_generated = (
             pal_solution[0].strip()
@@ -734,7 +776,8 @@ def get_select_prompt(
 
 Which of the above two choices can correctly answer the math problem?"""
 
-    if len(cot_pal_p2c_sln_d)==3:  # len(cot_pal_p2c_sln_d)==3:
+    # Here we append p2c solution for 3-method case. p2c solution was list, but below, it gets converted to string.
+    if len(cot_pal_p2c_sln_d)==3: 
         p2c_choice_str = f"(C)\n{p2c_solution[0].strip() if isinstance(p2c_solution, list) else p2c_solution.strip()}\n\nWhich of the above three choices can correctly answer the math problem?"
         user_message = user_message.replace(
             "Which of the above two choices can correctly answer the math problem?",
@@ -768,24 +811,54 @@ def get_user_assistant_messages(
     return messages
 
 
-def get_cot_prompt(question: str, backbone: str):
+def get_cot_prompt(
+        question: str, 
+        backbone: str,
+        dataset_type: Literal["gsm", "ocw", "math"],
+        ):
     """
     This function is used to generate the CoT prompt.
     append "Question: " to the `question`
     """
-    if backbone == "gpt4" or backbone == "gpt4turbo":
-        system_message = math_prompt.GPT4_COT_SYSTEM
-        user_message = math_prompt.GPT4_COT_USER
-        assistant_message = math_prompt.GPT4_COT_ASSISTANT
-    elif "chatgpt" in backbone:
-        system_message = math_prompt.TURBO_COT_SYSTEM
-        user_message = math_prompt.TURBO_COT_USER
-        assistant_message = math_prompt.TURBO_COT_ASSISTANT
-
-    messages = get_user_assistant_messages(
-        system_message, user_message, assistant_message
-    )
-    messages += [{"role": "user", "content": f"Question: {question}"}]
+    assert dataset_type in ["gsm", "ocw", "math"], f"{dataset_type=} must be in ['gsm', 'ocw', 'math']"
+    
+    if dataset_type == "gsm":
+        if backbone == "gpt4" : #or backbone == "gpt4turbo":
+            system_message = math_prompt.GPT4_COT_SYSTEM
+            user_message = math_prompt.GPT4_COT_USER
+            assistant_message = math_prompt.GPT4_COT_ASSISTANT
+        elif "chatgpt" in backbone:
+            system_message = math_prompt.TURBO_COT_SYSTEM
+            user_message = math_prompt.TURBO_COT_USER
+            assistant_message = math_prompt.TURBO_COT_ASSISTANT
+        messages = get_user_assistant_messages(
+            system_message, user_message, assistant_message
+        )
+        messages += [{"role": "user", "content": f"Question: {question}"}]
+    
+    elif dataset_type in ["ocw", "math"]:
+        # open ocw/MATH targeted CoT prompts
+        ymlf = THIS_PARENT/"ocw_MATH_prompts.yaml"
+        prompt_d = yaml.full_load(open(ymlf))
+        # prompt_d = OmegaConf.load(ymlf)
+        pmpt_d = prompt_d[f"{dataset_type}_cot"]
+        system_message = pmpt_d["system"]
+        user_msgs = pmpt_d["user"]
+        # make it to a chat-history
+        assistant_msgs = pmpt_d["assistant"]
+        messages = [
+            {"role": "system", "content": system_message},
+        ]
+        assert len(user_msgs) == len(assistant_msgs), f"{len(user_msgs)=} should be equal to {len(assistant_msgs)=}"
+        for u, a in zip(user_msgs, assistant_msgs):
+            messages.append({"role": "user", "content": u})
+            messages.append({"role": "assistant", "content": a})
+        # add question of interest with the template
+        user_attempt = pmpt_d["user_tmp"].replace("{QUESTION}", question)
+        messages += [{"role": "user", "content": user_attempt}]
+        
+    else:
+        assert False, f"{dataset_type=} must be in ['gsm', 'ocw', 'math']"    
 
     return messages
 
@@ -826,10 +899,10 @@ def get_pal_prompt(question: str, backbone: str):
 def get_plan_prompt(question: str, k_fewshot: int = 0) -> str:
     """
     prep prompt for plan generation
-    put "Question: " in front of the `question`
+    # put "Question: " in front of the `question`
 
     """
-    PLAN_F = THIS_PARENT / "prompts_plan_v2.yaml"
+    PLAN_F = THIS_PARENT / "new_p2c_plan_prompts.yaml"#"prompts_plan_v2.yaml"
     PLAN_PROMPTS_D = yaml.full_load(open(PLAN_F))
     prompt_d = PLAN_PROMPTS_D
 
@@ -837,7 +910,7 @@ def get_plan_prompt(question: str, k_fewshot: int = 0) -> str:
     q = question
     system = prompt_d["system_msg"]
     user_tmp = prompt_d["user_template"]
-    user_attempt = user_tmp.replace("{QUESTION}", f"Question: {q}")
+    user_attempt = user_tmp.replace("{QUESTION}", q) #f"Question: {q}")
 
     fewshots_user = prompt_d["fewshots_user"][
         :k_fewshot
@@ -863,21 +936,19 @@ def get_plan2code_prompt(
     k_fewshot: int = 0,
     custom_idxs: list = None,
 ):
-    # little bit revision from PAL prompt.
-    # `solution()` is returned (can execute with solution() call w/o argument
+    
     """
-    prep prompt for plan generation
-    put "Qu
-    estion: " in front of the `question`
+    prep prompt for code generation
     """
-    CODE_F = THIS_PARENT / "prompts_code_v2.yaml"
+    CODE_F = THIS_PARENT / "new_p2c_code_prompts.yaml"#"prompts_code_v2.yaml"
     prompt_d = yaml.full_load(open(CODE_F))
 
     q = question  # data['question']
     system = prompt_d["system_msg"]
     user_tmp = prompt_d["user_template"]
-    user_attempt = user_tmp.replace("{PLAN}", plan).replace(
-        "{QUESTION}", f"Question: {q}"
+    plan_with_tabs = plan.replace("\n", "\n" + " "*4)
+    user_attempt = user_tmp.replace("{PLAN}", plan_with_tabs).replace(
+        "{QUESTION}", q
     )
 
     if not custom_idxs:
@@ -950,6 +1021,7 @@ def postprocess_code(rawanswer: str, k_fewshot: int = 0):
 def separate_plan_code(rawstr: str) -> tuple:
     # used for 5_cohlike_prompt
     # p2c results in plan\ncode so split it.
+    # new p2c result will not be affected by this. so let it be here still in case of revert
     rawstr = rawstr.strip()
     lines = rawstr.split("\n")
     found_code = False
@@ -962,8 +1034,7 @@ def separate_plan_code(rawstr: str) -> tuple:
         code = "\n".join(lines[i:])
     else:
         plan, code = None, None
-    return plan, code
-
+    return plan, code # plan never used...
 
 # method name normalization for rimsprompt
 def parse_method2(methodstr: str) -> str:
@@ -1132,14 +1203,71 @@ def safe_execute_turbo(code_string: str):
     return ans
 
 
-# parsing (executing) cot result into a float
+
+def _find_the_last_numbers(txt: str) -> Union[str, List]:
+    # Regex pattern to match numbers with optional commas as thousand separators
+    # and optional scientific notation
+    pattern = r"[+\-]?(?:\d{1,3}(?:,\d{3})*|\d+)(?:\.\d+)?(?:[eE][+\-]?\d+)?"
+    matches = re.findall(pattern, txt)
+    
+    if matches:
+        # Replace commas to handle the number correctly as a standard numeric format
+        return matches[-1].replace(',', '')
+    else:
+        return []
+
+def _find_the_last_latex_expression(txt:str)->Union[str,List]:
+    latex_pattern = r'(?:\\\[|\\\(|\$).+?(?:\\\]|\\\)|\$)' #r'\\(?:\[|\().*?\\(?:\]|\))'
+    matches = re.findall(latex_pattern, txt, re.DOTALL)
+    if matches:
+        found = matches[-1]
+    else:
+        found = []
+    return found
+
+
+def extract_ans_from_cot_MATHnOCW(solution:str)->str: 
+    """
+    parsing symbolic or any form answer-string of interest from CoT result
+    this is for parsing answers from cot solution of MATH/ocw_courses prompt
+    see the corresponding prompt at `rims_minimal/src/utils/ocw_MATH_prompts.yaml`
+    """
+    prefix1 = "Final answer:"
+    prefix2 = "The final answer is"
+    suffix = ". I hope it is correct." # this does not appear frequently in response... but let us use it just in case. 
+    
+    # assume the solution followed the few-shot format
+    # 1. Answer strictly followed the format in the few-shot examples
+    solution = solution.split(prefix1)[-1].strip()
+    # 2. answer partly followed the format 
+    solution = solution.split(prefix2)[-1].strip()
+    solution = solution.split(suffix)[0].strip()
+    
+    # parsed above might still have unnecessary natural languages 
+    # 3-1. try to find some math expressions that is in latex format
+    found_latex = _find_the_last_latex_expression(solution)
+    if found_latex:
+        part_of_interest = found_latex
+    else: # 3-2. last resort: find the last numbers
+        found_numbers = _find_the_last_numbers(solution)
+        if found_numbers:
+            part_of_interest = found_numbers
+        else: # preserve the minimal-processed-string as a parsed result
+            part_of_interest = solution
+    return part_of_interest 
+
+
 def extract_num_turbo(solution: str):
+    """
+    parsing (executing) cot result into a float
+    see the prompt at `src/utils/math_prompt.py`
+    This is for GSM prompt (from Automatic Model Selection Reasoning https://arxiv.org/pdf/2305.14333.pdf)
+    """
     ans = solution.strip().split("\n")[-1].replace("So the answer is ", "")
-    prd = [x[0] for x in regex.finditer(r"[\d\.,]+", ans) if regex.search(r"\d", x[0])]
-    if len(prd) > 2:
+    # prd = [x[0] for x in regex.finditer(r"[\d\.,]+", ans) if regex.search(r"\d", x[0])]
+    prd = _find_the_last_numbers(ans)
+    if prd:
         prd = prd[-1]
-    elif len(prd):
-        prd = prd[0]
     else:
         prd = None
     try:

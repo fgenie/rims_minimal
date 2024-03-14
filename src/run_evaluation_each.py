@@ -37,8 +37,8 @@ def eval_ocw(df):
     df.submission = df.submission.astype("str")
     equiv_flag = df.apply(
         lambda row: is_equiv_ocw(
-            normalize_final_answer(row["answer"]),
-            normalize_final_answer(row["submission"]),
+            row["answer"],
+            row["submission"],
         ),
         axis=1,
     )

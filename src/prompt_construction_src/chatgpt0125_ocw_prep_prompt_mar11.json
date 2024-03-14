@@ -1,0 +1,630 @@
+{
+    "ocw": {
+        "cot": {
+            "0": {
+                "incorrect": [
+                    "The net charge of arginine in a solution of pH 1.0 is +1.",
+                    "This problem has been answered previously.",
+                    "The net charge of arginine at pH 1.0 is +1. \n\nFinal answer: +1",
+                    "Since the previous response had an error, let's revisit the problem:\n\nSolution:\nArginine is a basic amino acid. At pH 1.0, which is highly acidic, the guanidinium group of arginine will be protonated. This results in a positive charge on the nitrogen atom in the guanidinium group.\n\nTherefore, at pH 1.0, the net charge of arginine will be +1.\n\nFinal answer: The final answer is +1.",
+                    "The net charge of arginine at pH 1.0 is +1. \n\nFinal answer: +1",
+                    "Solution:\nTo determine the net charge of arginine in a solution of $\\mathrm{pH} 1.0$, we need to consider the pKa values of arginine's functional groups. \n\nArginine contains three ionizable groups:\n1. The carboxylic acid group (pKa \u2248 2.2)\n2. The amino group on the side chain (pKa \u2248 9.0)\n3. The guanidino group (pKa \u2248 12.5)\n\nAt pH 1.0:\n- The carboxylic acid group will be protonated (+1 charge)\n- The amino group on the side chain will be protonated (+1 charge)\n- The guanidino group will be protonated (+1 charge)\n\nTherefore, the net charge of arginine at pH 1.0 will be +3.\n\nFinal answer: The net charge of arginine in a solution of pH 1.0 is +3."
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "+1",
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        "This problem has been answered previously.",
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        "+1",
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        "+1",
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        "+2",
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        "+2",
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        "+1",
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        "+2",
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        "+2",
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        "+3",
+                        "$2$",
+                        "incorrect"
+                    ]
+                ],
+                "correct": [
+                    "Solution:                                                                                \nAt pH 1.0, arginine will have a net charge of +2.  \n\nFinal answer: +2",
+                    "Solution:\nThe net charge of arginine in a solution of pH 1.0 can be calculated by considering the pKa values of its ionizable groups. Arginine has three ionizable groups: the carboxyl group with a pKa around 2.2, the amino group with a pKa around 9.0, and the guanidinium group with a pKa around 12.5.\n\nAt pH 1.0:\n1. The carboxyl group will be protonated (+1 charge).\n2. The amino group will be protonated (+1 charge).\n3. The guanidinium group will be neutral.\n\nOverall, the net charge of arginine in a solution of pH 1.0 will be +2.\n\nFinal answer: The net charge of arginine in a solution of pH 1.0 is +2.",
+                    "Solution:\nThe net charge of arginine in a solution of pH 1.0 can be calculated by examining the pKa values of its functional groups. Arginine contains a guanidine group with a pKa around 12.5, an amino group with a pKa around 9.0, and a carboxyl group with a pKa around 2.2.\n\nAt pH 1.0, all the functional groups of arginine will be protonated. The guanidine group and the amino group will be positively charged, while the carboxyl group will be neutral. \n\nTherefore, the net charge of arginine in a solution of pH 1.0 will be +2.\n\nFinal answer: The final answer is +2.",
+                    "I have already answered this subproblem before. The net charge of arginine in a solution of pH 1.0 is +2."
+                ]
+            },
+            "1": {
+                "correct": [
+                    "Solution:\nWe can use partial fraction decomposition to simplify the given Laplace transform.\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying both sides by \\((s+a)(s+b)\\):\n\\[1 = A(s+b) + B(s+a)\\]\n\nSolving for A and B:\n\\[1 = As + Ab + Bs + Ba\\]\n\\[1 = s(A + B) + aB + bA\\]\n\nEquating the coefficients:\n\\[A + B = 0\\]\n\\[bA + aB = 1\\]\n\nSolving the above two equations, we get:\n\\[A = \\frac{1}{b-a}, \\quad B = -\\frac{1}{b-a}\\]\n\nTherefore, the Laplace transform simplifies to:\n\\[Y(s) = \\frac{1}{b-a} \\left(\\frac{1}{s+a} - \\frac{1}{s+b}\\)]\n\nUsing the linearity property of the Laplace transform, we find the inverse Laplace transform of \\(\\frac{1}{s+a}\\) and \\(\\frac{1}{s+b}\\) to get the final function \\(y(t)\\):\n\\[y(t) = \\frac{1}{b-a} \\left(e^{-at} - e^{-bt}\\)]\n\nFinal answer: \n\\[y(t) = \\frac{1}{b-a} \\left(e^{-at} - e^{-bt}\\)\\]",
+                    "Solution:\nWe can simplify with partial fractions:\n\\[Y(s)=\\frac{1}{(s+a)(s+b)} =\\frac{A}{s+a}+\\frac{B}{s+b}\\]\nMultiplying through by \\((s+a)(s+b)\\), we get\n\\[1 = A(s+b) + B(s+a)\\]\nSubstitute \\(s=-a\\) to solve for \\(A\\):\n\\[1 = A(-a + b) \\rightarrow A = \\frac{1}{b-a}\\]\nSubstitute \\(s=-b\\) to solve for \\(B\\):\n\\[1 = B(-b + a) \\rightarrow B = \\frac{1}{a-b}\\]\nTherefore, the inverse Laplace Transform yields:\n\\[y(t) = \\frac{1}{b-a}(e^{-at}-e^{-bt})\\]\n\nFinal Answer:\nThe final answer is \\(y(t) = \\frac{1}{b-a}(e^{-at}-e^{-bt})\\).",
+                    "Solution:\nWe can begin by using partial fraction decomposition to express $Y(s)$ in a more manageable form:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying through by $(s+a)(s+b)$ and simplifying, we get:\n\\[1 = A(s+b) + B(s+a)\\]\n\\[1 = (A+B)s + (Ab+Ba)\\]\nNow we match coefficients on both sides:\n\\[A + B = 0 \\implies A = -B\\]\n\\[Ab + Ba = 1 \\implies A = \\frac{1}{b-a}\\]\n\nTherefore, $A = \\frac{1}{b-a}$ and $B = -\\frac{1}{b-a}$.\n\nNow, we can find the inverse Laplace Transform of $Y(s)$:\n\\[y(t) = \\frac{1}{b-a}e^{-at} - \\frac{1}{b-a}e^{-bt} = \\boxed{\\frac{1}{b-a}(e^{-at} - e^{-bt})}\\]\n\nFinal answer: The final answer is $\\frac{1}{b-a}(e^{-at} - e^{-bt})$.",
+                    "Solution:\nWe can simplify the given Laplace transform using partial fractions:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying both sides by \\((s+a)(s+b)\\) gives:\n\\[1 = A(s+b) + B(s+a)\\]\n\nSetting \\(s = -a\\):\n\\[1 = -aB\\]\n\\[B = -\\frac{1}{a}\\]\n\nSetting \\(s = -b\\):\n\\[1 = -bA\\]\n\\[A = -\\frac{1}{b}\\]\n\nTherefore, the partial fraction decomposition of \\(Y(s)\\) is:\n\\[Y(s) = -\\frac{1}{b(s+a)} + \\frac{1}{a(s+b)}\\]\n\nNow, we can find the inverse Laplace transform of \\(Y(s)\\) to find the function \\(y(t)\\). \n\nThe inverse Laplace transform of \\(-\\frac{1}{b(s+a)}\\) is \\(-\\frac{1}{b}e^{-at}\\) and the inverse Laplace transform of \\(\\frac{1}{a(s+b)}\\) is \\(\\frac{1}{a}e^{-bt}\\).\n\nTherefore, the function \\(y(t)\\) corresponding to \\(Y(s)\\) is:\n\\[y(t) = -\\frac{1}{b}e^{-at} + \\frac{1}{a}e^{-bt}\\]\n\nFinal answer: \\(y(t) = -\\frac{1}{b}e^{-at} + \\frac{1}{a}e^{-bt}\\)"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "\\[y(t) = \\frac{1}{b-a} \\left(e^{-at} - e^{-bt}\\)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "correct"
+                    ],
+                    [
+                        "\\(y(t) = \\frac{1}{b-a}(e^{-at}-e^{-bt})\\)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "correct"
+                    ],
+                    [
+                        "$\\frac{1}{b-a}(e^{-at} - e^{-bt})$",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "correct"
+                    ],
+                    [
+                        "\\(y(t) = -\\frac{1}{b}e^{-at} + \\frac{1}{a}e^{-bt}\\)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "correct"
+                    ],
+                    [
+                        "\\(\\frac{e^{-at} - e^{-bt}}{b - a}\\)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "\\[y(t) = \\frac{1}{b-a}(e^{-at}) - \\frac{1}{a-b}(e^{-bt})\\]",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "\\(\\frac{1}{b-a}(e^{-at}) - \\frac{1}{a-b}(e^{-bt})\\)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "\\[y(t) = \\boxed{\\frac{e^{-bt} - e^{-at}}{b-a}}\\]",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "\\(\\frac{1}{b-a} \\left(e^{-at} - e^{-bt}\\right)\\)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "\\(\\frac{1}{b-a}\\left(e^{-at} - e^{-bt}\\)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ]
+                ],
+                "incorrect": [
+                    "Solution:\nWe can simplify the given Laplace Transform using partial fraction decomposition:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying both sides by the denominator \\((s+a)(s+b)\\), we get:\n\\[1 = A(s+b) + B(s+a)\\]\n\nSubstitute \\(s=-a\\) into the equation to solve for \\(B\\):\n\\[1 = B(-a+a) \\implies B = \\frac{1}{a-b}\\]\n\nSubstitute \\(s=-b\\) into the equation to solve for \\(A\\):\n\\[1 = A(-b+b) \\implies A = \\frac{1}{b-a}\\]\n\nTherefore, the inverse Laplace Transform of \\(Y(s)\\) is:\n\\[y(t) = \\frac{1}{b-a}e^{-at} - \\frac{1}{a-b}e^{-bt} = \\boxed{\\frac{e^{-at} - e^{-bt}}{b - a}}\\]\n\nFinal answer: The final answer is \\(\\frac{e^{-at} - e^{-bt}}{b - a}\\)",
+                    "Solution:\nWe can simplify the given expression using partial fraction decomposition:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying through by the denominators and simplifying:\n\\[1 = A(s+b) + B(s+a)\\]\n\nWe can now solve for A and B by setting s = -a and s = -b respectively:\n\\[\n\\begin{aligned}\ns = -a & : 1 = B(-a+b) \\Rightarrow B = \\frac{1}{b-a} \\\\\ns = -b & : 1 = A(-b+a) \\Rightarrow A = \\frac{1}{a-b}\n\\end{aligned}\n\\]\n\nTherefore, the partial fraction decomposition is:\n\\[Y(s) = \\frac{1}{b-a}\\cdot\\frac{1}{s+a} - \\frac{1}{a-b}\\cdot\\frac{1}{s+b}\\]\n\nUsing the known Laplace Transforms:\n- Inverse Laplace Transform of  \\(\\frac{1}{s+a}\\) is \\(e^{-at}\\)\n- Inverse Laplace Transform of  \\(\\frac{1}{s+b}\\) is \\(e^{-bt}\\)\n\nThus, the function y(t) is:\n\\[y(t) = \\frac{1}{b-a}(e^{-at}) - \\frac{1}{a-b}(e^{-bt})\\]\n\nTherefore, the final answer is:\n\\[y(t) = \\frac{1}{b-a}(e^{-at}) - \\frac{1}{a-b}(e^{-bt})\\]",
+                    "Solution:\nWe can simplify the given Laplace Transform using partial fractions:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying both sides by \\((s+a)(s+b)\\), we get:\n\\[1 = A(s+b) + B(s+a)\\]\n\nSolving for A and B by substituting appropriate values for s, we find:\n\\[A = \\frac{1}{b-a},\\]\n\\[B = \\frac{1}{a-b}\\]\n\nTherefore, the Laplace Transform simplifies to:\n\\[Y(s) = \\frac{1}{b-a} \\cdot \\frac{1}{s+a} - \\frac{1}{a-b} \\cdot \\frac{1}{s+b}\\]\n\nTaking the inverse Laplace Transform, we find the function \\(y(t)\\):\n\\[y(t) = \\frac{1}{b-a}(e^{-at}) - \\frac{1}{a-b}(e^{-bt})\\]\n\nFinal answer: The function \\(y(t)\\) is \\(\\frac{1}{b-a}(e^{-at}) - \\frac{1}{a-b}(e^{-bt})\\).",
+                    "Solution:\nWe begin by expressing the given Laplace transform in terms of partial fractions:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nNow, equating the numerator coefficients on both sides, we get:\n\\[1 = A(s+b) + B(s+a)\\]\n\nExpanding and simplifying, we find:\n\\[1 = (A+B)s + (Ab+Ba)\\]\n\nComparing coefficients, we get the following equations:\n1) \\(A + B = 0\\)\n2) \\(Ab + Ba = 1\\)\n\nSolving these equations simultaneously, we find:\n\\(A = -\\frac{1}{b-a}\\)\n\\(B = \\frac{1}{b-a}\\)\n\nSubstitute these values back into the partial fraction decomposition:\n\\[Y(s) = -\\frac{1}{b-a} \\cdot \\frac{1}{s+a} + \\frac{1}{b-a} \\cdot \\frac{1}{s+b}\\]\n\nTaking the inverse Laplace transform of each term, we find the solution \\(y(t)\\):\n\\[y(t) = -\\frac{1}{b-a} e^{-at} + \\frac{1}{b-a} e^{-bt}\\]\n\nTherefore, the solution to the given problem is:\n\\[y(t) = \\boxed{\\frac{e^{-bt} - e^{-at}}{b-a}}\\]\n\nI hope this solution is correct and clear.",
+                    "Solution:\nWe can simplify with partial fractions:\n\\[Y(s)=\\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\nMultiplying through by the denominator on the left side, we get:\n\\[1 = A(s+b) + B(s+a)\\]\nNow, we can solve for A and B by setting different values of s:\nFor \\(s=-a\\):\n\\[1 = A(-a+b)\\]\n\\[A = \\frac{1}{b-a}\\]\nFor \\(s=-b\\):\n\\[1 = B(-b+a)\\]\n\\[B = \\frac{1}{a-b}\\]\nTherefore, the partial fraction decomposition is:\n\\[Y(s) = \\frac{1}{b-a} \\left(\\frac{1}{s+a} - \\frac{1}{s+b}\\right)\\]\n\nNow, by taking the inverse Laplace Transform, we find the function \\(y(t)\\):\n\\[y(t) = \\frac{1}{b-a} \\left(e^{-at} - e^{-bt}\\right)\\]\n\nFinal answer: The function \\(y(t)\\) is \\(\\frac{1}{b-a} \\left(e^{-at} - e^{-bt}\\right)\\).",
+                    "Solution:\nWe can simplify the given Laplace Transform using partial fractions:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nWe can find the constants \\(A\\) and \\(B\\) by multiplying through by the denominator and comparing coefficients:\n\\[1 = A(s+b) + B(s+a)\\]\n\nSolving for \\(A\\) and \\(B\\):\n\\[A = \\frac{1}{b-a} \\]\n\\[B = \\frac{1}{a-b} = -\\frac{1}{b-a}\\]\n\nTherefore, the Laplace Transform simplifies to:\n\\[Y(s) = \\frac{1}{b-a}\\left(\\frac{1}{s+a} - \\frac{1}{s+b}\\)\\]\n\nBy looking up the inverse Laplace Transform of \\(\\frac{1}{s+a}\\) and \\(\\frac{1}{s+b}\\), we can determine the function \\(y(t)\\):\n\n\\[y(t) = \\frac{1}{b-a}\\left(e^{-at} - e^{-bt}\\)\\]\n\nFinal answer: The function \\(y(t)\\) is \\(\\frac{1}{b-a}\\left(e^{-at} - e^{-bt}\\)\\)."
+                ]
+            },
+            "2": {
+                "incorrect": [
+                    "Solution:\nThe characteristic polynomial for the differential equation $\\ddot{x} + b \\dot{x} + x = 0$ is given by $p(s) = s^2 + b s + 1$.\n\nFinal Answer: The characteristic polynomial is $p(s) = s^2 + b s + 1$.",
+                    "Solution:\n\nThe characteristic polynomial of the differential equation $\\ddot{x} + b \\dot{x} + x = 0$ is obtained by substituting $x(t) = e^{st}$ into the differential equation.\n\nSubstituting, we get:\n$$s^2 e^{st} + b s e^{st} + e^{st} = 0$$\nFactoring out $e^{st}$, we get:\n$$e^{st} (s^2 + b s + 1) = 0$$\n\nTherefore, the characteristic polynomial $p(s)$ is: \n$$p(s) = s^2 + b s + 1$$\n\nFinal Answer: The characteristic polynomial $p(s)$ of the differential equation $\\ddot{x} + b \\dot{x} + x = 0$ is $s^2 + b s + 1$."
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "$p(s) = s^2 + b s + 1$",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "$ is $",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "$s^2 + b s + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "$s^2 + bs + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "$s^2 + bs + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "$s^2 + b s + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "$s^2 + b s + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "$s^2 + bs + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "$s^2 + b s + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "$s^2 + b s + 1$",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ]
+                ],
+                "correct": [
+                    "Solution: \nThe characteristic polynomial of the differential equation $\\ddot{x}+b\\dot{x}+x=0$ is given by:\n\\[p(s) = s^2 + b s + 1\\]\n\nFinal answer: The characteristic polynomial $p(s)$ is $s^2 + b s + 1$.",
+                    "Solution:\nThe characteristic polynomial is given by substituting $\\ddot{x} = s^2 X(s)$ and $\\dot{x} = sX(s)$ into the differential equation:\n\n\\[\ns^2 X(s) + b s X(s) + X(s) = 0\n\\]\n\nFactoring out $X(s)$ gives:\n\n\\[\nX(s)(s^2 + bs + 1) = 0\n\\]\n\nThe characteristic polynomial is thus $\\boxed{s^2 + bs + 1}$.\n\nFinal Answer: The characteristic polynomial is $s^2 + bs + 1$.",
+                    "Solution: \nGiven the differential equation $\\ddot{x} + b\\dot{x} + x = 0$, we can find the characteristic polynomial by assuming a solution of the form $x(t) = e^{st}$. Substituting this into the differential equation gives us the characteristic equation:\n\n$s^2 + b s + 1 = 0$\n\nTherefore, the characteristic polynomial $p(s)$ of the differential equation is $\\boxed{s^2 + bs + 1}$.\n\nFinal answer: The final answer is $s^2 + bs + 1$.",
+                    "Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x}+b\\dot{x}+x=0$ is given by $p(s) = s^2 + b s + 1$.\nFinal answer: The characteristic polynomial is $s^2 + b s + 1$.",
+                    "Solution:\nThe characteristic polynomial $p(s)$ for the differential equation $\\ddot{x}+b\\dot{x}+x=0$ is given by:\n\\[ p(s) = s^2 + b s + 1 \\]\n\nTherefore, the characteristic polynomial $p(s)$ of the given differential equation is $\\boxed{s^2 + b s + 1}$.\n\nFinal answer: $s^2 + b s + 1$",
+                    "Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x}+b \\dot{x}+x=0$ is given by $p(s) = s^2 + bs + 1$.\n\nFinal answer: The characteristic polynomial $p(s)$ is $s^2 + bs + 1$.",
+                    "Solution:\nTo find the characteristic polynomial $p(s)$ of the differential equation $\\ddot{x}+b \\dot{x}+x=0$, we substitute $x=e^{st}$ into the differential equation. This gives us the characteristic equation:\n\n\\[s^2 + b s + 1 = 0\\]\n\nTherefore, the characteristic polynomial is $\\boxed{s^2 + b s + 1}$.\n\nFinal answer: The final answer is $s^2 + b s + 1$.",
+                    "Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x}+b\\dot{x}+x=0$ is given by the auxiliary equation, which is obtained by substituting $x=e^{st}$ into the differential equation:\n\n\\[s^2 + b s + 1 = 0\\]\n\nTherefore, the characteristic polynomial $p(s)$ for the given differential equation is $s^2 + b s + 1$.\n\nFinal answer: The characteristic polynomial $p(s)$ is $s^2 + b s + 1$."
+                ]
+            }
+        },
+        "questions": [
+            "Problem:                                                                                \nSubproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \nPlease format your answer as +n or -n.  \n",
+            "Problem:\nPreamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\nSubproblem 0: \n\\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n",
+            "Problem:\nPreamble: The following subproblems refer to the differential equation \n$\\ddot{x}+b \\dot{x}+x=0$.\nSubproblem 0: What is the characteristic polynomial $p(s)$ of \n$\\ddot{x}+b \\dot{x}+x=0$?\n"
+        ],
+        "answers": [
+            "$2$",
+            "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+            "$s^{2}+b s+1$"
+        ],
+        "pal": {
+            "0": {
+                "incorrect": [
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has 3 basic amino groups with pKa values around 12, so at pH 1.0, they will be protonated\n    # Arginine also has 1 acidic side chain with a pKa around 2, so at pH 1.0, it will be protonated\n    # The net charge of arginine at pH 1.0 will be +1\n    result = \"+1\"\n    return result",
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # At pH 1, the carboxyl group is protonated and the amino group is protonated, leading to a net charge of +1 for arginine.\n    net_charge = \"+1\"\n    return net_charge",
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has a pKa of approximately 12, so at pH 1.0, it will be protonated with a net charge of +1\n    net_charge = \"+1\"\n    return net_charge",
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has a pKa of approximately 12.5 for its side chain amino group.\n    # At pH 1.0, the side chain amino group is protonated (+1 charge), and the amino and carboxyl groups are also protonated.\n    net_charge = +1\n    return f\"+{net_charge}\"",
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has a pKa of approximately 12, so at pH 1.0 it will be protonated\n    # The structure of arginine has 3 basic nitrogen atoms that can be protonated\n    # At pH 1.0, all 3 nitrogen atoms will be protonated, giving a charge of +3\n    net_charge = +3\n    result = f\"+{net_charge}\"\n    return result",
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has a pKa of approximately 12.5 for the side chain amino group and pKa of approximately 2.2 for the alpha carboxyl group.\n    # At pH 1.0, both the side chain amino group and alpha carboxyl group will be protonated.\n    # So, at pH 1.0, arginine will have a net charge of +1.\n    net_charge = \"+1\"\n    return net_charge",
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has a pKa value of 12.5 for the side chain's pKa\n    # At pH 1.0, the side chain will be protonated (+1 charge)\n    net_charge = +1\n    result = net_charge\n    return result",
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has a pKa of 1.82 for the carboxyl group (COOH), pKa of 8.99 for the alpha-amino group (NH2), and pKa of 12.48 for the guanidinium group (NH2).\n    pH = 1.0\n    pKa_carboxyl = 1.82\n    pKa_alpha_amino = 8.99\n    pKa_guanidinium = 12.48\n    \n    charge_carboxyl = -1 if pH < pKa_carboxyl else 0\n    charge_alpha_amino = +1 if pH > pKa_alpha_amino else 0\n    charge_guanidinium = +1 if pH > pKa_guanidinium else 0\n    \n    net_charge = charge_carboxyl + charge_alpha_amino + charge_guanidinium\n    if net_charge > 0:\n        result = f\"+{net_charge}\"\n    elif net_charge < 0:\n        result = f\"{net_charge}\"\n    else:\n        result = \"0\"\n    \n    return result",
+                    "import math\n\ndef solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    pH = 1.0\n    pKa1 = 2.17\n    pKa2 = 9.04\n    pKa3 = 12.48\n\n    charge = 1 / (1 + 10 ** (pKa1 - pH)) + 2 / (1 + 10 ** (pKa2 - pH)) + 1 / (1 + 10 ** (pKa3 - pH))\n\n    if charge < 0:\n        result = f\"{charge:.0f}\"\n    else:\n        result = f\"+{charge:.0f}\"\n    \n    return result"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        1.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        1.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        1.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        1.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        3.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        1.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        1.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        -1.0,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        0.0,
+                        "$2$",
+                        "incorrect"
+                    ]
+                ],
+                "correct": [
+                    "def solution():\n    \"\"\"What is the net charge of arginine in a solution of pH 1.0?\"\"\"\n    # Arginine has 3 basic groups (amino groups) that can be protonated, and one acidic group (carboxyl group)\n    # At pH 1.0, all the basic groups will be protonated (+1 charge each) and the acidic group will be deprotonated\n    # Net charge = 3(+1) - 1 = +2\n    net_charge = \"+2\"\n    return net_charge"
+                ]
+            },
+            "1": {
+                "incorrect": [
+                    "def solution(a, b, t):\n    \"\"\"For each Laplace Transform Y(s), find the function y(t)\"\"\"\n    from sympy import symbols, inverse_laplace_transform, apart\n\n    s, Y = symbols('s Y')\n    Y_s = 1 / ((s + a) * (s + b))\n    y_t = inverse_laplace_transform(Y_s, s, t)\n    simplified_y_t = apart(y_t)\n    \n    return simplified_y_t\n\n# For this specific subproblem:\na = symbols('a')\nb = symbols('b')\nt = symbols('t')\nsolution(a, b, t)",
+                    "def solution(a, b, t):\n    \"\"\"For each Laplace Transform Y(s), find the function y(t) for Y(s) = 1/((s+a)(s+b)).\"\"\"\n    from sympy import symbols, inverse_laplace_transform\n    from sympy.abc import s\n\n    Y = 1/((s+a)*(s+b))\n    t = symbols('t')\n    y = inverse_laplace_transform(Y, s, t)\n    \n    return y\n\n# Call the function with values of a, b, and t\na = 1\nb = 2\nt = symbols('t')\nsolution(a, b, t)",
+                    "To find the inverse Laplace transform of \\(\\frac{1}{(s+a)(s+b)}\\), we can use partial fraction decomposition. The given Laplace transform can be written as:\n\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying through by \\((s+a)(s+b)\\) gives:\n\n\\[1 = A(s+b) + B(s+a)\\]\n\nSolving for \\(A\\) and \\(B\\), we get:\n\n\\[A = \\frac{1}{b-a}, \\quad B = \\frac{1}{a-b}\\]\n\nTherefore, the inverse Laplace transform of \\(\\frac{1}{(s+a)(s+b)}\\) is:\n\n\\[y(t) = A e^{-at} + B e^{-bt}\\]\n\nSubstitute the values of \\(A\\) and \\(B\\) to get the final answer.",
+                    "def solution(a, b):\n    \"\"\"Given the Laplace Transform Y(s) = 1/((s+a)(s+b)), find the function y(t).\"\"\"\n    from sympy import symbols, inverse_laplace_transform\n    from sympy.abc import s, t\n    \n    Y = 1/((s + a)*(s + b))\n    y = inverse_laplace_transform(Y, s, t)\n    \n    return y\n\n# Call the function with values of a and b\nsolution(a=1, b=2)",
+                    "def solution(a, b):\n    \"\"\"For each Laplace Transform Y(s), find the function y(t) for Y(s) = 1/((s+a)(s+b)).\"\"\"\n    def inverse_laplace_transform(s, a, b):\n        return (1/(b-a)) * (1/(s+a) - 1/(s+b))\n\n    return inverse_laplace_transform, a, b\n\n# Example usage:\na = 2\nb = 3\ninv_laplace_transform_func, a, b = solution(a, b)\nresult = inv_laplace_transform_func(4, a, b)\nprint(result)",
+                    "def solution(a, b):\n    \"\"\"For each Laplace Transform Y(s), find the function y(t).\n    \n    Subproblem 0:\n    Y(s) = 1 / ((s + a)(s + b))\n    \"\"\"\n    def inverse_laplace_transform(s):\n        return (1 / (a - b)) * (1 / (s + a) - 1 / (s + b))\n\n    return inverse_laplace_transform",
+                    "def solution(a, b):\n    \"\"\"For each Laplace Transform Y(s), find the function y(t) for Y(s) = 1/((s+a)(s+b)).\"\"\"\n    from sympy import symbols, apart, inverse_laplace_transform\n\n    s, t = symbols('s t')\n    Y_s = 1/((s+a)*(s+b))\n    y_t = inverse_laplace_transform(Y_s, s, t)\n    y_t_apart = apart(y_t)\n    \n    return y_t_apart\n\n# Example usage\na = 1\nb = 2\nsolution(a, b)",
+                    "import sympy as sp\n\ndef solution():\n    \"\"\"For each Laplace Transform Y(s), find the function y(t) for Y(s) = 1/((s+a)(s+b)).\"\"\"\n    s, t, a, b = sp.symbols('s t a b')\n    Y = 1 / ((s + a) * (s + b))\n    y = sp.inverse_laplace_transform(Y, s, t)\n    result = y\n    return result",
+                    "def solution(a, b):\n    \"\"\"Given Y(s) = 1 / ((s+a)(s+b)), find the function y(t).\"\"\"\n    from sympy import symbols, inverse_laplace_transform\n    from sympy.abc import t, s\n\n    Y = 1 / ((s + a) * (s + b))\n    y = inverse_laplace_transform(Y, s, t)\n    return y\nsolution(a, b)",
+                    "To find the inverse Laplace transform of \\(Y(s) = \\frac{1}{(s+a)(s+b)}\\), we can use partial fraction decomposition. The general form of the inverse Laplace transform for a function in the form \\(\\frac{1}{(s + p)(s + q)}\\) is \\(y(t) = A e^{-pt} + B e^{-qt}\\), where \\(p\\) and \\(q\\) are the roots of the denominator quadratic polynomial.\n\nGiven:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)}\\]\n\nLet's find the function \\(y(t)\\) using the inverse Laplace transform:\n\n\\[\\mathcal{L}^{-1}\\{Y(s)\\} = \\mathcal{L}^{-1}\\left\\{\\frac{1}{(s+a)(s+b)}\\right\\}\\]\n\n\\[y(t) = \\mathcal{L}^{-1}\\left\\{\\frac{1}{(s+a)(s+b)}\\right\\}\\]\n\n\\[y(t) = \\mathcal{L}^{-1}\\left\\{\\frac{A}{s+a} + \\frac{B}{s+b}\\right\\}\\]\n\n\\[y(t) = A \\mathcal{L}^{-1}\\left\\{\\frac{1}{s+a}\\right\\} + B \\mathcal{L}^{-1}\\left\\{\\frac{1}{s+b}\\right\\}\\]\n\nNow, we can find the inverse Laplace transforms of the individual terms:\n\n\\[y(t) = A e^{-at} + B e^{-bt}\\]\n\nTherefore, the function \\(y(t)\\) for the Laplace transform \\(Y(s) = \\frac{1}{(s+a)(s+b)}\\) is given by:\n\ndef solution():\n    \"\"\"For the Laplace Transform Y(s) = 1/((s+a)(s+b)), find the function y(t).\"\"\"\n    a = Symbol('a')\n    b = Symbol('b')\n    A = Symbol('A')\n    B = Symbol('B')\n    t = Symbol('t')\n\n    y_t = A * exp(-a*t) + B * exp(-b*t)\n    return y_t"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "exp(-t*(a*b - b**2)/(a - b))*Heaviside(t)/(a - b) - exp(-t*(a**2 - a*b)/(a - b))*Heaviside(t)/(a - b)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ]
+                ]
+            },
+            "2": {
+                "incorrect": [
+                    "I focus on solving arithmetic and mathematical operations. Let me know if you have any questions related to that.",
+                    "I apologize, but I am a simple Python code generator and cannot perform symbolic calculations or solve differential equations. If you have any other arithmetic or math-related questions that can be answered using Python code, feel free to ask!",
+                    "I can help with arithmetic calculations and simple mathematical operations. The question you provided seems to be related to differential equations and characteristic polynomials, which are not within the scope of arithmetic calculations that can be directly calculated using Python code. If you have any other arithmetic or mathematical questions that involve basic operations, feel free to ask!",
+                    "def solution():\n    \"\"\"Subproblem 0: What is the characteristic polynomial p(s) of the differential equation x'' + b*x' + x = 0?\"\"\"\n    # The characteristic polynomial of the differential equation x'' + b*x' + x = 0 is p(s) = s^2 + b*s + 1\n    return \"p(s) = s^2 + b*s + 1\"",
+                    "I specialize in solving arithmetic problems. Let me know if you have any math questions related to addition, subtraction, multiplication, or division.",
+                    "def solution():\n    \"\"\"Subproblem 0: What is the characteristic polynomial p(s) of the differential equation x'' + b*x' + x = 0?\"\"\"\n    characteristic_polynomial = \"s**2 + b*s + 1\"\n    return characteristic_polynomial",
+                    "def solution():\n    \"\"\"Subproblem 0: What is the characteristic polynomial p(s) of the differential equation x'' + bx' + x = 0?\"\"\"\n    # The characteristic polynomial for the given differential equation is p(s) = s^2 + bs + 1\n    return \"The characteristic polynomial p(s) is s^2 + bs + 1\"",
+                    "def solution():\n    \"\"\"What is the characteristic polynomial p(s) of the differential equation x'' + b*x' + x = 0?\"\"\"\n    return \"The characteristic polynomial p(s) is p(s) = s^2 + bs + 1\""
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "p(s) = s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "s**2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "The characteristic polynomial p(s) is s^2 + bs + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "s^2 + bs + 1",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "The characteristic polynomial p(s) is p(s) = s^2 + bs + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ]
+                ],
+                "correct": [
+                    "def solution():\n    \"\"\"Preamble: The following subproblems refer to the differential equation\n    x'' + b*x' + x = 0.\n    Subproblem 0: What is the characteristic polynomial p(s) of\n    x'' + b*x' + x = 0?\"\"\"\n    characteristic_polynomial = 's^2 + b*s + 1'\n    return characteristic_polynomial",
+                    "def solution():\n    \"\"\"Subproblem 0: What is the characteristic polynomial p(s) of the differential equation \\ddot{x}+b \\dot{x}+x=0?\"\"\"\n    b = 'b'  # b is the coefficient in the differential equation\n    p_s = 's^2 + {}s + 1'.format(b)\n    result = p_s\n    return result"
+                ]
+            }
+        },
+        "p2c": {
+            "0": {
+                "incorrect": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of pH 1.0? \n    Please format your answer as +n or -n.  \n    \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Your solution code would go here\n    pass  # Placeholder for the solution to be implemented",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \n    Please format your answer as +n or -n.  \n    \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Solution logic for determining the net charge of arginine at pH 1.0\n    # Steps 1 and 2 would involve calculating charges based on pKa values and pH\n    # Step 3 would involve summing up the charges of all functional groups\n    # Step 4 would involve returning the net charge formatted as +n or -n\n\n    # Your specific implementation of the solution would depend on the pKa values and the structure of arginine.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \n    Please format your answer as +n or -n.  \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \nSubproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \nPlease format your answer as +n or -n.  \n \n    \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \n    Please format your answer as +n or -n.  \n    \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Steps 1 and 2 would involve determining the pKa values of the functional groups in arginine\n    # and calculating their charges at pH 1.0, which is a detailed biochemical calculation.\n    \n    # For step 3, assuming we have the charges calculated, we sum them up to find the net charge.\n    \n    # Step 4: Return the net charge formatted as +n or -n\n    # For example, if the net charge is -1, the function should return \"-1\"\n    return \"-n\"  # Placeholder for the actual net charge value and formatting",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of pH 1.0? \n    Please format your answer as +n or -n.  \n    \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Step 1: Determine the pKa values of the relevant functional groups in arginine\n    # (e.g., amino group, carboxyl group, guanidinium group)\n    \n    # Step 2: Calculate the charge on each functional group at pH 1.0\n    \n    # Step 3: Sum up the charges of all functional groups in arginine to find the net charge\n    \n    # Step 4: Return the net charge formatted as +n or -n\n    return \"+n\"  # Placeholder for the actual calculation and formatting of the net charge.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \n    Please format your answer as +n or -n.  \n    \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Step 1: Determine the pKa values of the relevant functional groups in arginine\n    \n    # Step 2: Calculate the charge on each functional group at pH 1.0\n    \n    # Step 3: Sum up the charges of all functional groups in arginine to find the net charge\n    \n    # Step 4: Return the net charge formatted as +n or -n\n    pass  # Placeholder for the actual implementation",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \n    Please format your answer as +n or -n.  \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Steps 1 and 2: Calculate the charges on each functional group at pH 1.0\n    \n    # For arginine, you would consider the charges on its functional groups such as the amino group (pKa around 9.0)\n    # and the carboxyl group (pKa around 2.2). At pH 1.0, both groups would be protonated.\n    \n    # The net charge of arginine would depend on the number of protonated amino and carboxyl groups.\n    \n    # Step 3: Sum up the charges of all functional groups to find the net charge\n    \n    # Step 4: Return the net charge formatted as +n or -n\n    # For example, if the net charge is +2, return '+2'; if it's -1, return '-1'\n    \n    # You can calculate the net charge of arginine based on the protonated functional groups at pH 1.0\n    # and return the formatted answer.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \n    Please format your answer as +n or -n.  \n    \n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Step 1: Determine the pKa values of the relevant functional groups in arginine.\n    # For arginine, the relevant functional groups are the amino group (pKa ~ 9.0) and the carboxyl group (pKa ~ 2.2).\n\n    # Step 2: Calculate the charge on each functional group at pH 1.0.\n    # At pH 1.0, the amino group is protonated (+1 charge) and the carboxyl group is not protonated (neutral).\n    amino_charge = +1\n    carboxyl_charge = 0\n\n    # Step 3: Sum up the charges of all functional groups in arginine to find the net charge.\n    net_charge = amino_charge + carboxyl_charge\n\n    # Step 4: Return the net charge formatted as +n or -n.\n    if net_charge > 0:\n        return f'+{net_charge}'\n    elif net_charge < 0:\n        return f'{net_charge}'\n    else:\n        return '+0'"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        "-n",
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        "+n",
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        1.0,
+                        "$2$",
+                        "incorrect"
+                    ]
+                ],
+                "correct": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:                                                                                \n    Subproblem 0: What is the net charge of arginine in a solution of pH 1.0? \n    Please format your answer as +n or -n.  \n\n    Let's think step by step.\n    1. Determine the pKa values of the relevant functional groups in arginine.\n    2. Calculate the charge on each functional group at pH 1.0.\n    3. Sum up the charges of all functional groups in arginine to find the net charge.\n    4. Return the net charge formatted as +n or -n.\n    '''\n    # Step 1: Determine the pKa values of the relevant functional groups in arginine.\n    # For arginine, the relevant functional groups are the amino group (pKa \u2248 9.0) and the carboxyl group (pKa \u2248 2.2).\n    \n    # Step 2: Calculate the charge on each functional group at pH 1.0.\n    # At pH 1.0, both the amino group and the carboxyl group will be protonated.\n    # The amino group (+1 charge) and the carboxyl group (0 charge) will each have a +1 charge.\n    \n    # Step 3: Sum up the charges of all functional groups in arginine to find the net charge.\n    net_charge = +1 + 1  # Sum of charges from the amino and carboxyl groups\n    \n    # Step 4: Return the net charge formatted as +n or -n.\n    return f'+{net_charge}' if net_charge >= 0 else f'{net_charge}'"
+                ]
+            },
+            "1": {
+                "incorrect": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\nSubproblem 0: \n\\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n \n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''\n    # Step 1: Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\)\n    # Decomposition: \\(\\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\)\n    # Solving for A and B gives: A = \\(\\frac{1}{a-b}\\), B = \\(\\frac{1}{b-a}\\)\n    \n    # Step 2: Find the inverse Laplace transform of the decomposed terms\n    # Inverse Laplace transform: \n    # L^{-1}(\\frac{A}{s+a}) = A * e^{-at}\n    # L^{-1}(\\frac{B}{s+b}) = B * e^{-bt}\n    \n    # Step 3: Return the functions \\(y(t)\\) corresponding to each term\n    return 'y(t) = A * e^{-at} + B * e^{-bt}'",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: \n    Problem:\n    Preamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\n    Subproblem 0: \n    \\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\nSubproblem 0: \n\\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n \n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\n    Subproblem 0: \n    \\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\nSubproblem 0: \n\\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n \n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\nSubproblem 0: \n\\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n \n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''\n    # Step 1: Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    # The partial fraction decomposition will be of the form:\n    # \\(\\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\)\n    # Solving for A and B, we get A = 1/(b-a) and B = -1/(b-a)\n    \n    # Step 2: Find the inverse Laplace transform of the decomposed terms.\n    # The inverse Laplace transform of the first term is e^(-at) and of the second term is e^(-bt)\n    \n    # Step 3: Return the functions \\(y(t)\\) corresponding to each term.\n    y1 = 'e^(-at)'  # Function corresponding to the term with A coefficient\n    y2 = 'e^(-bt)'  # Function corresponding to the term with B coefficient\n    \n    return y1, y2",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: For each Laplace Transform Y(s), find the function y(t):\n    Subproblem 0: \n    Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\frac{1}{(s+a)(s+b)}.\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions y(t) corresponding to each term.\n    '''\n    # Step 1: Perform partial fraction decomposition on 1/((s+a)(s+b))\n    # The partial fraction decomposition for this case would involve finding constants A and B such that\n    # 1/((s+a)(s+b)) = A/(s+a) + B/(s+b)\n    # Solving for A and B would give us the decomposed terms\n    \n    # Step 2: Find the inverse Laplace transform of the decomposed terms\n    # The inverse Laplace transform of 1/(s+a) is e^(-at)\n    # The inverse Laplace transform of 1/(s+b) is e^(-bt)\n    \n    # Step 3: Return the functions y(t) corresponding to each term\n    return \"y(t) = A * e^(-at) + B * e^(-bt)\"  # This is the general form of the solution for the inverse Laplace transform of the given function.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: For each Laplace Transform Y(s), find the function y(t):\nSubproblem 0: \nY(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\n \n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''\n    # The solution will involve decomposing the given Laplace Transform Y(s) into simpler terms,\n    # finding the inverse Laplace transform of those terms, and returning the corresponding functions y(t).\n    # This is a standard procedure in solving Laplace Transform problems.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: For each Laplace Transform Y(s), find the function y(t):\n    Subproblem 0: \n    Y(s) = 1/((s+a)(s+b))\n\n    Let's think step by step.\n    1. Perform partial fraction decomposition on 1/((s+a)(s+b)).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions y(t) corresponding to each term.\n    '''\n    # Step 1: Perform partial fraction decomposition on 1/((s+a)(s+b)).\n    # 1/((s+a)(s+b)) = A/(s+a) + B/(s+b), solve for A and B\n    # A = 1/(b-a), B = -1/(b-a)\n    \n    # Step 2: Find the inverse Laplace transform of the decomposed terms.\n    # The inverse Laplace transform of A/(s+a) is e^(-at)*A, where A = 1/(b-a)\n    # The inverse Laplace transform of B/(s+b) is e^(-bt)*B, where B = -1/(b-a)\n    \n    # Step 3: Return the functions y(t) corresponding to each term.\n    y1 = 'e^(-at)/(b-a)'\n    y2 = 'e^(-bt)*(-1/(b-a))'\n    \n    return y1, y2"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "y(t) = A * e^{-at} + B * e^{-bt}",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "('e^(-at)', 'e^(-bt)')",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "y(t) = \\(\frac{1}{b-a}\\) * e^(-at) + \\(\frac{1}{a-b}\\) * e^(-bt)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "correct"
+                    ],
+                    [
+                        "y(t) = A * e^(-at) + B * e^(-bt)",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        "('e^(-at)/(b-a)', 'e^(-bt)*(-1/(b-a))')",
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ]
+                ],
+                "correct": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: For each Laplace Transform Y(s), find the function y(t):\n    Subproblem 0: \n    Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\n    \n    Let's think step by step.\n    1. Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    2. Find the inverse Laplace transform of the decomposed terms.\n    3. Return the functions \\(y(t)\\) corresponding to each term.\n    '''\n    # Step 1: Perform partial fraction decomposition on \\(\\frac{1}{(s+a)(s+b)}\\).\n    # The partial fraction decomposition of \\(\\frac{1}{(s+a)(s+b)}\\) is \\(\\frac{A}{s+a} + \\frac{B}{s+b}\\),\n    # where A and B are constants to be determined.\n    # Solving for A and B, we get A = \\(\\frac{1}{b-a}\\) and B = \\(\\frac{1}{a-b}\\).\n    \n    # Step 2: Find the inverse Laplace transform of the decomposed terms.\n    # The inverse Laplace transform of \\(\\frac{1}{s+a}\\) is e^(-at) and the inverse Laplace transform of \\(\\frac{1}{s+b}\\) is e^(-bt).\n    \n    # Step 3: Return the functions \\(y(t)\\) corresponding to each term.\n    return \"y(t) = \\(\\frac{1}{b-a}\\) * e^(-at) + \\(\\frac{1}{a-b}\\) * e^(-bt)\"\n    # The final result is the sum of the inverse Laplace transforms of the decomposed terms."
+                ]
+            },
+            "2": {
+                "correct": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    # Step 1: Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    # The differential equation is given as $\\ddot{x}+b \\dot{x}+x=0$.\n\n    # Step 2: Substitute $x=e^{st}$ into the differential equation.\n    # The substitution results in the characteristic equation $s^2 + b s + 1 = 0$.\n\n    # Step 3: Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    # The characteristic polynomial $p(s)$ is $s^2 + b s + 1$.\n\n    return \"The characteristic polynomial p(s) of the differential equation $\\ddot{x}+b \\dot{x}+x=0$ is $s^2 + b s + 1$.\"",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    # The characteristic polynomial p(s) is obtained by substituting x = e^(st) into the differential equation\n    # The characteristic equation is obtained by replacing x with e^(st) in the differential equation and solving for s\n    # The characteristic equation will be of the form s^2 + bs + 1 = 0 (assuming b is the coefficient of x_dot)\n    characteristic_polynomial = \"s^2 + bs + 1\"\n    \n    return characteristic_polynomial",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: \n    Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    return \"The characteristic polynomial p(s) of the differential equation $\\ddot{x}+b \\dot{x}+x=0$ can be found by substituting $x=e^{st}$ into the differential equation and solving for the characteristic polynomial p(s).\""
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "The characteristic polynomial p(s) of the differential equation $\\ddot{x}+b \\dot{x}+x=0$ is $s^2 + b s + 1$.",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "The characteristic polynomial p(s) is: s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "s^2 + bs + 1",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "The characteristic polynomial p(s) is s^2 + bs + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "The characteristic polynomial p(s) is: s^2 + bs + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "The characteristic polynomial p(s) of the differential equation $\\ddot{x}+b \\dot{x}+x=0$ can be found by substituting $x=e^{st}$ into the differential equation and solving for the characteristic polynomial p(s).",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "p(s) = s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ]
+                ],
+                "incorrect": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    # Step 1: Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$\n    # The differential equation is a second-order linear homogeneous differential equation.\n    \n    # Step 2: Substitute $x=e^{st}$ into the differential equation.\n    # By substituting $x=e^{st}$, we can find the characteristic equation.\n    \n    # Step 3: Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    # The characteristic polynomial will be derived from the substitution and simplification process.\n    # The characteristic polynomial will be used to find the roots, which will give the solution to the differential equation.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    # Step 1: Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    # The second derivative of x with respect to t is represented as x'' and the first derivative as x'.\n    # The equation becomes x'' + b*x' + x = 0.\n\n    # Step 2: Substitute x=e^{st} into the differential equation.\n    # This substitution is done to find the characteristic equation.\n    # The substitution results in the characteristic equation p(s) = s^2 + b*s + 1.\n\n    # Step 3: Solve for the characteristic polynomial p(s) by simplifying the resulting equation.\n    return \"The characteristic polynomial p(s) is: s^2 + b*s + 1\"",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    # Step 1: Write down the differential equation\n    # The differential equation is $\\ddot{x} + b \\dot{x} + x = 0$\n    \n    # Step 2: Substitute x = e^(st) into the differential equation\n    # We will get s^2 + bs + 1 = 0 after substitution\n    \n    # Step 3: Solve for the characteristic polynomial p(s)\n    # The characteristic polynomial p(s) from the above is s^2 + bs + 1\n    \n    return \"The characteristic polynomial p(s) is s^2 + bs + 1\"",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: The following subproblems refer to the differential equation \n$\\ddot{x}+b \\dot{x}+x=0$.\nSubproblem 0: What is the characteristic polynomial $p(s)$ of \n$\\ddot{x}+b \\dot{x}+x=0$?\n \n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: The following subproblems refer to the differential equation \n$\\ddot{x}+b \\dot{x}+x=0$.\nSubproblem 0: What is the characteristic polynomial $p(s)$ of \n$\\ddot{x}+b \\dot{x}+x=0$?\n \n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    # Step 1: Write down the differential equation\n    # The differential equation is given as $\\ddot{x} + b \\dot{x} + x = 0$\n    \n    # Step 2: Substitute x = e^(st) into the differential equation\n    # Upon substitution, we get the characteristic equation p(s) = s^2 + bs + 1 = 0\n    \n    # Step 3: Solve for the characteristic polynomial p(s)\n    # The characteristic polynomial is p(s) = s^2 + bs + 1\n    \n    return \"The characteristic polynomial p(s) is: s^2 + bs + 1\"",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    '''\n    Solution:\n    1. The differential equation is $\\ddot{x} + b\\dot{x} + x = 0$.\n    2. Substitute $x=e^{st}$ into the differential equation to get:\n       $s^2 e^{st} + bse^{st} + e^{st} = 0$.\n    3. Simplify the equation to get the characteristic polynomial $p(s)$:\n       $s^2 + bs + 1 = 0$\n    '''",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    $\\ddot{x}+b \\dot{x}+x=0$.\n    Subproblem 0: What is the characteristic polynomial $p(s)$ of \n    $\\ddot{x}+b \\dot{x}+x=0$?\n    \n    Let's think step by step.\n    1. Write down the differential equation $\\ddot{x}+b \\dot{x}+x=0$.\n    2. Substitute $x=e^{st}$ into the differential equation.\n    3. Solve for the characteristic polynomial $p(s)$ by simplifying the resulting equation.\n    '''\n    # Step 1: Write down the differential equation\n    # The differential equation is given as $\\ddot{x} + b \\dot{x} + x = 0$\n    \n    # Step 2: Substitute x = e^(st) into the differential equation\n    # After substitution, the equation becomes s^2 + b*s + 1 = 0\n    \n    # Step 3: Solve for the characteristic polynomial p(s) by simplifying the resulting equation\n    # The characteristic polynomial p(s) is p(s) = s^2 + b*s + 1\n    \n    return \"p(s) = s^2 + b*s + 1\"  # Return the characteristic polynomial"
+                ]
+            }
+        }
+    }
+}

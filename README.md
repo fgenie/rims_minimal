@@ -66,7 +66,6 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
         - [x] re-evaluate the previous `MATH`, `ocw_courses` results 
     - [x] harvest wrong / correct sets and prepare the followings
         - done
-
     - [ ] selection prompts
         - [x] GSM, util
         - [ ] OCW
@@ -76,8 +75,6 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
         - [ ] OCW
         - [ ] MATH
         - [ ] util test 
- - [ ] `OPENAI` client to `AzureOPENAI`
-    - [x] endpoint and key, client setting 
-    - [x] modelname --> deployment name
-        - see `rims_minimal/src/prompt_construction_src/tests/test_azure.py`
-    - [x] API version test
+    - [ ] dbg (`run_inference.py`)
+    - [ ] test after applying `@utils.cost_tracking.CountTokens`
+         

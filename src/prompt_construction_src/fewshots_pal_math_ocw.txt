@@ -4,6 +4,27 @@ math
 question 0
             "Problem:\nFind the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}\n",
 
+
+CORRECT
+gpt4 UI
+import sympy as sp
+
+def solution():
+    x = sp.symbols('x')
+    expr = sp.sqrt(x - 2) / sp.sqrt(5 - x)
+    
+    # Define the conditions for the numerator and denominator
+    num_cond = x - 2 >= 0
+    den_cond = 5 - x > 0
+    
+    # Solve the inequalities to find the domain
+    num_sol = sp.solve_univariate_inequality(num_cond, x, relational=False)
+    den_sol = sp.solve_univariate_inequality(den_cond, x, relational=False)
+    
+    # Find the intersection of the solutions to get the domain
+    domain = sp.latex(sp.Intersection(num_sol, den_sol))
+    return domain
+
 WRONG 
 src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
 def solution():
@@ -15,24 +36,33 @@ def solution():
     return domain
 [2, 3, 4]
 
-CORRECT
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-def domain():
-    # The domain x is greater than or equal to 2
-    lower_bound = 2
-    # and x is less than 5
-    upper_bound = 5
-    
-    # The domain will be in interval notation
-    return f'[{lower_bound}, {upper_bound})'
-[2, 5)
-
 --- 
 
 question 3 
             "Problem:\nIf the system of equations\n\n\\begin{align*}\n6x-4y&=a,\\\\\n6y-9x &=b.\n\\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,\nfind $\\frac{a}{b},$ assuming $b$ is nonzero.\n"
 
+CORRECT 
+gpt4 
+import sympy as sp
 
+def solution():
+    x, y, a, b = sp.symbols('x y a b')
+    
+    # Define the equations
+    eq1 = sp.Eq(6*x - 4*y, a)
+    eq2 = sp.Eq(6*y - 9*x, b)
+    
+    # Solve the equations for a and b
+    solutions = sp.solve([eq1, eq2], (a, b), dict=True)
+    
+    # If solutions are found, express a/b
+    if solutions:
+        a_expr = solutions[0][a]
+        b_expr = solutions[0][b]
+        ratio = a_expr / b_expr
+        return sp.simplify(ratio)
+    return "No solution found"
+-2/3
 
 WRONG
 src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
@@ -51,18 +81,12 @@ def solution():
     return result
 ZeroDivisionError: float division by zero
 
-CORRECT 
-(N/A)
-
 
 
 ---
 
 question 1
             "Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n",
-
-WRONG
-(N/A)
 
 CORRECT
 src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
@@ -75,6 +99,24 @@ def solution():
     return result
 24
 
+WRONG
+claude sonnet
+def wrong_solution():
+    """If det A = 2 and det B = 12, find det(AB)."""
+
+    det_A = 2
+    det_B = 12
+
+    # Wrong assumption: Adding determinants instead of multiplying
+    det_AB = det_A + det_B
+
+    result = det_AB
+
+    return result
+14
+
+
+
 
 --- 
 
@@ -82,18 +124,6 @@ question 2
             "Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n",
 
 
-WRONG
-prep'd by claude sonnet
-def solution():
-    weight1 = 20
-    weight2 = 15
-    lifts1 = 12
-
-    # Incorrectly assuming that the number of lifts is proportional to the weight
-    lifts2 = lifts1 * (weight2 / weight1)
-
-    return lifts2
-9.0
 
 CORRECT
 src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
@@ -108,6 +138,20 @@ def solution():
     return result
 16.0
 
+WRONG
+prep'd by claude sonnet
+def solution():
+    weight1 = 20
+    weight2 = 15
+    lifts1 = 12
+
+    # Incorrectly assuming that the number of lifts is proportional to the weight
+    lifts2 = lifts1 * (weight2 / weight1)
+
+    return lifts2
+9.0
+
+
 
 
 
@@ -116,6 +160,10 @@ def solution():
 ocw 
 
 question 0
+      Problem:                                                                                
+      Subproblem 0: What is the net charge of arginine in a solution of $\mathrm{pH} 1.0$? 
+      Please format your answer as +n or -n.  
+
 CORRECT
 src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
 def arginine_net_charge_at_ph1():
@@ -123,9 +171,10 @@ def arginine_net_charge_at_ph1():
     charge_alpha_amino = +1     # protonated amino group
     charge_alpha_carboxyl = 0   # protonated carboxyl group is neutral
     charge_guanidino = +1       # protonated guanidino group
-
+    
     net_charge = charge_alpha_amino + charge_alpha_carboxyl + charge_guanidino
     return f"+{net_charge}"
++2
 
 WRONG
 src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
@@ -141,35 +190,25 @@ def calculate_charge_of_arginine(pH, pKa_carboxyl=2.17, pKa_amino=9.04, pKa_guan
     
     # Net charge is the sum of individual group charges.
     net_charge = charge
-None 
+NameError: name 'charge' is not defined
 
 ---
 
 question 1 
+      Problem:
+      Preamble: For each Laplace Transform \(Y(s)\), find the function \(y(t)\):
+      Subproblem 0: 
+      \[Y(s)=\boxed{\frac{1}{(s+a)(s+b)}}\]
+
 
 CORRECT
-prep by claude sonnet zeroshot
-import sympy as sp
-
-def solution():
-    s = sp.symbols('s')
-    a, b = sp.symbols('a b', positive=True)
-    Y = 1/((s+a)*(s+b))
-    y = sp.inverse_laplace_transform(Y, s, 't')
-    
-    preamble = r"Preamble: For each Laplace Transform $Y(s)$, find the function $y(t)$:"
-    subproblem = r"Subproblem 0: "
-    boxed_Y = r"\boxed{\frac{1}{(s+a)(s+b)}}"
-    latex_y = sp.latex(y)
-    
-    result = latex_y
-    return result
+N/A
 
 WRONG
 prep by claude sonnet zeroshot
 import sympy as sp
 
-def wrong_solution():
+def solution():
     s = sp.symbols('s')
     a, b = sp.symbols('a b', positive=True)
     Y = 1/((s+a)*(s+b))
@@ -180,16 +219,47 @@ def wrong_solution():
     
     result = latex_y
     return result
+'\\frac{1}{\\left(a + s\\right) \\left(b + s\\right)}'
 
 ---
 question 2
+      Problem:
+      Preamble: The following subproblems refer to the differential equation 
+      $\ddot{x}+b \dot{x}+x=0$.
+      Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+      $\ddot{x}+b \dot{x}+x=0$?
+
 
 CORRECT
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-"The characteristic polynomial \\( p(s) \\) for a differential equation can be derived by replacing \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1.\n\nGiven the differential equation:\n\\[ \\ddot{x} + b \\dot{x} + x = 0 \\]\n\nReplace \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1 to get the characteristic polynomial:\n\\[ p(s) = s^2 + bs + 1 \\]\n\nSo the characteristic polynomial \\( p(s) \\) is \\( s^2 + bs + 1 \\).
-\\( s^2 + bs + 1 \\)
+import sympy as sp
+from sympy import symbols, Function, Eq, diff
+
+def solution():
+    # Define the symbols
+    t, b, s = symbols('t b s')
+    x = Function('x')(t)
+
+    # Define the differential equation
+    diffeq = Eq(diff(x, t, t) + b * diff(x, t) + x, 0)
+
+    # Find the characteristic equation by replacing d^2x/dt^2 with s^2, dx/dt with s, and x with 1
+    char_eq = diffeq.subs({diff(x, t, t): s**2, diff(x, t): s, x: 1}).lhs
+
+    return sp.latex(char_eq)
+b s + s^{2} + 1
 
 WRONG
-src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
-"Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is obtained by substituting $x(t) = e^{st}$ into the differential equation to get the characteristic equation:\n\nSubstitute $x(t) = e^{st}$ into the differential equation:\n\\[\\begin{aligned} \\ddot{x} + b\\dot{x} + x &= 0 \\\\\ns^2e^{st} + be^{st} + e^{st} &= 0 \\\\\n(s^2 + b + 1)e^{st} &= 0 \\end{aligned}\\]\n\nThis gives us the characteristic polynomial:\n\\[p(s) = s^2 + b + 1\\]\n\nTherefore, the characteristic polynomial $p(s)$ of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is $\\boxed{s^2 + b + 1}$.\n",
-$\\boxed{s^2 + b + 1}$
+import sympy as sp
+from sympy import symbols, Function, Eq, diff
+
+def faulty_solution():
+    # Define the symbols
+    t, b, s = symbols('t b s')
+    x = Function('x')(t)
+    # Define the differential equation incorrectly
+    diffeq = Eq(diff(x, t, t) - b * diff(x, t) - x, 0)  # Faulty: Used subtraction instead of addition
+    # Find the characteristic equation by replacing d^2x/dt^2 with s^2, dx/dt with s, and x with 1
+    # This is also done incorrectly due to the incorrect differential equation
+    char_eq = diffeq.subs({diff(x, t, t): s**2, diff(x, t): s, x: 1}).lhs
+    return sp.latex(char_eq)
+- b s + s^{2} - 1

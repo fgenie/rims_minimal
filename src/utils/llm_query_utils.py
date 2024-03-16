@@ -1147,14 +1147,13 @@ def _execute(code, code_return: str):
         funcname = get_func_name_from_string(code)  # for nontrivial function names
 
         if solution is not None:
-            return solution()  # this will use locals()
+            ans = solution()  # this will use locals()
         elif funcname:  # if any function name appears
             new_code = "import math\n" + code + f"\nresult = {funcname}()"
             loc = {}
             exec(new_code, locals(), loc)  # this will also use locals()
 
-            result = loc["result"]
-            return result
+            ans = loc["result"]
         else:
             executed_code = (
                 "import math\n"
@@ -1163,7 +1162,16 @@ def _execute(code, code_return: str):
             )
             exec(executed_code, {}, locals())
             locals_ = locals()
-            return locals_.get(code_return, None)
+            ans = locals_.get(code_return, None)
+        
+        # check if ans is sympy object so it needs to be converted by `sp.latex()`
+        if isinstance(ans, sp.Basic):
+            try:
+                ans = sp.latex(ans)
+            except Exception as e:
+                print(e)
+                print(f"{ans=} cannot be `sp.latex()`'d")
+        return ans
 
     except Exception as exp:
         print("Executing code error", exp)

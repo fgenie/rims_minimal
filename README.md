@@ -65,14 +65,16 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
         - [x] indeed! and found it does not parse scientific-formatting as well so I've fixed it.   
         - [x] re-evaluate the previous `MATH`, `ocw_courses` results 
     - [x] harvest wrong / correct sets and prepare the followings
-        - done
-    - [ ] selection prompts
+        - [ ] if not applicable, create example with claude sonnet. 
+    - [ ] ocw, math: try sp.latex(solution()) 
+        - no need to dataset-specific fewshots
+    - [ ] selection prompts: dataset-specific
         - exclude edgecases for those
         - [x] GSM, util
         - [ ] OCW
         - [ ] MATH
         - [ ] double check if the cot path of the solution is also appropriate (not correct by chance)
-    - [ ] RIMS prompts
+    - [ ] RIMS prompts: dataset-specific
         - [ ] OCW
         - [ ] MATH
         - [ ] util test 

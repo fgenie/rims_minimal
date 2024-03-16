@@ -1,0 +1,195 @@
+math 
+
+
+question 0
+            "Problem:\nFind the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}\n",
+
+WRONG 
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+def solution():
+    """Find the domain of the expression sqrt(x-2) / sqrt(5-x)"""
+    # The expression is defined when the denominator is not zero and the radicand is non-negative
+    # Denominator is not zero when x != 5
+    # Radicands are non-negative when x >= 2 and x <= 5
+    domain = [x for x in range(2, 6) if x != 5]
+    return domain
+[2, 3, 4]
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+def domain():
+    # The domain x is greater than or equal to 2
+    lower_bound = 2
+    # and x is less than 5
+    upper_bound = 5
+    
+    # The domain will be in interval notation
+    return f'[{lower_bound}, {upper_bound})'
+[2, 5)
+
+--- 
+
+question 3 
+            "Problem:\nIf the system of equations\n\n\\begin{align*}\n6x-4y&=a,\\\\\n6y-9x &=b.\n\\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,\nfind $\\frac{a}{b},$ assuming $b$ is nonzero.\n"
+
+
+
+WRONG
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+def solution():
+    """Solve for a/b in the system of equations 6x-4y=a and 6y-9x=b"""
+    # Given equations: 6x-4y=a, 6y-9x=b
+    # Since the system has a solution where x and y are both nonzero,
+    # we can set these equations equal to each other and solve for a/b
+    # 6x-4y = 6y-9x
+    # 15x = 10y
+    # x/y = 10/15 = 2/3
+    a = 6*(2/3) - 4*(1)  # Substitute x=2, y=3 in first equation
+    b = 6*(3) - 9*(2)    # Substitute x=2, y=3 in second equation
+
+    result = a / b
+    return result
+ZeroDivisionError: float division by zero
+
+CORRECT 
+(N/A)
+
+
+
+---
+
+question 1
+            "Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n",
+
+WRONG
+(N/A)
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+def solution():
+    """If det A = 2 and det B = 12, find det(AB)."""
+    det_A = 2
+    det_B = 12
+    det_AB = det_A * det_B
+    result = det_AB
+    return result
+24
+
+
+--- 
+
+question 2
+            "Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n",
+
+
+WRONG
+prep'd by claude sonnet
+def solution():
+    weight1 = 20
+    weight2 = 15
+    lifts1 = 12
+
+    # Incorrectly assuming that the number of lifts is proportional to the weight
+    lifts2 = lifts1 * (weight2 / weight1)
+
+    return lifts2
+9.0
+
+CORRECT
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+def solution():
+    """Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?"""
+    weight1 = 20
+    weight2 = 15
+    lifts1 = 12
+    total_weight1 = weight1 * 2 * lifts1
+    lifts2 = total_weight1 / (weight2 * 2)
+    result = lifts2
+    return result
+16.0
+
+
+
+
+-----
+
+ocw 
+
+question 0
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+def arginine_net_charge_at_ph1():
+    # These are the expected charges at pH 1.0
+    charge_alpha_amino = +1     # protonated amino group
+    charge_alpha_carboxyl = 0   # protonated carboxyl group is neutral
+    charge_guanidino = +1       # protonated guanidino group
+
+    net_charge = charge_alpha_amino + charge_alpha_carboxyl + charge_guanidino
+    return f"+{net_charge}"
+
+WRONG
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+def calculate_charge_of_arginine(pH, pKa_carboxyl=2.17, pKa_amino=9.04, pKa_guanidinium=12.48):
+    # At pH 1.0, the carboxyl group COOH is protonated and has a charge of 0.
+    charge_carboxyl = 0 if pH < pKa_carboxyl else -1
+    
+    # At pH 1.0, the amino group NH3+ is protonated and has a charge of +1.
+    charge_amino = +1 if pH < pKa_amino else 0
+    
+    # At pH 1.0, the guanidinium group is protonated and has a charge of +1.
+    charge_guanidinium = +1 if pH < pKa_guanidinium else 0
+    
+    # Net charge is the sum of individual group charges.
+    net_charge = charge
+None 
+
+---
+
+question 1 
+
+CORRECT
+prep by claude sonnet zeroshot
+import sympy as sp
+
+def solution():
+    s = sp.symbols('s')
+    a, b = sp.symbols('a b', positive=True)
+    Y = 1/((s+a)*(s+b))
+    y = sp.inverse_laplace_transform(Y, s, 't')
+    
+    preamble = r"Preamble: For each Laplace Transform $Y(s)$, find the function $y(t)$:"
+    subproblem = r"Subproblem 0: "
+    boxed_Y = r"\boxed{\frac{1}{(s+a)(s+b)}}"
+    latex_y = sp.latex(y)
+    
+    result = latex_y
+    return result
+
+WRONG
+prep by claude sonnet zeroshot
+import sympy as sp
+
+def wrong_solution():
+    s = sp.symbols('s')
+    a, b = sp.symbols('a b', positive=True)
+    Y = 1/((s+a)*(s+b))
+    
+    # Mistake: Assuming the inverse Laplace transform is the same as the Laplace transform
+    y = Y
+    latex_y = sp.latex(y)
+    
+    result = latex_y
+    return result
+
+---
+question 2
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+"The characteristic polynomial \\( p(s) \\) for a differential equation can be derived by replacing \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1.\n\nGiven the differential equation:\n\\[ \\ddot{x} + b \\dot{x} + x = 0 \\]\n\nReplace \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1 to get the characteristic polynomial:\n\\[ p(s) = s^2 + bs + 1 \\]\n\nSo the characteristic polynomial \\( p(s) \\) is \\( s^2 + bs + 1 \\).
+\\( s^2 + bs + 1 \\)
+
+WRONG
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+"Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is obtained by substituting $x(t) = e^{st}$ into the differential equation to get the characteristic equation:\n\nSubstitute $x(t) = e^{st}$ into the differential equation:\n\\[\\begin{aligned} \\ddot{x} + b\\dot{x} + x &= 0 \\\\\ns^2e^{st} + be^{st} + e^{st} &= 0 \\\\\n(s^2 + b + 1)e^{st} &= 0 \\end{aligned}\\]\n\nThis gives us the characteristic polynomial:\n\\[p(s) = s^2 + b + 1\\]\n\nTherefore, the characteristic polynomial $p(s)$ of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is $\\boxed{s^2 + b + 1}$.\n",
+$\\boxed{s^2 + b + 1}$

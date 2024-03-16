@@ -25,12 +25,12 @@
                         "[2,5)",
                         "incorrect"
                     ],
-                    [
+                    [ //wrong
                         "$ in the interval $",
                         "[2,5)",
                         "incorrect"
                     ],
-                    [
+                    [ //wrong
                         "$ is $",
                         "[2,5)",
                         "incorrect"
@@ -60,7 +60,7 @@
                         "[2,5)",
                         "incorrect"
                     ],
-                    [
+                    [ // wrong 
                         "$\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$",
                         "[2,5)",
                         "incorrect"

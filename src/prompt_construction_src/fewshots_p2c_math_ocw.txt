@@ -1,0 +1,102 @@
+math 
+
+
+question 0
+            "Problem:\nFind the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}\n",
+
+WRONG 
+src/prompt_construction_src/ocw_MATH_solved_chatgpt_noseed.json
+"Solution:\nFor the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ to be defined, the value inside the square root must be non-negative. This means that both $x-2 \\ge 0$ and $5-x \\ge 0$.\n\nFrom $x-2 \\ge 0$, we get $x \\ge 2$.\n\nFrom $5-x \\ge 0$, we get $x \\le 5$.\n\nCombining the two inequalities, we have $2 \\le x \\le 5$.\n\nTherefore, the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is $\\boxed{[2,5]}$."
+$\\boxed{[2,5]}$
+
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we must consider two main constraints:\n\n1. The radicand (the expression inside the square root) of the numerator, $x - 2$, must be greater than or equal to zero.\n2. The radicand of the denominator, $5 - x$, must be greater than zero (not merely non-negative since the denominator cannot be zero).\n\nLet's address these constraints.\n\nFor the numerator, we want $x - 2 \\geq 0$, which simplifies to:\n$$x \\geq 2.$$\n\nFor the denominator, we want $5 - x > 0$, which simplifies to:\n$$x < 5.$$\n\nNow we combine these two inequalities to find the domain where both conditions are met:\n$$2 \\leq x < 5.$$\n\nThis is an interval from 2 to 5, including 2 but not including 5.\n\nTherefore, the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is $[2, 5)$.
+$[2, 5)$
+
+--- 
+
+question 3 
+            "Problem:\nIf the system of equations\n\n\\begin{align*}\n6x-4y&=a,\\\\\n6y-9x &=b.\n\\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,\nfind $\\frac{a}{b},$ assuming $b$ is nonzero.\n"
+
+
+
+WRONG
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+"Solution:\nTo solve this system of equations, we can multiply the second equation by 2 to simplify the system:\n\n\\begin{align*}\n6x - 4y &= a,\\\\\n12y - 18x &= 2b.\n\\end{align*}\n\nNow, we can add the two equations to eliminate $x$:\n\n\\begin{align*}\n6x - 4y + 12y - 18x &= a + 2b,\\\\\n-12x + 8y + 12y - 18x &= a + 2b,\\\\\n-30x + 20y &= a + 2b.\n\\end{align*}\n\nDividing the equation by 10, we get:\n\n\\begin{align*}\n-3x + 2y &= \\frac{a + 2b}{10}.\n\\end{align*}\n\nSince $x$ and $y$ are both nonzero, we can divide the equation by 2:\n\n\\begin{align*}\n-1.5x + y &= \\frac{a + 2b}{20}.\n\\end{align*}\n\nThis implies that $\\frac{a}{b} = \\boxed{-3}$.\n",
+$\\frac{a}{b} = \\boxed{-3}$
+
+CORRECT 
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+Let's examine the system of equations:\n\\begin{align*}\n6x - 4y &= a \\quad (1) \\\\\n6y - 9x &= b \\quad (2)\n\\end{align*}\n\nTo find $\\frac{a}{b}$, we can solve for $x$ in terms of $y$ (or $y$ in terms of $x$) by rearranging one of the equations and then substitute it into the other equation.\n\nFrom equation (1), we can rearrange for $x$:\n\\begin{align*}\n6x &= a + 4y \\\\\nx &= \\frac{a}{6} + \\frac{2}{3}y \\quad (3)\n\\end{align*}\n\nNow, let's substitute this into equation (2):\n\\begin{align*}\n6y - 9\\left(\\frac{a}{6} + \\frac{2}{3}y\\right) &= b \\\\\n6y - \\frac{3}{2}a - 6y &= b \\\\\n-\\frac{3}{2}a &= b\n\\end{align*}\n\nMultiplying both sides by $-\\frac{2}{3}$ gives us:\n\\begin{align*}\na &= -\\frac{2}{3}b\n\\end{align*}\n\nThus, the ratio $\\frac{a}{b}$ is:\n\\begin{align*}\n\\frac{a}{b} &= -\\frac{2}{3}\n\\end{align*}\n\nSince the problem states that there exists a solution $(x, y)$ where both $x$ and $y$ are nonzero, we can conclude the ratio without solving for the actual values of $x$ and $y$ because the ratio only depends on the coefficients of $x$ and $y$ in the equations.\n\nFinal Answer: The ratio $\\frac{a}{b}$ is $-\\frac{2}{3}$.
+$-\\frac{2}{3}$
+
+
+
+---
+
+question 1
+            "Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n",
+
+WRONG
+(N/A)
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+"The determinant of the product of two square matrices is equal to the product of their determinants. Therefore, if you have two matrices $\\mathbf{A}$ and $\\mathbf{B}$ with determinants $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12$, respectively, then the determinant of their product $\\mathbf{A} \\mathbf{B}$ is given by:\n\n$$\\det (\\mathbf{A} \\mathbf{B}) = (\\det \\mathbf{A})(\\det \\mathbf{B}) = 2 \\cdot 12 = 24.$$\n\nSo, $\\det (\\mathbf{A} \\mathbf{B}) = 24$.",
+
+
+--- 
+
+question 2
+            "Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n",
+
+
+WRONG
+(N/A) parsing fail exists, no real fail exists
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+"Solution:\nIf Terrell lifts two 20-pound weights 12 times, he lifts a total weight of:\n$$\n\\text{Total weight with 20-pound weights} = 2 \\times 20 \\times 12 = 40 \\times 12 = 480 \\text{ pounds}\n$$\n\nIf he uses two 15-pound weights instead, and lifts them $n$ times, his total lifted weight with the 15-pound weights will be:\n$$\n\\text{Total weight with 15-pound weights} = 2 \\times 15 \\times n = 30n \\text{ pounds}\n$$\n\nWe want the total weight lifted with the 15-pound weights to equal the total weight lifted with the 20-pound weights:\n$$\n30n = 480\n$$\n\nTo find $n$, we solve for it:\n$$\nn = \\frac{480}{30} = 16\n$$\n\nTerrell must lift the two 15-pound weights 16 times to lift the same total weight as when he lifts two 20-pound weights 12 times.\n\nFinal Answer: Terrell must lift the 15-pound weights 16 times."
+
+
+
+
+-----
+
+ocw 
+
+question 0
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+Arginine is an amino acid that has three groups that can either be protonated or deprotonated depending on the pH of the solution:\n\n1. The amino group (\u2013NH2) with a pKa around 9.0. Below this pH, it will be protonated (\u2013NH3+).\n2. The carboxyl group (\u2013COOH) with a pKa around 2.1. Below this pH, it will be protonated (-COOH).\n3. The side chain guanidinium group (\u2013NH\u2013C(=NH2)NH2+) with a pKa around 12.5. Below this pH, it will be protonated.\n\nAt pH 1.0, which is significantly below the pKa values of all the ionizable groups:\n\n- The amino group will be fully protonated, contributing +1 charge.\n- The carboxyl group will be fully protonated and neutral.\n- The guanidinium group on the side chain will also be fully protonated, contributing another +1 charge.\n\nTherefore, the net charge of arginine at pH 1.0 will be the sum of the charges of the protonated groups: +1 (from the amino group) + 0 (from the carboxyl group) + +1 (from the guanidinium group) = +2\n\nThe formatted answer: +2",
+
+WRONG
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+"Solution:\nThe net charge of arginine in a solution of pH 1.0 can be calculated by considering the pKa values of its ionizable groups. Arginine has three ionizable groups: the carboxyl group with a pKa around 2.2, the amino group with a pKa around 9.0, and the guanidinium group with a pKa around 12.5.\n\nAt pH 1.0:\n- The carboxyl group will be protonated (+1 charge).\n- The amino group will be protonated (+1 charge).\n- The guanidinium group will be protonated (+1 charge).\n\nTherefore, the net charge of arginine at pH 1.0 is +3.\n\nFinal answer: The net charge of arginine in a solution of pH 1.0 is +3.",
+
+---
+
+question 1 
+
+CORRECT
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+"Solution:\nWe can simplify the given Laplace Transform using partial fractions:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying both sides by \\((s+a)(s+b)\\) gives:\n\\[1 = A(s+b) + B(s+a)\\]\n\nNow, we can solve for \\(A\\) and \\(B\\) by setting \\(s=-a\\) and \\(s=-b\\):\nSetting \\(s=-a\\):\n\\[1 = A(-a+b) \\implies A = \\frac{1}{b-a}\\]\n\nSetting \\(s=-b\\):\n\\[1 = B(-b+a) \\implies B = \\frac{1}{a-b}\\]\n\nTherefore, the partial fraction decomposition is:\n\\[Y(s) = \\frac{1}{b-a} \\cdot \\frac{1}{s+a} - \\frac{1}{a-b} \\cdot \\frac{1}{s+b}\\]\n\nTaking the inverse Laplace Transform, the function \\(y(t)\\) is:\n\\[y(t) = \\frac{1}{b-a}(e^{-at} - e^{-bt})\\]\n\nFinal answer: The function \\(y(t)\\) is \\(\\frac{1}{b-a}(e^{-at} - e^{-bt})\\)."
+
+WRONG
+(N/A) (mostly fails to compare eq and exp )
+
+
+---
+question 2
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+"The characteristic polynomial \\( p(s) \\) for a differential equation can be derived by replacing \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1.\n\nGiven the differential equation:\n\\[ \\ddot{x} + b \\dot{x} + x = 0 \\]\n\nReplace \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1 to get the characteristic polynomial:\n\\[ p(s) = s^2 + bs + 1 \\]\n\nSo the characteristic polynomial \\( p(s) \\) is \\( s^2 + bs + 1 \\).
+\\( s^2 + bs + 1 \\)
+
+WRONG
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+"Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is obtained by substituting $x(t) = e^{st}$ into the differential equation to get the characteristic equation:\n\nSubstitute $x(t) = e^{st}$ into the differential equation:\n\\[\\begin{aligned} \\ddot{x} + b\\dot{x} + x &= 0 \\\\\ns^2e^{st} + be^{st} + e^{st} &= 0 \\\\\n(s^2 + b + 1)e^{st} &= 0 \\end{aligned}\\]\n\nThis gives us the characteristic polynomial:\n\\[p(s) = s^2 + b + 1\\]\n\nTherefore, the characteristic polynomial $p(s)$ of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is $\\boxed{s^2 + b + 1}$.\n",
+$\\boxed{s^2 + b + 1}$

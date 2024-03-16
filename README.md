@@ -67,6 +67,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] harvest wrong / correct sets and prepare the followings
         - done
     - [ ] selection prompts
+        - exclude edgecases for those
         - [x] GSM, util
         - [ ] OCW
         - [ ] MATH
@@ -76,5 +77,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
         - [ ] MATH
         - [ ] util test 
     - [ ] dbg (`run_inference.py`)
+        - [ ] backbone-modelname problem?
     - [ ] test after applying `@utils.cost_tracking.CountTokens`
+        - [ ] query_f's' returns need to include in/out tokens information (do not change the number of outputs of query_f's) 
          

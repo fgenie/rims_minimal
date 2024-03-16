@@ -1,9 +1,8 @@
 from utils.llm_query_utils import query_cot, query_pal, query_plancode, \
-                                query_selection, get_select_prompt, \
                                 safe_execute_turbo, extract_num_turbo, extract_ans_from_cot_MATHnOCW
 from utils.math_util import is_equiv, \
                             is_equiv_ocw, \
-                            normalize_final_answer, normalize_symbolic_expression         
+                            normalize_final_answer
 
 from fire import Fire 
 # from omegaconf import OmegaConf 
@@ -14,30 +13,10 @@ import json
 from functools import partial
 from typing import Callable, Literal, Any
 from collections import defaultdict
+from tqdm import tqdm
+from utils.math_util import ocw_check_answer, math_check_answer, gsm_check_answer
 
-def gsm_check_answer(a1, a2):
-    try: 
-        decision = abs(a1-a2)<1e-3
-    except Exception as e:
-        print(e)
-        decision = None
-    return decision
 
-def ocw_check_answer(a1, a2):
-    """
-    check if a1 and a2 are equivalent in ocw
-    """
-    a1, a2 = map(str, [a1, a2])
-    decision = is_equiv_ocw(a1, a2, use_sym_exp_normalizer=True) 
-    return decision
-
-def math_check_answer(a1, a2):
-    """
-    check if a1 and a2 are equivalent in math
-    """
-    a1, a2 = map(str, [a1, a2])
-    decision = is_equiv(normalize_final_answer(a1), normalize_final_answer(a2))
-    return decision
 
 def correct_incorrect_query_results(question:str="", 
                        method:Literal["cot", "pal", "p2c"]="",
@@ -115,36 +94,35 @@ def main():
     ocw_answers = prompt_d["ocw_cot"]["answers"]
 
     # test
-    normalize_symbolic_expression(ocw_answers[-2])
-    for a in ocw_answers:
-        print(a)
-        print("new", str(normalize_symbolic_expression(a)))
-        print("original", str(normalize_final_answer(a)))
+    # normalize_symbolic_expression(ocw_answers[-2])
+    # for a in ocw_answers:
+    #     print(a)
+    #     print("new", str(normalize_symbolic_expression(a)))
+    #     print("original", str(normalize_final_answer(a)))
 
     # inference_kwargs
     cot_kwargs = dict(
         # question: str, 
         dataset_type = "tobefilled", 
-        temperature = 0.9, 
-        backbone = "chatgpt0125", # "GPT4-1106", #"chatgpt0125",
+        temperature = 1., 
+        backbone = "gpt4turbo", 
         seed=None,
     )
     pal_kwargs = dict(
-        temperature=0.7, 
-        backbone = "chatgpt0125", # "GPT4-1106", #"chatgpt0125",
+        temperature=1., 
+        backbone = "gpt4turbo",
         seed=None,
     )
     p2c_kwargs = dict(
         # question: str,  
         # n=1,
-        plan_temperature = 0.5,
-        code_temperature = 0.7,
-        backbone = "chatgpt0125", # "`GPT4`-1106", #"chatgpt0125",
+        plan_temperature = 1.,
+        code_temperature = 1.,
+        backbone = "gpt4turbo", # chatgpt0125
         seed = None,
     )
 
-    # dataset_types = ["math", "ocw"]
-    dataset_types = ["ocw"]
+    dataset_types = ["math", "ocw"]
     methods = ["cot", "pal", "p2c"]
     
 
@@ -194,7 +172,7 @@ def main():
             kwargs = eval(f"{m}_kwargs")
             if m == "cot":
                 kwargs.update({"dataset_type": dstype})
-            for i, q, a in zip(range(len(questions)), questions, answers):
+            for i, q, a in tqdm(zip(range(len(questions)), questions, answers), total = len(questions)):
                 result_dict[dstype][m][i] = correct_incorrect_query_results(
                                                                 question=q, 
                                                                 answer=a,
@@ -203,7 +181,7 @@ def main():
                                                                 inference_kwargs=kwargs, 
                                                                 )    
     
-    jsonf = "chatgpt0125_ocw_prep_prompt_mar11.json"
+    jsonf = "gpt4turbo1106_ocw_prep_prompt_mar16.json" # chatgpt one looked bad..
     with open(jsonf, "w") as f:
         json.dump(result_dict, f, indent=4)
         print(jsonf, "saved")

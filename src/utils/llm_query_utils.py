@@ -25,10 +25,21 @@ THIS_PARENT = Path(__file__).parent.resolve()
 # # key_file_path = "/Users/seonils/my_openai_key.txt"
 
 # client = OpenAI(api_key=open(key_file_path).read().strip())
+
+# client = AzureOpenAI(
+#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+#     api_version="2024-03-01-preview",
+#     timeout=120,
+#     max_retries=3,
+# )
+
 client = AzureOpenAI(
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version="2024-03-01-preview",
+    azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
+    api_version="2023-07-01-preview",
+    timeout=120,
+    max_retries=3,
 )
 
 def exception_handler(func):
@@ -88,7 +99,8 @@ def query_cot(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
@@ -105,7 +117,7 @@ def query_cot(
 
 
     completions = []
-    cot_solution = client.chat.completions.create(
+    cot_solution =client.chat.completions.create(
         model=model_name,
         max_tokens=max_tokens,
         stop="\n\n\n",
@@ -114,7 +126,8 @@ def query_cot(
         top_p=1.0,
         seed=seed,
         n=n,
-        timeout=60,
+        # timeout=120,
+        # max_retry=3,
         )
     if n == 1:
         completions = [cot_solution.choices[0].message.content]
@@ -146,7 +159,7 @@ def _query(  # key,
         top_p=top_p,
         n=n,
         seed=seed,
-        timeout=60,
+        # timeout=120,
         )
     if n == 1:
         content = resp.choices[0].message.content  # str
@@ -187,7 +200,8 @@ def query_plancode(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
@@ -272,7 +286,8 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
@@ -289,14 +304,14 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     
     completions = []
     pal_solution = client.chat.completions.create(model=model_name,
-        max_tokens=500,
+        max_tokens=1024,
         stop="\n\n\n",
         messages=query_message,
         temperature=temperature,
         top_p=1.0,
         seed=777,
         n=n,
-        timeout=60,
+        # timeout=120,
         )
 
     if n == 1:
@@ -318,6 +333,7 @@ def query_selection(
     pal_solution: str = "",
     p2c_plan_code_solution: str = "",
     temperature: float = 0.,
+    max_tokens: int = 400,
 ):
     def postprocess_selection(selection_str: str) -> str:
         ptn = r"\([A-C]\)"
@@ -334,7 +350,8 @@ def query_selection(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
@@ -360,14 +377,14 @@ def query_selection(
         question, cot_pal_p2c_solution_d, backbone=backbone
     )
     select_str = client.chat.completions.create(model=model_name,
-        max_tokens=200,
+        max_tokens=max_tokens,
         seed=777,  # added on dec 21
         stop="\n\n",
         messages=selection_message,
         temperature=temperature,
         top_p=1.0,
         n=1,
-        timeout=60,
+        # timeout=60,
         ).choices[0].message.content
 
     final_answer = postprocess_selection(select_str)
@@ -390,7 +407,8 @@ def query_rims_inference(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
@@ -652,7 +670,7 @@ def query_rims_inference(
             messages=messages,
             temperature=temperature,
             n=n,
-            timeout=60,
+            # timeout=120,
             ).choices[0].message.content # str
         if continue_writing_gpt_messages is not None:
             msgs_except_inst = continue_writing_gpt_messages[:-1]
@@ -683,7 +701,7 @@ def query_rims_inference(
             messages=messages,
             temperature=temperature,
             n=n,
-            timeout=60,
+            # timeout=120,
             ).choices[i].message.content
             for i in range(n)
         ]  # str
@@ -1251,6 +1269,12 @@ def extract_ans_from_cot_MATHnOCW(solution:str)->str:
     prefix2 = "The final answer is"
     suffix = ". I hope it is correct." # this does not appear frequently in response... but let us use it just in case. 
     
+    # # 0. replace "{somefloatingnumber}$" to {somefloatingnumber} --> problematic
+    # ptn = r"(?:\d{1,3}(?:,\d{3})*|\d+)(?:\.\d*)?\$"
+    # cost_usds = re.findall(ptn, solution)
+    # for bill in cost_usds:
+    #     solution = solution.replace(bill, bill.replace("$", "")) 
+
     # assume the solution followed the few-shot format
     # 1. Answer strictly followed the format in the few-shot examples
     solution = solution.split(prefix1)[-1].strip()

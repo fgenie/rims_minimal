@@ -3,13 +3,22 @@ from typing import Dict, Any
 
 class CountTokens:
     """
+    # llm_query_utils.py
     @CountTokens
     def query_cot():
         return
 
-    will initialize a CountTokens object with the query_cot function as the func attribute, but letting function profile appear as `query_cot`
+    # main.py
+    ...
+    ..
+    .
     
-    will count and record the total number of tokens used by the function 
+    query_cot.print_summary()
+        
+    
+    will initialize a CountTokens object with the query_cot function as the `self.func` attribute, but letting function profile as `query_cot`
+    
+    This decorator will count the total number of tokens used by the function 
     """
     def __init__(self, func):
         self.func = func
@@ -66,3 +75,33 @@ class CountTokens:
         print(f"Total tokens out: {self.total_toks_out}")
         print(f"Number of calls: {self.n_called}")
     
+
+
+def tokens2usd(toks_in: int=0, toks_out: int=0, model: str="") -> float:
+    """
+    # Example usage
+    cost = tokens2usd(toks_in=500_000, toks_out=500_000, model="gpt-3.5-turbo-1106")
+    print(f"Cost: ${cost:.4f}")
+    """
+    # Define the cost per 1,000,000 tokens for each model type for input and output
+    pricing = {
+        "gpt-3.5-turbo-1106": {"input": 1.00, "output": 2.00},
+        "gpt-3.5-turbo-0613": {"input": 1.50, "output": 2.00},
+        "gpt-3.5-turbo-16k-0613": {"input": 3.00, "output": 4.00},
+        "gpt-3.5-turbo-0301": {"input": 1.50, "output": 2.00},
+        "gpt-3.5-turbo-0125": {"input": 0.50, "output": 1.50},
+        "gpt-3.5-turbo-instruct": {"input": 1.50, "output": 2.00},
+        "gpt-4-1106-preview": {"input": 10.00, "output": 30.00},
+        "gpt-4-0125-preview": {"input": 10.00, "output": 30.00},
+        "gpt-4": {"input": 30.00, "output": 60.00},
+        "gpt-4-32k": {"input": 60.00, "output": 120.00},
+    }
+
+    # Check if the provided model is in the pricing dictionary
+    if model not in pricing:
+        raise ValueError(f"Unknown model type: {model}")
+
+    # Calculate the cost in USD for input and output tokens separately
+    cost_in_usd = (toks_in / 1_000_000) * pricing[model]["input"] + (toks_out / 1_000_000) * pricing[model]["output"]
+
+    return cost_in_usd

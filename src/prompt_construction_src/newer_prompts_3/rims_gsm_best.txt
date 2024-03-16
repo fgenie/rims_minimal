@@ -1,0 +1,1 @@
+../prep_rims_prompts/gsm_prompts/3_reflectonce_p2c2cot.pal2p2c.pal2cot.txt_rm_ans

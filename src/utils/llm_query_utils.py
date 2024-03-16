@@ -268,7 +268,13 @@ def query_plancode(
         return None, None, {"codequery": code_query_msg, "planquery": plan_query_msg}
 
 
-def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
+def query_pal(question: str, 
+              temperature: float, 
+              backbone: str, 
+              n=1, 
+              seed=777,
+              dataset_type:Literal["gsm", "ocw", "math", "svamp"]=None,
+              ):
     """
     This function is used to query OpenAI for PAL solutions.
 
@@ -281,7 +287,10 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     Returns:
         completions: a list containing the PAL solution
     """
-    query_message = get_pal_prompt(question, backbone=backbone)
+    if dataset_type not in "gsm ocw math svamp":
+        raise ValueError(f"query_pal(): {dataset_type=} is not supported")
+    
+    query_message = get_pal_prompt(question, backbone=backbone, dataset_type=dataset_type)
     # print(query_message)
     if backbone == "gpt4":
         model_name = "gpt-4"
@@ -309,7 +318,7 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
         messages=query_message,
         temperature=temperature,
         top_p=1.0,
-        seed=777,
+        seed=seed,
         n=n,
         # timeout=120,
         )
@@ -847,13 +856,14 @@ def get_user_assistant_messages(
 def get_cot_prompt(
         question: str, 
         backbone: str,
-        dataset_type: Literal["gsm", "ocw", "math"],
+        dataset_type: Literal["gsm", "ocw", "math"]=None,
         ):
     """
     This function is used to generate the CoT prompt.
     append "Question: " to the `question`
     """
-    assert dataset_type in ["gsm", "ocw", "math"], f"{dataset_type=} must be in ['gsm', 'ocw', 'math']"
+    if dataset_type not in "gsm ocw math":
+        raise ValueError(f"get_cot_prompt(): {dataset_type=} is not supported")
     
     if dataset_type == "gsm":
         if backbone == "gpt4" : #or backbone == "gpt4turbo":
@@ -873,10 +883,10 @@ def get_cot_prompt(
         # open ocw/MATH targeted CoT prompts
         ymlf = THIS_PARENT/"ocw_MATH_prompts.yaml"
         prompt_d = yaml.full_load(open(ymlf))
-        # prompt_d = OmegaConf.load(ymlf)
         pmpt_d = prompt_d[f"{dataset_type}_cot"]
         system_message = pmpt_d["system"]
         user_msgs = pmpt_d["user"]
+        
         # make it to a chat-history
         assistant_msgs = pmpt_d["assistant"]
         messages = [
@@ -886,46 +896,58 @@ def get_cot_prompt(
         for u, a in zip(user_msgs, assistant_msgs):
             messages.append({"role": "user", "content": u})
             messages.append({"role": "assistant", "content": a})
+        
         # add question of interest with the template
         user_attempt = pmpt_d["user_tmp"].replace("{QUESTION}", question)
         messages += [{"role": "user", "content": user_attempt}]
         
     else:
-        assert False, f"{dataset_type=} must be in ['gsm', 'ocw', 'math']"    
+        raise ValueError(f"get_cot_prompt(): {dataset_type=} is not supported")
 
     return messages
 
 
-def get_pal_prompt(question: str, backbone: str):
+def get_pal_prompt(question: str, backbone: str, dataset_type: Literal["gsm", "ocw", "math", "svamp"]=None):
     """
     This function is used to generate the PAL prompt.
     """
-    if backbone == "gpt4" or backbone == "gpt4turbo":
-        system_message = math_prompt.GPT4_PAL_SYSTEM
-        user_message = math_prompt.GPT4_PAL_USER
-        assistant_message = math_prompt.GPT4_PAL_ASSISTANT
-        messages = get_user_assistant_messages(
-            system_message, user_message, assistant_message
-        )
+    if dataset_type not in "gsm ocw math svamp":
+        raise ValueError(f"get_pal_prompt(): {dataset_type=} is not supported")
+    
+    if dataset_type in "gsm svamp":
+        if backbone == "gpt4" or backbone == "gpt4turbo":
+            system_message = math_prompt.GPT4_PAL_SYSTEM
+            user_message = math_prompt.GPT4_PAL_USER
+            assistant_message = math_prompt.GPT4_PAL_ASSISTANT
+            messages = get_user_assistant_messages(
+                system_message, user_message, assistant_message
+            )
 
-        messages += [
-            {"role": "user", "content": f"Question: {question}\n\n# solution in Python"}
-        ]
+            messages += [
+                {"role": "user", "content": f"Question: {question}\n\n# solution in Python"}
+            ]
 
-    elif "chatgpt" in backbone:
-        system_message = math_prompt.TURBO_PAL_SYSTEM
-        user_message = math_prompt.TURBO_PAL_USER
-        assistant_message = math_prompt.TURBO_PAL_ASSISTANT
-        messages = get_user_assistant_messages(
-            system_message, user_message, assistant_message
-        )
+        elif "chatgpt" in backbone:
+            system_message = math_prompt.TURBO_PAL_SYSTEM
+            user_message = math_prompt.TURBO_PAL_USER
+            assistant_message = math_prompt.TURBO_PAL_ASSISTANT
+            messages = get_user_assistant_messages(
+                system_message, user_message, assistant_message
+            )
 
-        messages += [
-            {
-                "role": "user",
-                "content": f"Answer the following question in Python: {question}",
-            }
-        ]
+            messages += [
+                {
+                    "role": "user",
+                    "content": f"Answer the following question in Python: {question}",
+                }
+            ]
+    elif dataset_type == "ocw":
+        pass
+    elif dataset_type == "math": 
+        pass
+    else:
+        raise ValueError(f"get_pal_prompt(): {dataset_type=} is not supported")
+
     return messages
 
 

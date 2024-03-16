@@ -52,11 +52,14 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
 ## reset experiment prompts 
  - [x] `query_rims_inference()` do not require max_token == 2048, long p2c to pal reflection blurb is around 700, so I set its value to 1024, which would be 1.5x of the long blurb (observation: max reflection = 2 times)
  - [ ] prompts
-    - [x] p2c prompts
+    - [x] p2c prompts (leave it stay in this form to deviate results from pal)
         - [x] MBPP prompts in the paper
     - [x] cot prompts
-        - [x] OCW
+        - [x] OCW 
         - [x] MATH
+    - [x] pal prompts (UPDATE!)
+        - [x] OCW
+        - [x] MATH 
     - [x] util test for aboves 
     - [x] does OCW parsing function, changed, works better than before??
         - [x] changing ocw parsing function does not do any good...
@@ -65,15 +68,12 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
         - [x] indeed! and found it does not parse scientific-formatting as well so I've fixed it.   
         - [x] re-evaluate the previous `MATH`, `ocw_courses` results 
     - [x] harvest wrong / correct sets and prepare the followings
-        - [ ] if not applicable, create example with claude sonnet. 
-    - [ ] ocw, math: try sp.latex(solution()) 
-        - no need to dataset-specific fewshots
+        - [x] if not applicable, create example with claude sonnet. 
+    - [x] ocw, math: try sp.latex(solution()) 
     - [ ] selection prompts: dataset-specific
-        - exclude edgecases for those
         - [x] GSM, util
         - [ ] OCW
         - [ ] MATH
-        - [ ] double check if the cot path of the solution is also appropriate (not correct by chance)
     - [ ] RIMS prompts: dataset-specific
         - [ ] OCW
         - [ ] MATH
@@ -81,5 +81,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [ ] dbg (`run_inference.py`)
         - [ ] backbone-modelname problem?
     - [ ] test after applying `@utils.cost_tracking.CountTokens`
-        - [ ] query_f's' returns need to include in/out tokens information (do not change the number of outputs of query_f's) 
+        - [ ] 1 more output for `token_info` dict
+            - query_f's : _query, query_cot, query_selection, query_rims_inference 
+        - [ ] CountTokens need to crunch the `token_info`
          

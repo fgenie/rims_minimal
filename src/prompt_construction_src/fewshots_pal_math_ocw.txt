@@ -201,8 +201,21 @@ question 1
       \[Y(s)=\boxed{\frac{1}{(s+a)(s+b)}}\]
 
 
-CORRECT
-N/A
+CORRECT # does not evaluate to `true` but is correct for sure.
+import sympy as sp
+def solution():
+    # Define variables
+    s, t, a, b = sp.symbols('s t a b')
+    # Define the Laplace transform
+    Y_s = 1 / ((s + a) * (s + b))
+    # Calculate the inverse Laplace transform
+    y_t = sp.inverse_laplace_transform(Y_s, s, t)
+    # Check if y_t is an equation and extract the RHS
+    if isinstance(y_t, sp.Eq):
+        y_t_rhs = y_t.rhs
+    else:
+        y_t_rhs = y_t
+    return y_t_rhs
 
 WRONG
 prep by claude sonnet zeroshot
@@ -263,3 +276,26 @@ def faulty_solution():
     char_eq = diffeq.subs({diff(x, t, t): s**2, diff(x, t): s, x: 1}).lhs
     return sp.latex(char_eq)
 - b s + s^{2} - 1
+
+
+--- 
+
+question 3
+      Problem:
+      Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+      $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$. 
+
+CORRECT (gpt4zeroshot)
+from sympy import symbols, I, sqrt, latex
+def solution():
+    # Define the complex number z
+    z = 1 + sqrt(3) * I
+    # Calculate z^4
+    z_4 = z**4
+    # Simplify the result to get it in the form a + bi
+    z_4_simplified = z_4.expand(complex=True)
+    # Extract real and imaginary parts
+    a = z_4_simplified.as_real_imag()[0]
+    b = z_4_simplified.as_real_imag()[1]
+    return latex(a, b)
+"\\left( -8, \\  - 8 \\sqrt{3}\\right)"

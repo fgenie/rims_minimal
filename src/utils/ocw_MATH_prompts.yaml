@@ -1,7 +1,6 @@
 ocw_cot:
-  system: "You are a helpful assistant that can solve math problems step by step."
+  system: "You are a helpful assistant that can solve problems step by step."
   user_tmp: |
-    Problem:
     {QUESTION}
   user:
     - |
@@ -12,8 +11,7 @@ ocw_cot:
       Please format your answer as +n or -n.  
 
       Solution:
-      The answer is +2.                                                     
-      Final answer: The final answer is +2. I hope it is correct.
+      Arginine is an amino acid with three groups that can be protonated and contribute to its net charge, depending on the solution's pH:\n\n1. The carboxyl group (-COOH), which typically has a pKa around 2.17.\n2. The amino group (-NH3+), with a pKa around 9.04.\n3. The side chain (guanidinium group, -C(NH2)2+), which has a pKa of approximately 12.48.\n\nAt a pH of 1.0, all three groups are in their protonated forms due to the low pH value being well below their respective pKa values. The carboxyl group would be COOH, the amino group would be NH3+, and the side chain would be protonated as well. The net charge of arginine in this situation is the sum of the charges of these groups:\n\n- The carboxyl group (-COOH) is neutral at this pH.\n- The amino group (-NH3+) carries a charge of +1.\n- The guanidinium group (-C(NH2)2+) carries a charge of +1.\n\nNet charge = 0 (from -COOH) +1 (from -NH3+) +1 (from -C(NH2)2+)\n\nNet charge = +2\n\nThus, the net charge of arginine in a solution of pH 1.0 is +2.\n\nFinal answer: The net charge of arginine at pH 1.0 is +2.
 
 
       Now it's your turn. Here is another math problem:
@@ -70,7 +68,7 @@ ocw_cot:
     - "$\\left(-8, -8\\sqrt{3}\\right)$"  
 
 ocw_pal:
-  system: "You are a helpful assistant that can solve math problems by using Python code."
+  system: "You are a helpful assistant that can solve problems by using Python code."
   user_tmp: |
     {QUESTION}
 
@@ -78,7 +76,7 @@ ocw_pal:
 
   user:
     - |
-      Let's use python to solve math problems. You need to write python code to answer these math problems. Here is one example how to do it,
+      Let's use python to solve problems. You need to write python code to answer these problems. Here is one example how to do it,
 
       Problem:
       Subproblem 0: What is the net charge of arginine in a solution of $\mathrm{pH} 1.0$? 
@@ -170,7 +168,6 @@ ocw_pal:
 math_cot:
   system: "You are a helpful assistant that can solve math problems by using Python code."
   user_tmp: |
-    Problem:
     {QUESTION}
   user:
     - |

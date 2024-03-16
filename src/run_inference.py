@@ -9,6 +9,7 @@ from pqdm.processes import pqdm
 from tqdm import tqdm
 
 from utils.llm_query_utils import *
+from utils.llm_query_utils import _query # explicit import needed for hidden.
 
 # CONTINUE_WRITING_INVOKE_PROMPT = "Continue reaching to the correct answer, carefully following the format presented above."  # same as in 5_extend_*.py
 
@@ -96,18 +97,23 @@ def indiv_inference(
         solmap = dict()
 
     if "cot" in missing_methods:
-        cot_lst, _msgs = query_cot(
+        cot_lst, _msgs, _ = query_cot(
             question, dataset_type=dataset_type,
             temperature=temperature, n=n, backbone=backbone, seed=seed
         )
         cot_sol = cot_lst.pop()  # solution: str
-        cot_ans = extract_num_turbo(cot_sol)
+        if dataset_type in "gsm svamp":
+            cot_ans = extract_num_turbo(cot_sol)
+        elif dataset_type in "ocw math":
+            cot_ans = extract_ans_from_cot_MATHnOCW(cot_sol)
+        else:
+            raise ValueError(f"unsupported dataset_type: {dataset_type}")
         solmap["cot"] = cot_sol
         ansmap["cot"] = cot_ans
 
     if "pal" in missing_methods:
-        pal_lst, __msgs = query_pal(
-            question, temperature=temperature, n=n, backbone=backbone, seed=seed
+        pal_lst, __msgs, _ = query_pal(
+            question, temperature=temperature, n=n, backbone=backbone, seed=seed, dataset_type=dataset_type
         )
         pal_sol = pal_lst.pop()
         pal_ans = safe_execute_turbo(pal_sol)
@@ -196,6 +202,7 @@ def rims_complete_row(
                 __,
                 raw_query_out,
                 query_msg,
+                ___,
             ) = query_rims_inference(
                 question,
                 prompt_f,
@@ -355,6 +362,18 @@ def rims_inference(
         df.loc[df_done.index] = df_done # updating only selection-done rows in the original df
         records_done = df.to_dict(orient="records")
 
+    # do summary 
+    query_cot.print_summary()
+    query_pal.print_summary()
+    _query.print_summary()
+    query_rims_inference.print_summary()
+    model_name = backbone2model(backbone)
+    
+    query_cot.tokens2usd(model = model_name)
+    query_pal.tokens2usd(model = model_name)
+    _query.tokens2usd(model = model_name)
+    query_rims_inference.tokens2usd(model = model_name)
+
     with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
         for row in records_done:
             try:
@@ -364,6 +383,7 @@ def rims_inference(
                 writer_err.write(str(e) + "\n")
                 print(e)
                 print(f"{outpath}.errors")
+
     return
 
 
@@ -403,7 +423,7 @@ def baseline_complete_row(
     )
 
     if majority_ans is None:  # do selection
-        chosen_method, selection_str = query_selection(
+        chosen_method, selection_str, _ = query_selection(
             question,
             backbone=backbone,
             cot_solution=solmap["cot"],
@@ -548,6 +568,17 @@ def baseline_inference(
 
         return
 
+    # do summary 
+    query_cot.print_summary()
+    query_pal.print_summary()
+    _query.print_summary()
+    query_rims_inference.print_summary()
+    model_name = backbone2model(backbone)
+    
+    query_cot.tokens2usd(model = model_name)
+    query_pal.tokens2usd(model = model_name)
+    _query.tokens2usd(model = model_name)
+    query_rims_inference.tokens2usd(model = model_name)
 
 if __name__ == "__main__":
     Fire()

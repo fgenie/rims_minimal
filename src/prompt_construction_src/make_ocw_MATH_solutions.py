@@ -109,6 +109,7 @@ def main():
         seed=None,
     )
     pal_kwargs = dict(
+        dataset_type = "tobefilled", 
         temperature=1., 
         backbone = "gpt4turbo",
         seed=None,
@@ -170,7 +171,7 @@ def main():
             result_dict[dstype]["questions"] = questions
             result_dict[dstype]["answers"] = answers
             kwargs = eval(f"{m}_kwargs")
-            if m == "cot":
+            if m in "cot pal":
                 kwargs.update({"dataset_type": dstype})
             for i, q, a in tqdm(zip(range(len(questions)), questions, answers), total = len(questions)):
                 result_dict[dstype][m][i] = correct_incorrect_query_results(

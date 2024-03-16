@@ -1,20 +1,19 @@
 import re
 import os
 from itertools import combinations, chain
-
 from pathlib import Path
 from typing import Any, Literal, Union, List
+from collections import Counter
+import yaml
+
 
 import func_timeout
 from openai import OpenAI, AzureOpenAI
-
-import yaml
-# from omegaconf import OmegaConf
-from collections import Counter
+from sympy.parsing.latex import parse_latex
 
 from . import math_prompt, math_util
+from .cost_tracking import CountTokens
 
-from sympy.parsing.latex import parse_latex
 
 # Get the absolute path of the current script
 THIS_PARENT = Path(__file__).parent.resolve()
@@ -73,6 +72,7 @@ class PromptStr(str):
 
 
 ### llm query functions ###
+@CountTokens
 def query_cot(
     question: str, dataset_type:Literal["gsm", "ocw", "math"]="", 
     temperature: float = 0.0, backbone: str = "chatgpt", n:int=1, seed:int=777, max_tokens:int=1024,
@@ -96,28 +96,11 @@ def query_cot(
                                    dataset_type=dataset_type
                                    )
     # print(query_message)
-    if backbone == "gpt4":
-        model_name = "gpt-4"
-    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        # model_name = "gpt-4-1106-preview"
-        model_name = "GPT4-1106"
-    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
-        model_name = "gpt-3.5-turbo-0613" 
-    elif backbone == "chatgpt0125":
-        # model_name = "gpt-3.5-turbo-0125" 
-        model_name = "laba-gpt-35-turbo-0125"
-    elif backbone == "chatgpt1106":
-        # model_name = "gpt-3.5-turbo-1106"
-        model_name = "laba-gpt-35-turbo-1106"
-    elif backbone == "chatgpt0613long":
-        # model_name = "gpt-3.5-turbo-16k-0613"
-        model_name = "laba-gpt-35-turbo-16k-0613"
-    else:
-        raise ValueError(f"backbone: {backbone} is not supported")
+    model_name = backbone2model(backbone)
 
 
     completions = []
-    cot_solution =client.chat.completions.create(
+    resp =client.chat.completions.create(
         model=model_name,
         max_tokens=max_tokens,
         stop="\n\n\n",
@@ -129,16 +112,19 @@ def query_cot(
         # timeout=120,
         # max_retry=3,
         )
+    completion_usage = resp.usage
+
     if n == 1:
-        completions = [cot_solution.choices[0].message.content]
+        completions = [resp.choices[0].message.content]
     else:
         completions = [
-            cot_solution.choices[i].message.content for i in range(n)
+            resp.choices[i].message.content for i in range(n)
         ]
-    return completions, query_message
+    return completions, query_message, completion_usage
 
 
 # actual llm query function for p2c method
+@CountTokens
 def _query(  # key,
     model_name: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-16k-0613",
     max_tokens: int = 1024,
@@ -150,6 +136,9 @@ def _query(  # key,
     mode="plan",
     seed=777,
 ):  # mode = plan or code
+    """
+    atomic query func for query_plancode
+    """
     resp = client.chat.completions.create(
         model=model_name,
         max_tokens=max_tokens,
@@ -161,19 +150,20 @@ def _query(  # key,
         seed=seed,
         # timeout=120,
         )
+    completion_usage = resp.usage
     if n == 1:
         content = resp.choices[0].message.content  # str
         if mode == "plan":
             plan = postprocess_plan(content)  # it will complain when failing
-            return plan
+            return plan, completion_usage
         elif mode == "code":
             code = postprocess_code(content)
-            return code
+            return code, completion_usage
     else:  # n>1
         contents = [ch.message.content for ch in resp.choices]
         postprocess = postprocess_plan if mode == "plan" else postprocess_code
         res_strs = [postprocess(c) for c in contents]
-        return res_strs
+        return res_strs, completion_usage
 
 
 # p2c: querying plan and code separately inside
@@ -197,24 +187,7 @@ def query_plancode(
         [list of codes], [list of plans (1)], {codequery: str, planquery: str}
     """
     # specify model
-    if backbone == "gpt4":
-        model_name = "gpt-4"
-    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        # model_name = "gpt-4-1106-preview"
-        model_name = "GPT4-1106"
-    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
-        model_name = "gpt-3.5-turbo-0613" 
-    elif backbone == "chatgpt0125":
-        # model_name = "gpt-3.5-turbo-0125" 
-        model_name = "laba-gpt-35-turbo-0125"
-    elif backbone == "chatgpt1106":
-        # model_name = "gpt-3.5-turbo-1106"
-        model_name = "laba-gpt-35-turbo-1106"
-    elif backbone == "chatgpt0613long":
-        # model_name = "gpt-3.5-turbo-16k-0613"
-        model_name = "laba-gpt-35-turbo-16k-0613"
-    else:
-        raise ValueError(f"backbone: {backbone} is not supported")
+    model_name = backbone2model(backbone)
 
     if backbone.startswith("gpt4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
@@ -226,7 +199,7 @@ def query_plancode(
     # generate plan (retry included)
     plan_query_msg = get_plan_prompt(question, k_fewshot=k_fewshot)
     # print(plan_query_msg)
-    plan = _query(
+    plan, _ = _query(
         model_name=model_name,
         max_tokens=max_tokens,
         stop="Question: ",
@@ -241,7 +214,7 @@ def query_plancode(
     if plan:
         code_query_msg = get_plan2code_prompt(question, plan=plan, k_fewshot=k_fewshot)
         # print(code_query_msg)
-        code = _query(
+        code, _ = _query(
             model_name=model_name,
             max_tokens=1024,
             stop="Question: ",
@@ -267,7 +240,7 @@ def query_plancode(
     else:
         return None, None, {"codequery": code_query_msg, "planquery": plan_query_msg}
 
-
+@CountTokens
 def query_pal(question: str, 
               temperature: float, 
               backbone: str, 
@@ -292,27 +265,10 @@ def query_pal(question: str,
     
     query_message = get_pal_prompt(question, backbone=backbone, dataset_type=dataset_type)
     # print(query_message)
-    if backbone == "gpt4":
-        model_name = "gpt-4"
-    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        # model_name = "gpt-4-1106-preview"
-        model_name = "GPT4-1106"
-    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
-        model_name = "gpt-3.5-turbo-0613" 
-    elif backbone == "chatgpt0125":
-        # model_name = "gpt-3.5-turbo-0125" 
-        model_name = "laba-gpt-35-turbo-0125"
-    elif backbone == "chatgpt1106":
-        # model_name = "gpt-3.5-turbo-1106"
-        model_name = "laba-gpt-35-turbo-1106"
-    elif backbone == "chatgpt0613long":
-        # model_name = "gpt-3.5-turbo-16k-0613"
-        model_name = "laba-gpt-35-turbo-16k-0613"
-    else:
-        raise ValueError(f"backbone: {backbone} is not supported")
+    model_name = backbone2model(backbone)
     
     completions = []
-    pal_solution = client.chat.completions.create(model=model_name,
+    resp = client.chat.completions.create(model=model_name,
         max_tokens=1024,
         stop="\n\n\n",
         messages=query_message,
@@ -322,19 +278,20 @@ def query_pal(question: str,
         n=n,
         # timeout=120,
         )
+    completion_usage = resp.usage
 
     if n == 1:
         completions.extend(
-            [choice.message.content for choice in pal_solution.choices]
+            [choice.message.content for choice in resp.choices]
         )  # wtf this code...
         completions = completions[:1]
     else:  # this line might not be compatible with self-consistency setting in the original code
         completions = [
-            pal_solution.choices[i].message.content for i in range(n)
+            resp.choices[i].message.content for i in range(n)
         ]
-    return completions, query_message
+    return completions, query_message, completion_usage
 
-
+@CountTokens
 def query_selection(
     question: str,
     backbone: str,
@@ -356,24 +313,7 @@ def query_selection(
         else:
             return None
         
-    if backbone == "gpt4":
-        model_name = "gpt-4"
-    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        # model_name = "gpt-4-1106-preview"
-        model_name = "GPT4-1106"
-    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
-        model_name = "gpt-3.5-turbo-0613" 
-    elif backbone == "chatgpt0125":
-        # model_name = "gpt-3.5-turbo-0125" 
-        model_name = "laba-gpt-35-turbo-0125"
-    elif backbone == "chatgpt1106":
-        # model_name = "gpt-3.5-turbo-1106"
-        model_name = "laba-gpt-35-turbo-1106"
-    elif backbone == "chatgpt0613long":
-        # model_name = "gpt-3.5-turbo-16k-0613"
-        model_name = "laba-gpt-35-turbo-16k-0613"
-    else:
-        raise ValueError(f"backbone: {backbone} is not supported")
+    model_name = backbone2model(backbone)
 
     cot_pal_p2c_solution_list = [cot_solution, pal_solution, p2c_plan_code_solution]
     cot_pal_p2c_solution_list = [
@@ -385,7 +325,7 @@ def query_selection(
     selection_message = get_select_prompt(
         question, cot_pal_p2c_solution_d, backbone=backbone
     )
-    select_str = client.chat.completions.create(model=model_name,
+    response = client.chat.completions.create(model=model_name,
         max_tokens=max_tokens,
         seed=777,  # added on dec 21
         stop="\n\n",
@@ -394,12 +334,14 @@ def query_selection(
         top_p=1.0,
         n=1,
         # timeout=60,
-        ).choices[0].message.content
+        )
+    completion_usage = response.usage
+    select_str = response.choices[0].message.content
 
     final_answer = postprocess_selection(select_str)
-    return final_answer, select_str  # 'pal'|'p2c'|'cot'
+    return final_answer, select_str, completion_usage  # 'pal'|'p2c'|'cot'
 
-
+@CountTokens
 def query_rims_inference(
     question: str,
     prompt_f: str,
@@ -407,30 +349,12 @@ def query_rims_inference(
     temperature: float = 0.0,
     n: int = 1,
     max_tokens: int = 1024,
-    turn_based: bool = False,
     continue_writing_gpt_messages: list = None,  # list of messages to invoke continue writing down the rims prompt format.
     stop_tok=None,
     # for_eval_or_extend: bool = False, # used for indiv eval but not used for now.
 ) -> tuple:
     #   modif_prompt:bool=True) -> tuple:
-    if backbone == "gpt4":
-        model_name = "gpt-4"
-    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        # model_name = "gpt-4-1106-preview"
-        model_name = "GPT4-1106"
-    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
-        model_name = "gpt-3.5-turbo-0613" 
-    elif backbone == "chatgpt0125":
-        # model_name = "gpt-3.5-turbo-0125" 
-        model_name = "laba-gpt-35-turbo-0125"
-    elif backbone == "chatgpt1106":
-        # model_name = "gpt-3.5-turbo-1106"
-        model_name = "laba-gpt-35-turbo-1106"
-    elif backbone == "chatgpt0613long":
-        # model_name = "gpt-3.5-turbo-16k-0613"
-        model_name = "laba-gpt-35-turbo-16k-0613"
-    else:
-        raise ValueError(f"backbone: {backbone} is not supported")
+    model_name = backbone2model(backbone)
 
     def convert_to_turns(prompt:str, q:str='') -> list:
         assert q, f"question should be given {q=}"
@@ -649,20 +573,17 @@ def query_rims_inference(
         )
         return eval_friendly_d
 
-    if not turn_based:  # *.txt  # DEC4 exps
-        rawprompt = open(prompt_f).read().strip()
-        prompt_tmp = PromptStr(rawprompt)
-        prompt = prompt_tmp.sub("QUESTION", question)  # data['question'])
-        assert isinstance(prompt, str)
-        messages = [{"role": "user", "content": prompt}]
-        if continue_writing_gpt_messages is not None:
-            assert isinstance(
-                continue_writing_gpt_messages, list
-            ), f"continue_writing_gpt_messages should be a list of messages to openai chat create {continue_writing_gpt_messages=}"
-            messages.extend(continue_writing_gpt_messages)
-    else:
-        rawprompt = open(prompt_f).read().strip()
-        messages = convert_to_turns(rawprompt, q=question)
+    rawprompt = open(prompt_f).read().strip()
+    prompt_tmp = PromptStr(rawprompt)
+    prompt = prompt_tmp.sub("QUESTION", question)  # data['question'])
+    assert isinstance(prompt, str)
+    messages = [{"role": "user", "content": prompt}]
+    if continue_writing_gpt_messages is not None:
+        assert isinstance(
+            continue_writing_gpt_messages, list
+        ), f"continue_writing_gpt_messages should be a list of messages to openai chat create {continue_writing_gpt_messages=}"
+        messages.extend(continue_writing_gpt_messages)
+
 
     if stop_tok is None:  # decode until it faces correct answer
         stop_tok = [
@@ -670,17 +591,23 @@ def query_rims_inference(
             "`Evaluation`: Correct",
             "Evaluation: Correct",
         ]  # could be a list or a single string object. Defaults: None
+    
+    # do query!
+    response = client.chat.completions.create(# api_key=key,
+        seed=777,
+        model=model_name,
+        max_tokens=max_tokens,
+        stop=stop_tok,
+        messages=messages,
+        temperature=temperature,
+        n=n,
+        # timeout=120,
+        )
+    completion_usage = response.usage
+
+    # postprocess string out
     if n == 1:
-        raw_query_out = client.chat.completions.create(# api_key=key,
-            seed=777,
-            model=model_name,
-            max_tokens=max_tokens,
-            stop=stop_tok,
-            messages=messages,
-            temperature=temperature,
-            n=n,
-            # timeout=120,
-            ).choices[0].message.content # str
+        raw_query_out = response.choices[0].message.content # str
         if continue_writing_gpt_messages is not None:
             msgs_except_inst = continue_writing_gpt_messages[:-1]
             if (
@@ -698,20 +625,11 @@ def query_rims_inference(
             print()
             raise ValueError("failed processing rims output")
 
-        return eval_friendly_d, parsed_dict, raw_query_out, messages
+        return eval_friendly_d, parsed_dict, raw_query_out, messages, completion_usage
 
     else:  # guess this part is for self-consistency setting of RIMS prompting... should we explore here? 
         raw_query_outs = [
-            client.chat.completions.create(# api_key=key,
-            seed=777,
-            model=model_name,
-            max_tokens=1024,
-            stop=stop_tok,
-            messages=messages,
-            temperature=temperature,
-            n=n,
-            # timeout=120,
-            ).choices[i].message.content
+            response.choices[i].message.content
             for i in range(n)
         ]  # str
         if continue_writing_gpt_messages is not None:
@@ -730,7 +648,7 @@ def query_rims_inference(
             process_rims_out_dict(parsed_dict) for parsed_dict in parsed_dicts
         ]
 
-        return eval_friendly_ds, parsed_dicts, raw_query_outs, messages
+        return eval_friendly_ds, parsed_dicts, raw_query_outs, messages, completion_usage
 
 
 ### getting prompts for each method ###
@@ -1532,3 +1450,26 @@ if __name__ == "__main__":
 
     select3_prompt = "".join(select3_prompt).strip()
     print(select3_prompt, file=open("select3user.txt", "w"))
+
+
+
+def backbone2model(backbone:str)->str:
+    if backbone == "gpt4":
+        model_name = "gpt-4"
+    elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
+    elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
+        model_name = "gpt-3.5-turbo-0613" 
+    elif backbone == "chatgpt0125":
+        # model_name = "gpt-3.5-turbo-0125" 
+        model_name = "laba-gpt-35-turbo-0125"
+    elif backbone == "chatgpt1106":
+        # model_name = "gpt-3.5-turbo-1106"
+        model_name = "laba-gpt-35-turbo-1106"
+    elif backbone == "chatgpt0613long":
+        # model_name = "gpt-3.5-turbo-16k-0613"
+        model_name = "laba-gpt-35-turbo-16k-0613"
+    else:
+        raise ValueError(f"backbone: {backbone} is not supported")
+    return model_name

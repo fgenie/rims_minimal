@@ -50,38 +50,37 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
  - [ ] self-consistency condition of baseline, T>0 experiment
 
 ## reset experiment prompts 
- - [x] `query_rims_inference()` do not require max_token == 2048, long p2c to pal reflection blurb is around 700, so I set its value to 1024, which would be 1.5x of the long blurb (observation: max reflection = 2 times)
- - [ ] prompts
-    - [x] p2c prompts (leave it stay in this form to deviate results from pal)
-        - [x] MBPP prompts in the paper
-    - [x] cot prompts
-        - [x] OCW 
-        - [x] MATH
-    - [x] pal prompts (UPDATE!)
-        - [x] OCW
-        - [x] MATH 
-    - [x] util test for aboves 
-    - [x] does OCW parsing function, changed, works better than before??
-        - [x] changing ocw parsing function does not do any good...
-        - updating eval makes sense
-    - [x] isn't `num_extract_turbo()` too specific for GSM and SVAMP?
-        - [x] indeed! and found it does not parse scientific-formatting as well so I've fixed it.   
-        - [x] re-evaluate the previous `MATH`, `ocw_courses` results 
-    - [x] harvest wrong / correct sets and prepare the followings
-        - [x] if not applicable, create example with claude sonnet. 
-    - [x] ocw, math: try sp.latex(solution()) 
-    - [ ] selection prompts: dataset-specific
-        - [x] GSM, util
-        - [ ] OCW
-        - [ ] MATH
-    - [ ] RIMS prompts: dataset-specific
-        - [ ] OCW
-        - [ ] MATH
-        - [ ] util test 
-    - [ ] dbg (`run_inference.py`)
-        - [ ] backbone-modelname problem?
-    - [ ] test after applying `@utils.cost_tracking.CountTokens`
-        - [ ] 1 more output for `token_info` dict
-            - query_f's : _query, query_cot, query_selection, query_rims_inference 
-        - [ ] CountTokens need to crunch the `token_info`
-         
+- [x] tests
+    - azure, evaluation, parsing, fewshot harvesting, how these affects the older results...
+- [x] CoT parsing for OCW, MATH: isn't `extract_num_turbo()` too specific for GSM and SVAMP?
+    - [x] indeed! --> implemented `extract_ans_from_cot_MATHnOCW`   
+- [x] problem of latex/sympy evaluation
+    - [x] code execution: `try` `sp.latex(solution())` at the end (this do not affect gsm)
+    - [x] bunch of evaluation fixes and tests
+- [x] harvest wrong / correct sets and prepare the followings
+    - [x] if not applicable, create example with claude sonnet. 
+    - [ ] fewshots_p2c_math_ocw.txt (WIP)
+- [x] p2c prompts: coding challenges
+    - [x] MBPP prompts in the paper
+- [x] cot prompts: dataset-specific
+    - [x] OCW 
+    - [x] MATH
+- [x] (NEW!) pal prompts: dataset-specific
+    - [x] OCW
+    - [x] MATH 
+- [ ] selection prompts: dataset-specific
+    - [x] GSM, util
+    - [ ] OCW (WIP)
+    - [ ] MATH
+    - [ ] renew `get_prompt()` 
+- [ ] RIMS prompts: dataset-specific
+    - [ ] OCW
+    - [ ] MATH
+- [ ] apply `@utils.cost_tracking.CountTokens`
+    - [x] 1 more output for `token_info` dict
+        - query_f's : _query, query_cot, query_selection, query_rims_inference 
+    - [x] CountTokens need to crunch the `token_info`
+- [ ] dbg (`run_inference.py`)
+    - [ ] python run_inference.py baseline_inference
+    - [ ] python run_inference.py rims_inference 
+        

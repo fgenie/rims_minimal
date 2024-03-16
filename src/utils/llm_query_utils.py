@@ -886,7 +886,6 @@ def get_cot_prompt(
         pmpt_d = prompt_d[f"{dataset_type}_cot"]
         system_message = pmpt_d["system"]
         user_msgs = pmpt_d["user"]
-        
         # make it to a chat-history
         assistant_msgs = pmpt_d["assistant"]
         messages = [
@@ -896,7 +895,6 @@ def get_cot_prompt(
         for u, a in zip(user_msgs, assistant_msgs):
             messages.append({"role": "user", "content": u})
             messages.append({"role": "assistant", "content": a})
-        
         # add question of interest with the template
         user_attempt = pmpt_d["user_tmp"].replace("{QUESTION}", question)
         messages += [{"role": "user", "content": user_attempt}]
@@ -941,10 +939,30 @@ def get_pal_prompt(question: str, backbone: str, dataset_type: Literal["gsm", "o
                     "content": f"Answer the following question in Python: {question}",
                 }
             ]
-    elif dataset_type == "ocw":
-        pass
-    elif dataset_type == "math": 
-        pass
+    elif dataset_type in ["ocw", "math"]:
+        # open ocw/MATH targeted CoT prompts
+        ymlf = THIS_PARENT/"ocw_MATH_prompts.yaml"
+        prompt_d = yaml.full_load(open(ymlf))        
+        pmpt_d = prompt_d[f"{dataset_type}_pal"]
+        system_message = pmpt_d["system"]
+        user_msgs = pmpt_d["user"]
+        
+        # make it to a chat-history
+        assistant_msgs = pmpt_d["assistant"]
+        messages = [
+            {"role": "system", "content": system_message},
+        ]
+        
+        assert len(user_msgs) == len(assistant_msgs), f"{len(user_msgs)=} should be equal to {len(assistant_msgs)=}"
+
+        for u, a in zip(user_msgs, assistant_msgs):
+            messages.append({"role": "user", "content": u})
+            messages.append({"role": "assistant", "content": a})
+        
+        # add question of interest with the template
+        user_attempt = pmpt_d["user_tmp"].replace("{QUESTION}", question)
+        messages += [{"role": "user", "content": user_attempt}]
+    
     else:
         raise ValueError(f"get_pal_prompt(): {dataset_type=} is not supported")
 

@@ -17,6 +17,33 @@ from typing import Callable, List, Optional, Any
 
 # ==== https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/tasks/minerva_math/utils.py ====
 
+
+
+### high-level functions ###
+def gsm_check_answer(a1, a2):
+    try: 
+        decision = abs(a1-a2)<1e-3
+    except Exception as e:
+        print(e)
+        decision = None
+    return decision
+
+def ocw_check_answer(a1, a2):
+    """
+    check if a1 and a2 are equivalent in ocw
+    """
+    a1, a2 = map(str, [a1, a2])
+    decision = is_equiv_ocw(a1, a2) 
+    return decision
+
+def math_check_answer(a1, a2):
+    """
+    check if a1 and a2 are equivalent in math
+    """
+    a1, a2 = map(str, [a1, a2])
+    decision = is_equiv(normalize_final_answer(a1), normalize_final_answer(a2))
+    return decision
+
 class timeout:
     def __init__(self, seconds=1, error_message="Timeout"):
         self.seconds = seconds
@@ -33,15 +60,23 @@ class timeout:
         signal.alarm(0)
 
 
-
+### atomic functions ###
 def is_equiv(x1: str, x2: str) -> bool:
     """
     x1 and x2 are normalized latex string
     """
     try:
         with timeout(seconds=5):
+            # before relying on parse_latex, which is problematic, try exact match by string first
+            # added by seonil
+            if x1.replace(" ","") == x2.replace(" ", ""):
+                return True
+            else:
+                pass             
+
+            # original code: parse and then sympy-equivalence by diff
             try:
-                parsed_x1 =parse_latex(x1)
+                parsed_x1 = parse_latex(x1)
                 parsed_x2 = parse_latex(x2)
             except (
                 sympy.parsing.latex.errors.LaTeXParsingError,
@@ -90,6 +125,8 @@ SUBSTITUTIONS = [
     ("\\text{m}", "\\text{}"),
 ]
 REMOVED_EXPRESSIONS = [
+    "\\left", # added by seonil
+    "\\right", # added by seonil
     "square",
     "ways",
     "integers",
@@ -232,18 +269,23 @@ def numeric_equality_ocw(n1, n2, threshold=0.01):
     '''
     from appendix of the Minerva paper
     '''
-    # this assumes n1, n2 are numerics. so cast it into float
-    n1, n2 = map(float, [n1, n2])
-    if n1 is None or n2 is None:
+    try:
+        with timeout(seconds=5):
+            # this assumes n1, n2 are numerics. so cast it into float
+            n1, n2 = map(float, [n1, n2])
+            if n1 is None or n2 is None:
+                return False
+            if "None" in [n1, n2]:
+                return False
+            if n1 == n2: # exact match covered here
+                return n1==n2 
+            if np.isclose(n1,0) or np.isclose(n2,0) or np.isclose(n1-n2,0):
+                return np.abs(n1-n2) < threshold * np.abs(n1+n2)/2 # original code cannot cover negative numbers, so added np.abs to threshold condition to cover it.
+            else:
+                return np.isclose(n1, n2)
+    except Exception as e:
+        print(e)
         return False
-    if "None" in [n1, n2]:
-        return False
-    if n1 == n2: # exact match covered here
-        return n1==n2 
-    if np.isclose(n1,0) or np.isclose(n2,0) or np.isclose(n1-n2,0):
-        return np.abs(n1-n2) < threshold * np.abs(n1+n2)/2 # original code cannot cover negative numbers, so added np.abs to threshold condition to cover it.
-    else:
-        return np.isclose(n1, n2)
 
 def normalize_symbolic_equation(s: Optional[str]):
     if not isinstance(s, str):

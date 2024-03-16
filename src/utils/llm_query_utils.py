@@ -8,7 +8,6 @@ from typing import Any, Literal, Union, List
 import func_timeout
 from openai import OpenAI, AzureOpenAI
 
-import regex
 import yaml
 # from omegaconf import OmegaConf
 from collections import Counter
@@ -23,14 +22,25 @@ THIS_PARENT = Path(__file__).parent.resolve()
 # Construct the path to the openai_key.txt file
 
 # key_file_path = THIS_PARENT / "openai_key.txt"
-key_file_path = "/Users/seonils/my_openai_key.txt"
+# # key_file_path = "/Users/seonils/my_openai_key.txt"
 
-client = OpenAI(api_key=open(key_file_path).read().strip())
+# client = OpenAI(api_key=open(key_file_path).read().strip())
+
 # client = AzureOpenAI(
 #     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
 #     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-#     api_version="2023-12-01-preview",
+#     api_version="2024-03-01-preview",
+#     timeout=120,
+#     max_retries=3,
 # )
+
+client = AzureOpenAI(
+    azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
+    api_version="2023-07-01-preview",
+    timeout=120,
+    max_retries=3,
+)
 
 def exception_handler(func):
     def wrapper(*args, **kwargs):
@@ -89,21 +99,25 @@ def query_cot(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
-        model_name = "gpt-3.5-turbo-0613"
+        model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
-        model_name = "gpt-3.5-turbo-0125" 
+        # model_name = "gpt-3.5-turbo-0125" 
+        model_name = "laba-gpt-35-turbo-0125"
     elif backbone == "chatgpt1106":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-1106"
+        model_name = "laba-gpt-35-turbo-1106"
     elif backbone == "chatgpt0613long":
-        model_name = "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-16k-0613"
+        model_name = "laba-gpt-35-turbo-16k-0613"
     else:
         raise ValueError(f"backbone: {backbone} is not supported")
 
 
     completions = []
-    cot_solution = client.chat.completions.create(
+    cot_solution =client.chat.completions.create(
         model=model_name,
         max_tokens=max_tokens,
         stop="\n\n\n",
@@ -112,7 +126,8 @@ def query_cot(
         top_p=1.0,
         seed=seed,
         n=n,
-        timeout=30,
+        # timeout=120,
+        # max_retry=3,
         )
     if n == 1:
         completions = [cot_solution.choices[0].message.content]
@@ -135,7 +150,7 @@ def _query(  # key,
     mode="plan",
     seed=777,
 ):  # mode = plan or code
-    resp = client.chat.completions.create(# api_key=key,
+    resp = client.chat.completions.create(
         model=model_name,
         max_tokens=max_tokens,
         stop=stop,
@@ -144,7 +159,7 @@ def _query(  # key,
         top_p=top_p,
         n=n,
         seed=seed,
-        timeout=30,
+        # timeout=120,
         )
     if n == 1:
         content = resp.choices[0].message.content  # str
@@ -185,22 +200,26 @@ def query_plancode(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
-        model_name = "gpt-3.5-turbo-0125" 
+        # model_name = "gpt-3.5-turbo-0125" 
+        model_name = "laba-gpt-35-turbo-0125"
     elif backbone == "chatgpt1106":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-1106"
+        model_name = "laba-gpt-35-turbo-1106"
     elif backbone == "chatgpt0613long":
-        model_name = "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-16k-0613"
+        model_name = "laba-gpt-35-turbo-16k-0613"
     else:
         raise ValueError(f"backbone: {backbone} is not supported")
 
-    if model_name.startswith("gpt-4"):
+    if backbone.startswith("gpt4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
         k_fewshot = 5
-    elif model_name.startswith("gpt-3.5-turbo"): # ("gpt-3.5-turbo-16k-0613"):
+    elif backbone.startswith("chatgpt"): # ("gpt-3.5-turbo-16k-0613"):
         # print(f'gpt-3.5 uses k_fewshot=8 as default (p2c fs-prompting)')
         k_fewshot = 8
 
@@ -267,28 +286,32 @@ def query_pal(question: str, temperature: float, backbone: str, n=1, seed=777):
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
-        model_name = "gpt-3.5-turbo-0125" 
+        # model_name = "gpt-3.5-turbo-0125" 
+        model_name = "laba-gpt-35-turbo-0125"
     elif backbone == "chatgpt1106":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-1106"
+        model_name = "laba-gpt-35-turbo-1106"
     elif backbone == "chatgpt0613long":
-        model_name = "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-16k-0613"
+        model_name = "laba-gpt-35-turbo-16k-0613"
     else:
         raise ValueError(f"backbone: {backbone} is not supported")
     
     completions = []
     pal_solution = client.chat.completions.create(model=model_name,
-        max_tokens=500,
+        max_tokens=1024,
         stop="\n\n\n",
         messages=query_message,
         temperature=temperature,
         top_p=1.0,
         seed=777,
         n=n,
-        timeout=30,
+        # timeout=120,
         )
 
     if n == 1:
@@ -309,6 +332,8 @@ def query_selection(
     cot_solution: str = "",
     pal_solution: str = "",
     p2c_plan_code_solution: str = "",
+    temperature: float = 0.,
+    max_tokens: int = 400,
 ):
     def postprocess_selection(selection_str: str) -> str:
         ptn = r"\([A-C]\)"
@@ -325,15 +350,19 @@ def query_selection(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
-        model_name = "gpt-3.5-turbo-0125" 
+        # model_name = "gpt-3.5-turbo-0125" 
+        model_name = "laba-gpt-35-turbo-0125"
     elif backbone == "chatgpt1106":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-1106"
+        model_name = "laba-gpt-35-turbo-1106"
     elif backbone == "chatgpt0613long":
-        model_name = "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-16k-0613"
+        model_name = "laba-gpt-35-turbo-16k-0613"
     else:
         raise ValueError(f"backbone: {backbone} is not supported")
 
@@ -348,14 +377,14 @@ def query_selection(
         question, cot_pal_p2c_solution_d, backbone=backbone
     )
     select_str = client.chat.completions.create(model=model_name,
-        max_tokens=200,
+        max_tokens=max_tokens,
         seed=777,  # added on dec 21
         stop="\n\n",
         messages=selection_message,
-        temperature=0.0,
+        temperature=temperature,
         top_p=1.0,
         n=1,
-        timeout=30,
+        # timeout=60,
         ).choices[0].message.content
 
     final_answer = postprocess_selection(select_str)
@@ -378,15 +407,19 @@ def query_rims_inference(
     if backbone == "gpt4":
         model_name = "gpt-4"
     elif backbone == "gpt4turbo" : #or backbone == "GPT4-1106":
-        model_name = "gpt-4-1106-preview"
+        # model_name = "gpt-4-1106-preview"
+        model_name = "GPT4-1106"
     elif backbone == "chatgpt0613" : #or backbone == "GPT-35":
         model_name = "gpt-3.5-turbo-0613" 
     elif backbone == "chatgpt0125":
-        model_name = "gpt-3.5-turbo-0125" 
+        # model_name = "gpt-3.5-turbo-0125" 
+        model_name = "laba-gpt-35-turbo-0125"
     elif backbone == "chatgpt1106":
-        model_name = "gpt-3.5-turbo-1106" # "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-1106"
+        model_name = "laba-gpt-35-turbo-1106"
     elif backbone == "chatgpt0613long":
-        model_name = "gpt-3.5-turbo-16k-0613"
+        # model_name = "gpt-3.5-turbo-16k-0613"
+        model_name = "laba-gpt-35-turbo-16k-0613"
     else:
         raise ValueError(f"backbone: {backbone} is not supported")
 
@@ -637,7 +670,7 @@ def query_rims_inference(
             messages=messages,
             temperature=temperature,
             n=n,
-            timeout=30,
+            # timeout=120,
             ).choices[0].message.content # str
         if continue_writing_gpt_messages is not None:
             msgs_except_inst = continue_writing_gpt_messages[:-1]
@@ -668,7 +701,7 @@ def query_rims_inference(
             messages=messages,
             temperature=temperature,
             n=n,
-            timeout=30,
+            # timeout=120,
             ).choices[i].message.content
             for i in range(n)
         ]  # str
@@ -699,20 +732,20 @@ def get_select_prompt(
     This function is used to generate the selection prompt.
     """
     if len(cot_pal_p2c_sln_d) == 3:
-        if backbone == "gpt4" : #or backbone == "gpt4turbo":
+        if backbone.startswith("gpt4") : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_SELECT_SYSTEM3
             user_message = math_prompt.GPT4_SELECT_USER3
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT3
-        elif "chatgpt" in backbone:
+        elif backbone.startswith("chatgpt"): 
             system_message = math_prompt.TURBO_SELECT_SYSTEM3
             user_message = math_prompt.TURBO_SELECT_USER3
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT3
     elif len(cot_pal_p2c_sln_d) == 2:
-        if backbone == "gpt4" : #or backbone == "gpt4turbo":
+        if backbone.startswith("gpt4") : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_SELECT_SYSTEM
             user_message = math_prompt.GPT4_SELECT_USER
             assistant_message = math_prompt.GPT4_SELECT_ASSISTANT
-        elif "chatgpt" in backbone:
+        elif backbone.startswith("chatgpt"): 
             system_message = math_prompt.TURBO_SELECT_SYSTEM
             user_message = math_prompt.TURBO_SELECT_USER
             assistant_message = math_prompt.TURBO_SELECT_ASSISTANT
@@ -1236,6 +1269,12 @@ def extract_ans_from_cot_MATHnOCW(solution:str)->str:
     prefix2 = "The final answer is"
     suffix = ". I hope it is correct." # this does not appear frequently in response... but let us use it just in case. 
     
+    # # 0. replace "{somefloatingnumber}$" to {somefloatingnumber} --> problematic
+    # ptn = r"(?:\d{1,3}(?:,\d{3})*|\d+)(?:\.\d*)?\$"
+    # cost_usds = re.findall(ptn, solution)
+    # for bill in cost_usds:
+    #     solution = solution.replace(bill, bill.replace("$", "")) 
+
     # assume the solution followed the few-shot format
     # 1. Answer strictly followed the format in the few-shot examples
     solution = solution.split(prefix1)[-1].strip()
@@ -1264,7 +1303,6 @@ def extract_num_turbo(solution: str):
     This is for GSM prompt (from Automatic Model Selection Reasoning https://arxiv.org/pdf/2305.14333.pdf)
     """
     ans = solution.strip().split("\n")[-1].replace("So the answer is ", "")
-    # prd = [x[0] for x in regex.finditer(r"[\d\.,]+", ans) if regex.search(r"\d", x[0])]
     prd = _find_the_last_numbers(ans)
     if prd:
         prd = prd[-1]
@@ -1275,12 +1313,6 @@ def extract_num_turbo(solution: str):
     except:
         prd = None
     return prd
-
-
-# ### retry wrapper ###
-# @retry(wait=wait_chain(*[wait_fixed(3) for i in range(5)])) #defining backoff for retrying.
-# def do_with_tenacity(func, *args, **kwargs):
-#     return func(*args, **kwargs)
 
 
 def get_concordant_answer(

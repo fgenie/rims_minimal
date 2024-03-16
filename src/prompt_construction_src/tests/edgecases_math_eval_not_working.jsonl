@@ -1,0 +1,263 @@
+{"level": "Level 5", "type": "Algebra", "answer": "[0,\\infty)", "artificial_wrong": "[0,\\infty)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": ".5", "artificial_wrong": ".5", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\sqrt{3}, \\sqrt{3})", "artificial_wrong": "(-\\sqrt{3}, \\sqrt{3})", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty,-8)\\cup (8,\\infty)", "artificial_wrong": "(-\\infty,-8)\\cup (8,\\infty)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "\\left(-\\infty,-\\frac 12\\right)\\cup \\left(-\\frac 12,\\infty\\right)", "artificial_wrong": "\\left(-\\infty,-\\frac 12\\right)\\cup \\left(-\\frac 12,\\infty\\right)", "eval": false}
+{"level": "Level 2", "type": "Algebra", "answer": "\\left(1,\\frac{9}{2}\\right)", "artificial_wrong": "\\left(1,\\frac{9}{2}\\right)", "eval": false}
+{"level": "Level 3", "type": "Algebra", "answer": "(9,11)", "artificial_wrong": "(9,11)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(2,12)", "artificial_wrong": "(2,12)", "eval": false}
+{"level": "Level 3", "type": "Algebra", "answer": "(15,-11)", "artificial_wrong": "(15,-11)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-6, 10)", "artificial_wrong": "(-6, 10)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty,0)", "artificial_wrong": "(-\\infty,0)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "\\frac9{5}", "artificial_wrong": "\\frac9{5}", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "[-3,2]", "artificial_wrong": "[-3,2]", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "-\\frac1{2x}", "artificial_wrong": "-\\frac1{2x}", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "(5,-6)", "artificial_wrong": "(5,-6)", "eval": false}
+{"level": "Level 3", "type": "Algebra", "answer": "(-16,-4)", "artificial_wrong": "(-16,-4)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty, -7)\\cup(-7, 3)\\cup(3, \\infty)", "artificial_wrong": "(-\\infty, -7)\\cup(-7, 3)\\cup(3, \\infty)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "\\left[\\frac{1}{2}, \\frac{4}{3}\\right]", "artificial_wrong": "\\left[\\frac{1}{2}, \\frac{4}{3}\\right]", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "44\\%", "artificial_wrong": "44\\%", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "[1,9]", "artificial_wrong": "[1,9]", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "(1,3)", "artificial_wrong": "(1,3)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty, 2) \\cup (3, \\infty)", "artificial_wrong": "(-\\infty, 2) \\cup (3, \\infty)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty,0]\\cup[4,\\infty)", "artificial_wrong": "(-\\infty,0]\\cup[4,\\infty)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty, -14)\\cup(-3,\\infty)", "artificial_wrong": "(-\\infty, -14)\\cup(-3,\\infty)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(7,6)", "artificial_wrong": "(7,6)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(4,5)", "artificial_wrong": "(4,5)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "\\frac9{19}", "artificial_wrong": "\\frac9{19}", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "100\\%", "artificial_wrong": "100\\%", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty,-5]\\cup[5,\\infty)", "artificial_wrong": "(-\\infty,-5]\\cup[5,\\infty)", "eval": false}
+{"level": "Level 3", "type": "Algebra", "answer": "(1,2)", "artificial_wrong": "(1,2)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "[0,1)", "artificial_wrong": "[0,1)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "\\left(\\frac{3}{5},\\frac{8}{3}\\right]", "artificial_wrong": "\\left(\\frac{3}{5},\\frac{8}{3}\\right]", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(0,1]", "artificial_wrong": "(0,1]", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "[1, 4]", "artificial_wrong": "[1, 4]", "eval": false}
+{"level": "Level 2", "type": "Algebra", "answer": "(-6,0)", "artificial_wrong": "(-6,0)", "eval": false}
+{"level": "Level 3", "type": "Algebra", "answer": "(5, -10)", "artificial_wrong": "(5, -10)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "(2,3)", "artificial_wrong": "(2,3)", "eval": false}
+{"level": "Level 3", "type": "Algebra", "answer": "(-11,9)", "artificial_wrong": "(-11,9)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty,0)\\cup (0,\\infty)", "artificial_wrong": "(-\\infty,0)\\cup (0,\\infty)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-7, -2)", "artificial_wrong": "(-7, -2)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "(1,4)", "artificial_wrong": "(1,4)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty,-4)\\cup(-4,6)\\cup(6,\\infty)", "artificial_wrong": "(-\\infty,-4)\\cup(-4,6)\\cup(6,\\infty)", "eval": false}
+{"level": "Level 3", "type": "Algebra", "answer": "(-7, 3)", "artificial_wrong": "(-7, 3)", "eval": false}
+{"level": "Level 1", "type": "Algebra", "answer": "(1,1)", "artificial_wrong": "(1,1)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "(3,-3)", "artificial_wrong": "(3,-3)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-\\infty,-2)\\cup (-2,3)\\cup (3,\\infty)", "artificial_wrong": "(-\\infty,-2)\\cup (-2,3)\\cup (3,\\infty)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "[6,\\infty)", "artificial_wrong": "[6,\\infty)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "[-10,4]", "artificial_wrong": "[-10,4]", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(1,-2)", "artificial_wrong": "(1,-2)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "(6,7)", "artificial_wrong": "(6,7)", "eval": false}
+{"level": "Level 4", "type": "Algebra", "answer": "(128,2)", "artificial_wrong": "(128,2)", "eval": false}
+{"level": "Level 2", "type": "Algebra", "answer": "(-1,6)", "artificial_wrong": "(-1,6)", "eval": false}
+{"level": "Level 5", "type": "Algebra", "answer": "(-1,8)", "artificial_wrong": "(-1,8)", "eval": false}
+{"level": "Level 3", "type": "Counting & Probability", "answer": "65\\%", "artificial_wrong": "65\\%", "eval": false}
+{"level": "Level 2", "type": "Counting & Probability", "answer": "100\\%", "artificial_wrong": "100\\%", "eval": false}
+{"level": "Level 4", "type": "Counting & Probability", "answer": "\\frac 9{20}", "artificial_wrong": "\\frac 9{20}", "eval": false}
+{"level": "Level 2", "type": "Counting & Probability", "answer": "\\frac1{10}", "artificial_wrong": "\\frac1{10}", "eval": false}
+{"level": "Level 5", "type": "Geometry", "answer": "7.2\\%", "artificial_wrong": "7.2\\%", "eval": false}
+{"level": "Level 5", "type": "Geometry", "answer": "\\frac \\pi4 + 2 - \\sqrt2", "artificial_wrong": "\\frac \\pi4 + 2 - \\sqrt2", "eval": false}
+{"level": "Level 2", "type": "Geometry", "answer": "(2,4)", "artificial_wrong": "(2,4)", "eval": false}
+{"level": "Level 2", "type": "Geometry", "answer": "(2,4)", "artificial_wrong": "(2,4)", "eval": false}
+{"level": "Level 2", "type": "Geometry", "answer": "(9, 3)", "artificial_wrong": "(9, 3)", "eval": false}
+{"level": "Level 2", "type": "Geometry", "answer": "(3,-4)", "artificial_wrong": "(3,-4)", "eval": false}
+{"level": "Level 2", "type": "Geometry", "answer": "(7,4)", "artificial_wrong": "(7,4)", "eval": false}
+{"level": "Level 5", "type": "Geometry", "answer": "(\\tfrac{27}{8}, \\tfrac{15}{8})", "artificial_wrong": "(\\tfrac{27}{8}, \\tfrac{15}{8})", "eval": false}
+{"level": "Level 5", "type": "Geometry", "answer": "\\frac 1{72}", "artificial_wrong": "\\frac 1{72}", "eval": false}
+{"level": "Level 4", "type": "Geometry", "answer": "(8,-2)", "artificial_wrong": "(8,-2)", "eval": false}
+{"level": "Level 4", "type": "Geometry", "answer": "33\\%", "artificial_wrong": "33\\%", "eval": false}
+{"level": "Level 4", "type": "Geometry", "answer": "(10,2)", "artificial_wrong": "(10,2)", "eval": false}
+{"level": "Level 5", "type": "Geometry", "answer": "(2,5)", "artificial_wrong": "(2,5)", "eval": false}
+{"level": "Level 4", "type": "Geometry", "answer": "(3,2)", "artificial_wrong": "(3,2)", "eval": false}
+{"level": "Level 5", "type": "Geometry", "answer": "(-5, -4)", "artificial_wrong": "(-5, -4)", "eval": false}
+{"level": "Level 4", "type": "Geometry", "answer": "(1,1)", "artificial_wrong": "(1,1)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(-a,0)", "artificial_wrong": "(-a,0)", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": "\\left(\\frac34,5\\right)", "artificial_wrong": "\\left(\\frac34,5\\right)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(-\\infty,-7) \\cup (1,2)", "artificial_wrong": "(-\\infty,-7) \\cup (1,2)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(-\\infty,3)\\cup(3,\\infty)", "artificial_wrong": "(-\\infty,3)\\cup(3,\\infty)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(2,3)", "artificial_wrong": "(2,3)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "[-3,-2] \\cup [0,1]", "artificial_wrong": "[-3,-2] \\cup [0,1]", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(7,49)", "artificial_wrong": "(7,49)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "0,1", "artificial_wrong": "0,1", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(10,14,61)", "artificial_wrong": "(10,14,61)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "\\left[0,\\frac{343}{27}\\right]", "artificial_wrong": "\\left[0,\\frac{343}{27}\\right]", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "0,1", "artificial_wrong": "0,1", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "[3,\\infty)", "artificial_wrong": "[3,\\infty)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "\\left( \\frac{2}{5}, \\frac{1}{2} \\right)", "artificial_wrong": "\\left( \\frac{2}{5}, \\frac{1}{2} \\right)", "eval": false}
+{"level": "Level 1", "type": "Intermediate Algebra", "answer": "(2,1)", "artificial_wrong": "(2,1)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "\\left( \\frac{1}{2}, \\frac{\\sqrt{7}}{2} \\right)", "artificial_wrong": "\\left( \\frac{1}{2}, \\frac{\\sqrt{7}}{2} \\right)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(27,\\infty)", "artificial_wrong": "(27,\\infty)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(4,1,4,0)", "artificial_wrong": "(4,1,4,0)", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": "(-\\infty,0]", "artificial_wrong": "(-\\infty,0]", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(-\\infty, -2) \\cup (0, 1) \\cup (2, 4)", "artificial_wrong": "(-\\infty, -2) \\cup (0, 1) \\cup (2, 4)", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": " (-\\infty, -3) ", "artificial_wrong": " (-\\infty, -3) ", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": "(10,3)", "artificial_wrong": "(10,3)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(-5, \\infty)", "artificial_wrong": "(-5, \\infty)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(1, 4\\sqrt3)", "artificial_wrong": "(1, 4\\sqrt3)", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": "(-\\infty,5) \\cup (5,\\infty)", "artificial_wrong": "(-\\infty,5) \\cup (5,\\infty)", "eval": false}
+{"level": "Level 1", "type": "Intermediate Algebra", "answer": "(5,\\infty)", "artificial_wrong": "(5,\\infty)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "0,1", "artificial_wrong": "0,1", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(60,-88,25,4)", "artificial_wrong": "(60,-88,25,4)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(-\\infty,4)", "artificial_wrong": "(-\\infty,4)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "f(2) < f(1) < f(4)", "artificial_wrong": "f(2) < f(1) < f(4)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "[5,5 \\sqrt{2}]", "artificial_wrong": "[5,5 \\sqrt{2}]", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(-3,2)", "artificial_wrong": "(-3,2)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(2,\\infty)", "artificial_wrong": "(2,\\infty)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "\\left[ \\frac{3}{2}, 2 \\right)", "artificial_wrong": "\\left[ \\frac{3}{2}, 2 \\right)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "[-4,0)", "artificial_wrong": "[-4,0)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(-\\infty, 0] \\cup (\\tfrac12, \\tfrac32]", "artificial_wrong": "(-\\infty, 0] \\cup (\\tfrac12, \\tfrac32]", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(-4,13)", "artificial_wrong": "(-4,13)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(2,12) \\cup (12,102)", "artificial_wrong": "(2,12) \\cup (12,102)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(0,9) \\cup (9,36)", "artificial_wrong": "(0,9) \\cup (9,36)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(-5,\\sqrt{26}]", "artificial_wrong": "(-5,\\sqrt{26}]", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "\\{1\\pm\\sqrt{5},-2\\}", "artificial_wrong": "\\{1\\pm\\sqrt{5},-2\\}", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "\\left[ \\frac{1}{2}, \\frac{3}{2} \\right]", "artificial_wrong": "\\left[ \\frac{1}{2}, \\frac{3}{2} \\right]", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(3,-3,1)", "artificial_wrong": "(3,-3,1)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(4,1)", "artificial_wrong": "(4,1)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(8,4,2)", "artificial_wrong": "(8,4,2)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(6,5)", "artificial_wrong": "(6,5)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(10, 0)", "artificial_wrong": "(10, 0)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(-\\infty, -4) \\cup (-4, \\infty)", "artificial_wrong": "(-\\infty, -4) \\cup (-4, \\infty)", "eval": false}
+{"level": "Level 1", "type": "Intermediate Algebra", "answer": "(-4,1)", "artificial_wrong": "(-4,1)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "0,4", "artificial_wrong": "0,4", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(-2,1)", "artificial_wrong": "(-2,1)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "\\left(\\frac{17}{4},0\\right)", "artificial_wrong": "\\left(\\frac{17}{4},0\\right)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(1,-2,2,-3)", "artificial_wrong": "(1,-2,2,-3)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "(1,4-\\sqrt{3})\\cup(4+\\sqrt{3},7)", "artificial_wrong": "(1,4-\\sqrt{3})\\cup(4+\\sqrt{3},7)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(3,4]", "artificial_wrong": "(3,4]", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(-\\frac{3}{2},6)", "artificial_wrong": "(-\\frac{3}{2},6)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(1,-16,-4,43)", "artificial_wrong": "(1,-16,-4,43)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "\\left(\\tfrac32, -\\tfrac52\\right)", "artificial_wrong": "\\left(\\tfrac32, -\\tfrac52\\right)", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": "(4,-7)", "artificial_wrong": "(4,-7)", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(-\\infty,-2] \\cup [-1,\\infty)", "artificial_wrong": "(-\\infty,-2] \\cup [-1,\\infty)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "0,1", "artificial_wrong": "0,1", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": "(3,-5)", "artificial_wrong": "(3,-5)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(-5,-7)", "artificial_wrong": "(-5,-7)", "eval": false}
+{"level": "Level 1", "type": "Intermediate Algebra", "answer": "[-13,3]", "artificial_wrong": "[-13,3]", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(-\\infty, -2] \\cup [2, \\infty)", "artificial_wrong": "(-\\infty, -2] \\cup [2, \\infty)", "eval": false}
+{"level": "Level 4", "type": "Intermediate Algebra", "answer": "(-\\infty, \\tfrac37] \\cup [\\tfrac35, \\infty) ", "artificial_wrong": "(-\\infty, \\tfrac37] \\cup [\\tfrac35, \\infty) ", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "\\left[ -\\frac{1}{2}, \\frac{1}{2} \\right]", "artificial_wrong": "\\left[ -\\frac{1}{2}, \\frac{1}{2} \\right]", "eval": false}
+{"level": "Level 5", "type": "Intermediate Algebra", "answer": "(6,31,-1)", "artificial_wrong": "(6,31,-1)", "eval": false}
+{"level": "Level 2", "type": "Intermediate Algebra", "answer": "[0,\\infty)", "artificial_wrong": "[0,\\infty)", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "[0,25]", "artificial_wrong": "[0,25]", "eval": false}
+{"level": "Level 3", "type": "Intermediate Algebra", "answer": "[46, \\infty)", "artificial_wrong": "[46, \\infty)", "eval": false}
+{"level": "Level 2", "type": "Number Theory", "answer": ".35625", "artificial_wrong": ".35625", "eval": false}
+{"level": "Level 3", "type": "Number Theory", "answer": ".0000672", "artificial_wrong": ".0000672", "eval": false}
+{"level": "Level 4", "type": "Prealgebra", "answer": "\\text{1:03 PM}", "artificial_wrong": "\\text{1:03 PM}", "eval": false}
+{"level": "Level 5", "type": "Prealgebra", "answer": "28\\%", "artificial_wrong": "28\\%", "eval": false}
+{"level": "Level 4", "type": "Prealgebra", "answer": "25\\%", "artificial_wrong": "25\\%", "eval": false}
+{"level": "Level 5", "type": "Prealgebra", "answer": "30\\%", "artificial_wrong": "30\\%", "eval": false}
+{"level": "Level 3", "type": "Prealgebra", "answer": "198\\%", "artificial_wrong": "198\\%", "eval": false}
+{"level": "Level 2", "type": "Prealgebra", "answer": "25\\%", "artificial_wrong": "25\\%", "eval": false}
+{"level": "Level 4", "type": "Prealgebra", "answer": ".38", "artificial_wrong": ".38", "eval": false}
+{"level": "Level 1", "type": "Prealgebra", "answer": "7\\%", "artificial_wrong": "7\\%", "eval": false}
+{"level": "Level 5", "type": "Prealgebra", "answer": "75\\%", "artificial_wrong": "75\\%", "eval": false}
+{"level": "Level 1", "type": "Prealgebra", "answer": "20\\%", "artificial_wrong": "20\\%", "eval": false}
+{"level": "Level 2", "type": "Prealgebra", "answer": "20\\%", "artificial_wrong": "20\\%", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 6 \\\\ 3 \\\\ 0 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 6 \\\\ 3 \\\\ 0 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} 1 \\\\ 4 \\\\ 3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1 \\\\ 4 \\\\ 3 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "(3,2,4)", "artificial_wrong": "(3,2,4)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "(2,-1,2)", "artificial_wrong": "(2,-1,2)", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 0 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 0 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 0 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 4033 & -8064 \\\\ 2016 & -4031 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 4033 & -8064 \\\\ 2016 & -4031 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 31 & 50 \\\\ -18 & -29 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 31 & 50 \\\\ -18 & -29 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} -5 \\\\ 2 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -5 \\\\ 2 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 48/65 \\\\ 6/65 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 48/65 \\\\ 6/65 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 1/5 & 4/5 \\\\ 0 & 1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1/5 & 4/5 \\\\ 0 & 1 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\left( \\frac{5}{3}, \\frac{5}{3}, \\frac{5}{3} \\right)", "artificial_wrong": "\\left( \\frac{5}{3}, \\frac{5}{3}, \\frac{5}{3} \\right)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "(8,3,-1)", "artificial_wrong": "(8,3,-1)", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "(4,24)", "artificial_wrong": "(4,24)", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 3/5 \\\\ 57/5 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 3/5 \\\\ 57/5 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} 23/8 \\\\ 7/4 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 23/8 \\\\ 7/4 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 2 & 0 \\\\ -3 & 5 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 2 & 0 \\\\ -3 & 5 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} -5/13 \\\\ 12/13 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -5/13 \\\\ 12/13 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "(-13,-16,-18)", "artificial_wrong": "(-13,-16,-18)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "(-3,2)", "artificial_wrong": "(-3,2)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 0 & 0 \\\\ 0 & 1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 0 & 0 \\\\ 0 & 1 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "0,4", "artificial_wrong": "0,4", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 2 & -3 \\\\ 0 & 3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 2 & -3 \\\\ 0 & 3 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\left( -\\frac{2}{3}, -\\frac{7}{3}, \\frac{14}{9} \\right)", "artificial_wrong": "\\left( -\\frac{2}{3}, -\\frac{7}{3}, \\frac{14}{9} \\right)", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "(-7,10)", "artificial_wrong": "(-7,10)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 0 & -15 \\\\ -2 & -4 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 0 & -15 \\\\ -2 & -4 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\left[ -\\frac{\\pi}{2}, \\frac{\\pi}{2} \\right]", "artificial_wrong": "\\left[ -\\frac{\\pi}{2}, \\frac{\\pi}{2} \\right]", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 1/2 \\\\ 1/2 \\\\ 1/2 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1/2 \\\\ 1/2 \\\\ 1/2 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\left( \\frac{7}{45}, \\frac{4}{45} \\right)", "artificial_wrong": "\\left( \\frac{7}{45}, \\frac{4}{45} \\right)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 8 & 12 \\\\ -4 & 20 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 8 & 12 \\\\ -4 & 20 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 3 & 6 \\\\ 2 & 7 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 3 & 6 \\\\ 2 & 7 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} -1/3 \\\\ 2/3 \\\\ 5/3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -1/3 \\\\ 2/3 \\\\ 5/3 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 2/5 \\\\ -1/5 \\\\ 0 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 2/5 \\\\ -1/5 \\\\ 0 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} -4/9 \\\\ 1/9 \\\\ 8/9 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -4/9 \\\\ 1/9 \\\\ 8/9 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} -7 \\\\ 16 \\\\ 5 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -7 \\\\ 16 \\\\ 5 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "(2,-1)", "artificial_wrong": "(2,-1)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "(8,14)", "artificial_wrong": "(8,14)", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "\\left( \\frac{11}{2}, -1, 1 \\right)", "artificial_wrong": "\\left( \\frac{11}{2}, -1, 1 \\right)", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "(5 \\sqrt{2}, 5 \\sqrt{2})", "artificial_wrong": "(5 \\sqrt{2}, 5 \\sqrt{2})", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} -3 \\\\ 11 \\\\ 7 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -3 \\\\ 11 \\\\ 7 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "(0,1)", "artificial_wrong": "(0,1)", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} -3 \\\\ -2 \\\\ 9 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -3 \\\\ -2 \\\\ 9 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} 5/3 \\\\ 5/3 \\\\ 4/3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 5/3 \\\\ 5/3 \\\\ 4/3 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} -4\\\\-3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -4\\\\-3 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} - 2 \\\\ -7 \\\\ 13 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} - 2 \\\\ -7 \\\\ 13 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 2 \\\\ 3 \\\\ 1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 2 \\\\ 3 \\\\ 1 \\end{pmatrix}", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "\\begin{pmatrix} 11 \\\\ 44 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 11 \\\\ 44 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 1 \\\\ 3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1 \\\\ 3 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\left( -\\infty, -\\frac{6}{7} \\right) \\cup \\left( -\\frac{6}{7}, \\infty \\right)", "artificial_wrong": "\\left( -\\infty, -\\frac{6}{7} \\right) \\cup \\left( -\\frac{6}{7}, \\infty \\right)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "(1,2,3)", "artificial_wrong": "(1,2,3)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 1 \\\\ 7 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1 \\\\ 7 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} -2 \\\\ 3 \\\\ 3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -2 \\\\ 3 \\\\ 3 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\left( -\\frac{5}{3}, \\frac{2}{3}, \\frac{19}{3} \\right)", "artificial_wrong": "\\left( -\\frac{5}{3}, \\frac{2}{3}, \\frac{19}{3} \\right)", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "\\begin{pmatrix} 3 \\\\ 3 \\\\ -3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 3 \\\\ 3 \\\\ -3 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "(4,5)", "artificial_wrong": "(4,5)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 3 & 2 \\\\ 0 & -7 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 3 & 2 \\\\ 0 & -7 \\end{pmatrix}", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "\\begin{pmatrix} 1 & 2 \\\\ 6 & -1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1 & 2 \\\\ 6 & -1 \\end{pmatrix}", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "(15,-29)", "artificial_wrong": "(15,-29)", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "\\begin{pmatrix} -6 \\\\ 6 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -6 \\\\ 6 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\left[ \\frac{\\pi^2}{8}, \\frac{5 \\pi^2}{4} \\right]", "artificial_wrong": "\\left[ \\frac{\\pi^2}{8}, \\frac{5 \\pi^2}{4} \\right]", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\left( -\\frac{1}{4}, -2 \\right)", "artificial_wrong": "\\left( -\\frac{1}{4}, -2 \\right)", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 0 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 0 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\left( -\\frac{1}{6}, \\frac{1}{2} \\right)", "artificial_wrong": "\\left( -\\frac{1}{6}, \\frac{1}{2} \\right)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 3 & -3 \\\\ 4 & -2 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 3 & -3 \\\\ 4 & -2 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 1/\\sqrt{2} & 1/\\sqrt{2} \\\\ -1/\\sqrt{2} & 1/\\sqrt{2} \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1/\\sqrt{2} & 1/\\sqrt{2} \\\\ -1/\\sqrt{2} & 1/\\sqrt{2} \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\left( -\\frac{8}{3}, \\frac{4}{3}, -\\frac{1}{3} \\right)", "artificial_wrong": "\\left( -\\frac{8}{3}, \\frac{4}{3}, -\\frac{1}{3} \\right)", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} 1 & 2 \\\\ -3 & -5 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1 & 2 \\\\ -3 & -5 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\left( \\frac{3}{2}, -13 \\right)", "artificial_wrong": "\\left( \\frac{3}{2}, -13 \\right)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "(1,3,3)", "artificial_wrong": "(1,3,3)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} -2 \\\\ -2 \\\\ 1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -2 \\\\ -2 \\\\ 1 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "(-2,5,-1)", "artificial_wrong": "(-2,5,-1)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 12/13 \\\\ 5/13 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 12/13 \\\\ 5/13 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\left( \\frac{4}{3}, -\\frac{1}{3} \\right)", "artificial_wrong": "\\left( \\frac{4}{3}, -\\frac{1}{3} \\right)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "(4,10)", "artificial_wrong": "(4,10)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 16/49 \\\\ 48/49 \\\\ 24/49 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 16/49 \\\\ 48/49 \\\\ 24/49 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\left( \\frac{1}{\\sqrt{2}}, \\frac{1}{\\sqrt{2}} \\right)", "artificial_wrong": "\\left( \\frac{1}{\\sqrt{2}}, \\frac{1}{\\sqrt{2}} \\right)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\left( 8 \\sqrt{2}, \\frac{\\pi}{4}, \\frac{\\pi}{6} \\right)", "artificial_wrong": "\\left( 8 \\sqrt{2}, \\frac{\\pi}{4}, \\frac{\\pi}{6} \\right)", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "(2,-1)", "artificial_wrong": "(2,-1)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 0 & 1 & 0 \\\\ 0 & 0 & 1 \\\\ 1 & 1 & 1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 0 & 1 & 0 \\\\ 0 & 0 & 1 \\\\ 1 & 1 & 1 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 0 \\\\ 0 \\\\ 0 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 0 \\\\ 0 \\\\ 0 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 7 & 1 \\\\ -1 & -3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 7 & 1 \\\\ -1 & -3 \\end{pmatrix}", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\left( 6, -\\frac{3}{8} \\right)", "artificial_wrong": "\\left( 6, -\\frac{3}{8} \\right)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "(-\\infty, 0]", "artificial_wrong": "(-\\infty, 0]", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\left( 3, \\frac{11 \\pi}{8}, \\frac{4 \\pi}{5} \\right)", "artificial_wrong": "\\left( 3, \\frac{11 \\pi}{8}, \\frac{4 \\pi}{5} \\right)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\left( \\frac{15}{4}, \\frac{1}{2}, 0 \\right)", "artificial_wrong": "\\left( \\frac{15}{4}, \\frac{1}{2}, 0 \\right)", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} -10 \\\\ -35 \\\\ 30 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -10 \\\\ -35 \\\\ 30 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "(3 \\sqrt{3}, -9, -2)", "artificial_wrong": "(3 \\sqrt{3}, -9, -2)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\begin{pmatrix} 2 & 7 \\\\ 13 & -2 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 2 & 7 \\\\ 13 & -2 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 5/2 \\\\ 0 \\\\ 5/2 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 5/2 \\\\ 0 \\\\ 5/2 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} 1/50 & 7/50 \\\\ 7/50 & 49/50 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1/50 & 7/50 \\\\ 7/50 & 49/50 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "[-2,0]", "artificial_wrong": "[-2,0]", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\left( 3, \\frac{\\pi}{2} \\right)", "artificial_wrong": "\\left( 3, \\frac{\\pi}{2} \\right)", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "(7,21,35)", "artificial_wrong": "(7,21,35)", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\left( \\frac{11}{15}, \\frac{11}{60}, \\frac{1}{12} \\right)", "artificial_wrong": "\\left( \\frac{11}{15}, \\frac{11}{60}, \\frac{1}{12} \\right)", "eval": false}
+{"level": "Level 2", "type": "Precalculus", "answer": "\\left( -\\frac{2}{7}, -\\frac{34}{7} \\right)", "artificial_wrong": "\\left( -\\frac{2}{7}, -\\frac{34}{7} \\right)", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} -1 \\\\ -8 \\\\ 2 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -1 \\\\ -8 \\\\ 2 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} -18 \\\\ -49 \\\\ 96 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -18 \\\\ -49 \\\\ 96 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "(-11,-10,-7)", "artificial_wrong": "(-11,-10,-7)", "eval": false}
+{"level": "Level 1", "type": "Precalculus", "answer": "(4,\\pi)", "artificial_wrong": "(4,\\pi)", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} -1 & 0 \\\\ 0 & -1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -1 & 0 \\\\ 0 & -1 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} -4/5 & -3/5 \\\\ -3/5 & 4/5 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -4/5 & -3/5 \\\\ -3/5 & 4/5 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 4 & 2 \\\\ -1 & 1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 4 & 2 \\\\ -1 & 1 \\end{pmatrix}", "eval": false}
+{"level": "Level 3", "type": "Precalculus", "answer": "\\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "(3,-3,1)", "artificial_wrong": "(3,-3,1)", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\begin{pmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & -1 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & -1 \\end{pmatrix}", "eval": false}
+{"level": "Level 4", "type": "Precalculus", "answer": "\\left( \\sqrt{2}, \\frac{7 \\pi}{4}, -6 \\right)", "artificial_wrong": "\\left( \\sqrt{2}, \\frac{7 \\pi}{4}, -6 \\right)", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} -6 \\\\ 9 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} -6 \\\\ 9 \\end{pmatrix}", "eval": false}
+{"level": "Level 5", "type": "Precalculus", "answer": "\\begin{pmatrix} 1 \\\\ 2 \\\\ -3 \\end{pmatrix}", "artificial_wrong": "\\begin{pmatrix} 1 \\\\ 2 \\\\ -3 \\end{pmatrix}", "eval": false}

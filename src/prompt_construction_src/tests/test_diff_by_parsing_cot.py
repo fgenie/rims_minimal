@@ -9,6 +9,9 @@ import jsonlines as jsl
 import pandas as pd
 from tqdm import tqdm
 tqdm.pandas()
+# from pqdm.processes import pqdm
+from utils.math_util import math_check_answer
+
 
 
 MATH_RESULT = "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/math_full_0613long/chatgpt0613long_model_selection3_math_merged.jsonl"
@@ -62,18 +65,48 @@ def before_and_after_accuracy(df, equiv_f:callable=None):
         "oldparse_correct": (oldparse_correct.sum(), len(oldparse_correct))
     } 
     return results
-math_eq = lambda x,y: is_equiv(normalize_final_answer(str(x)), normalize_final_answer(str(y)))
-ocw_eq_sym = lambda x,y: is_equiv_ocw(str(x), str(y), use_sym_exp_normalizer=True)
-ocw_eq_norm = lambda x,y: is_equiv_ocw(str(x), str(y), use_sym_exp_normalizer=False)
+math_eq_nonorm = lambda x,y: is_equiv(str(x), str(y))
+math_eq = lambda x,y: is_equiv(normalize_final_answer(str(x)), normalize_final_answer(str(y))) # == math_check_answer
+ocw_eq_nonorm = lambda x,y: is_equiv_ocw(str(x), str(y)) # == ocw_check_answer
+ocw_eq_norm = lambda x,y: is_equiv_ocw(normalize_final_answer(str(x)), normalize_final_answer(str(y)))
 
 # %%
-math_res = before_and_after_accuracy(math_df_, math_eq) 
+# math_res_nonorm = before_and_after_accuracy(math_df_, math_eq_nonorm) 
+# math_res = before_and_after_accuracy(math_df_, math_eq) 
+math_res = before_and_after_accuracy(math_df_, math_check_answer) 
+# math_res_ocweval = before_and_after_accuracy(math_df_, ocw_eq_nonorm)
 
 # %%
-ocw_res_sym = before_and_after_accuracy(ocw_df_, ocw_eq_sym)
-ocw_res_norm = before_and_after_accuracy(ocw_df_, ocw_eq_norm)
+# ocw_res_nonorm = before_and_after_accuracy(ocw_df_, ocw_eq_nonorm)
+# ocw_res_norm = before_and_after_accuracy(ocw_df_, ocw_eq_norm)
 
 # %%
-for res in "math_res, ocw_res_sym, ocw_res_norm".split():
+# for res in "math_res, ocw_res_sym, ocw_res_norm".split():
+# for res in "math_res_nonorm, math_res, ocw_res_nonorm, ocw_res_norm".split():
+# for res in "math_res_ocweval".split():
+for res in "math_res".split():
     print(res)
     print(eval(res))
+
+
+
+"""
+math_res, (select!)
+{'new_acc': 0.274, 'old_acc': 0.247, 'newparse_correct': (1370, 4996), 'oldparse_correct': (1232, 4996)}
+({'new_acc': 0.266, 'old_acc': 0.247, 'newparse_correct': (1329, 4996), 'oldparse_correct': (1232, 4996)},)
+ocw_res_nonorm, (select!) 
+({'new_acc': 0.195, 'old_acc': 0.099, 'newparse_correct': (53, 272), 'oldparse_correct': (27, 272)},)
+
+
+ABANDONNED:
+
+math_res_nonorm,
+({'new_acc': 0.083, 'old_acc': 0.237, 'newparse_correct': (415, 4996), 'oldparse_correct': (1183, 4996)},)
+ocw_res_norm
+{'new_acc': 0.136, 'old_acc': 0.099, 'newparse_correct': (37, 272), 'oldparse_correct': (27, 272)}
+
+
+NEW TRIAL
+ocweq_norm: {'new_acc': 0.273, 'old_acc': 0.248, 'newparse_correct': (1366, 4996), 'oldparse_correct': (1238, 4996)}
+ocweq_nonorm(stdrd): 
+"""

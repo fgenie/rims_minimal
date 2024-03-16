@@ -1,0 +1,143 @@
+system: You are a helpful assistant that can identify the correct answer to the math problem.
+user_template: |
+  Math problem: $question
+  
+  (A) $cot_solution
+  
+  (B) $pal_solution
+  
+  (C) $p2c_solution
+
+  Which of the above three choices can correctly answer the math problem?
+fewshots_user:
+  - |
+    There are three choices to the same math problem. One uses natural language to answer the question, while the other two uses Python program to answer it. One directly attempts to answer the problem with coding the solution, while the last one will plan first and then write a code to answer it. Three of them can correctly answer the math problem. You need to identify which choice can correctly answer the math problem. Here is one example how to do it,
+
+    Math problem: Olivia has $23. She bought five bagels for $3 each. How much money does she have left?
+
+    (A)
+    Answer:
+    Olivia had 23 dollars.
+    5 bagels for 3 dollars each will be 5 * 3 = 15 dollars.
+    So she has 23 - 15 = 8 dollars left.
+    So the answer is 8.
+
+    (B)
+    def solution():
+        money_initial = 23
+        bagels = 5
+        bagel_cost = 3
+        money_spent = bagels + bagel_cost
+        money_left = money_initial - money_spent
+        result = money_left
+        return result
+
+    (C)
+    def solution():
+        '''
+        Create a function solution that returns the answer of the following question: Olivia has $23. She bought five bagels for $3 each. How much money does she have left? 
+            
+        Let's think step by step.
+        1. Calculate the total cost of the bagels.
+        2. Subtract the total cost from Olivia's original amount.
+        3. Return the remaining amount.
+        '''
+        # Step 1: Calculate the total cost of the bagels
+        bagel_cost = 3
+        num_bagels = 5
+        total_cost = bagel_cost * num_bagels
+        
+        # Step 2: Subtract the total cost from Olivia's original amount
+        original_amount = 23
+        remaining_amount = original_amount - total_cost - num_bagels
+        
+        # Step 3: Return the remaining amount
+        return remaining_amount
+
+    Which of the above three choices can correctly answer the math problem?
+
+    (A) can correctly answer the math problem. Because (B) adds the number of bagels to the cost of each bagel instead of multiplying them, and (C) also fails by wrongly subtracting num_bagels from original_amount.
+
+    Now it's your turn. Here is another math problem and three choices.
+    Math Problem: Michael had 58 golf balls. On tuesday, he lost 23 golf balls. On wednesday, he lost 2 more. How many golf balls did he have at the end of wednesday?
+
+    (A)
+    Answer:
+    Michael started with 58 golf balls.
+    Then after losing 23 on tuesday, he had 58 -23 = 35.
+    After losing 2 more, he had 35 + 2 = 37 golf balls.
+    So the answer is 37.
+
+    (B)
+    def solution():
+        golf_balls_initial = 58
+        golf_balls_lost_tuesday = 23
+        golf_balls_lost_wednesday = 2
+        golf_balls_left = golf_balls_initial - golf_balls_lost_tuesday + golf_balls_lost_wednesday
+        result = golf_balls_left
+        return result
+
+    (C)
+    def solution():
+        '''
+        Create a function solution that returns the answer of the following question: Michael had 58 golf balls. On tuesday, he lost 23 golf balls. On wednesday, he lost 2 more. How many golf balls did he have at the end of wednesday? 
+    
+        Let's think step by step.
+        1. Initialize the variable `golf_balls` with the initial number of golf balls.
+        2. Subtract the number of golf balls lost on Tuesday and Wednesday.
+        3. Return the remaining number of golf balls. 
+        '''
+        # Step 1: Initialize the variable `golf_balls` with the initial number of golf balls
+        golf_balls = 58
+        
+        # Step 2: Subtract the number of golf balls lost on Tuesday (23) and Wednesday (2)
+        golf_balls -= 23  # golf balls lost on Tuesday
+        golf_balls -= 2   # golf balls lost on Wednesday
+        
+        # Step 3: Return the remaining number of golf balls
+        return golf_balls
+
+    Which of the above three choices can correctly answer the math problem?
+  - |
+    Math problem: There were nine computers in the server room. Five more computers were installed each day, from monday to thursday. How many computers are now in the server room?
+
+    (A)
+    Answer:
+    There were originally 9 computers.
+    For each of 4 days from monday to thursday, 5 more computers were added, that is, total 5 computers added for 4 days.
+    So there are 9 + 5 = 14 computers now.
+    So the answer is 14.
+
+    (B)
+    def solution():
+        computers_initial = 9
+        computers_per_day = 5
+        num_days = 4
+        computers_added = computers_per_day * num_days
+        computers_total = computers_initial + computers_added
+        result = computers_total
+        return result
+
+    (C)
+    def solution():
+        '''
+        Create a function solution that returns the answer of the following question: There were nine computers in the server room. Five more computers were installed each day, from monday to thursday. How many computers are now in the server room? 
+            
+        Let's think step by step.
+        1. Calculate the total number of computers installed from Monday to Thursday: 5 computers/day * 3 days = 15
+        2. Add the initial 9 computers to the total: 9 + 15 = 24
+        3. There are now 24 computers in the server room.
+        '''
+        return 9 + 5 * 3
+
+    Which of the above three choices can correctly answer the math problem?
+fewshots_assistant:
+  - (C) can correctly answer the math problem. Because the others wrongly add up 'lost' golf balls to the total count of the balls.
+  - (B) can correctly answer the math problem. Because (A) fails to add up computers added each day, and (C) wrongly figured the number of days for computers to be added as 3 days.
+
+
+
+
+
+
+

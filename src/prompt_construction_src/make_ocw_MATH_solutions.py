@@ -117,9 +117,9 @@ def main():
     p2c_kwargs = dict(
         # question: str,  
         # n=1,
-        plan_temperature = .6,
-        code_temperature = .7,
-        backbone = "gpt4turbo", #  
+        plan_temperature = 2.,
+        code_temperature = 2., # to get the wrong ones!
+        backbone = "chatgpt0125", #  
         seed = None,
     )
 
@@ -183,7 +183,7 @@ def main():
                                                                 inference_kwargs=kwargs, 
                                                                 )    
     
-    jsonf = "p2c_gpt4turbo_mar18_1.json" # chatgpt one looked bad..
+    jsonf = "p2c_chatgpt_hightemp_mar18_1.json"
     with open(jsonf, "w") as f:
         json.dump(result_dict, f, indent=4)
         print(jsonf, "saved")

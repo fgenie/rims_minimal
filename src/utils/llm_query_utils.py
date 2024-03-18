@@ -25,22 +25,22 @@ THIS_PARENT = Path(__file__).parent.resolve()
 
 # client = OpenAI(api_key=open(key_file_path).read().strip())
 
-# client = AzureOpenAI(
-#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-#     api_version="2024-03-01-preview",
-#     timeout=120,
-#     max_retries=3,
-# )
-
-# when to use gpt4turbo as a backbone
 client = AzureOpenAI(
-    azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
-    api_version="2023-07-01-preview",
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    api_version="2024-03-01-preview",
     timeout=120,
     max_retries=3,
 )
+
+# # when to use gpt4turbo as a backbone
+# client = AzureOpenAI(
+#     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
+#     api_version="2023-07-01-preview",
+#     timeout=120,
+#     max_retries=3,
+# )
 
 def exception_handler(func):
     def wrapper(*args, **kwargs):
@@ -239,7 +239,7 @@ def query_plancode(
                 {"codequery": code_query_msg, "planquery": plan_query_msg},
             )
     else:
-        return None, None, {"codequery": code_query_msg, "planquery": plan_query_msg}
+        return None, None, {"codequery": None, "planquery": plan_query_msg}
 
 @CountTokens
 def query_pal(question: str, 

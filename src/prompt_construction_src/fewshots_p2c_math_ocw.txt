@@ -1,102 +1,352 @@
-math 
 
-
-question 0
-            "Problem:\nFind the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}\n",
-
-WRONG 
-src/prompt_construction_src/ocw_MATH_solved_chatgpt_noseed.json
-"Solution:\nFor the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ to be defined, the value inside the square root must be non-negative. This means that both $x-2 \\ge 0$ and $5-x \\ge 0$.\n\nFrom $x-2 \\ge 0$, we get $x \\ge 2$.\n\nFrom $5-x \\ge 0$, we get $x \\le 5$.\n\nCombining the two inequalities, we have $2 \\le x \\le 5$.\n\nTherefore, the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is $\\boxed{[2,5]}$."
-$\\boxed{[2,5]}$
-
-
-CORRECT
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we must consider two main constraints:\n\n1. The radicand (the expression inside the square root) of the numerator, $x - 2$, must be greater than or equal to zero.\n2. The radicand of the denominator, $5 - x$, must be greater than zero (not merely non-negative since the denominator cannot be zero).\n\nLet's address these constraints.\n\nFor the numerator, we want $x - 2 \\geq 0$, which simplifies to:\n$$x \\geq 2.$$\n\nFor the denominator, we want $5 - x > 0$, which simplifies to:\n$$x < 5.$$\n\nNow we combine these two inequalities to find the domain where both conditions are met:\n$$2 \\leq x < 5.$$\n\nThis is an interval from 2 to 5, including 2 but not including 5.\n\nTherefore, the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is $[2, 5)$.
-$[2, 5)$
-
---- 
-
-question 3 
-            "Problem:\nIf the system of equations\n\n\\begin{align*}\n6x-4y&=a,\\\\\n6y-9x &=b.\n\\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,\nfind $\\frac{a}{b},$ assuming $b$ is nonzero.\n"
-
-
-
+math 0
+            "Problem:
+            Find the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}
+            ",
 WRONG
-src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
-"Solution:\nTo solve this system of equations, we can multiply the second equation by 2 to simplify the system:\n\n\\begin{align*}\n6x - 4y &= a,\\\\\n12y - 18x &= 2b.\n\\end{align*}\n\nNow, we can add the two equations to eliminate $x$:\n\n\\begin{align*}\n6x - 4y + 12y - 18x &= a + 2b,\\\\\n-12x + 8y + 12y - 18x &= a + 2b,\\\\\n-30x + 20y &= a + 2b.\n\\end{align*}\n\nDividing the equation by 10, we get:\n\n\\begin{align*}\n-3x + 2y &= \\frac{a + 2b}{10}.\n\\end{align*}\n\nSince $x$ and $y$ are both nonzero, we can divide the equation by 2:\n\n\\begin{align*}\n-1.5x + y &= \\frac{a + 2b}{20}.\n\\end{align*}\n\nThis implies that $\\frac{a}{b} = \\boxed{-3}$.\n",
-$\\frac{a}{b} = \\boxed{-3}$
+def solution():
+    '''
+    The domain of the expression $\frac{\sqrt{x-2}}{\sqrt{5-x}}$ is determined by the conditions under which both the numerator and denominator are defined and the denominator is not zero. Specifically:
+
+    1. The numerator $\sqrt{x-2}$ requires $x-2 > 0$, which implies $x > 2$. (Mistake: Using a strict inequality instead of a non-strict inequality)
+    2. The denominator $\sqrt{5-x}$ requires $5-x \geq 0$, which implies $x \leq 5$. (Correct)
+
+    Combining these two conditions, the domain of the expression is $2 < x \leq 5$. (Mistake: Using incorrect inequalities based on the previous mistakes)
+    '''
+    # Since the domain is a simple condition, we return it as a string, incorrectly with parentheses instead of brackets.
+    return "(2,5]"
 
 CORRECT 
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-Let's examine the system of equations:\n\\begin{align*}\n6x - 4y &= a \\quad (1) \\\\\n6y - 9x &= b \\quad (2)\n\\end{align*}\n\nTo find $\\frac{a}{b}$, we can solve for $x$ in terms of $y$ (or $y$ in terms of $x$) by rearranging one of the equations and then substitute it into the other equation.\n\nFrom equation (1), we can rearrange for $x$:\n\\begin{align*}\n6x &= a + 4y \\\\\nx &= \\frac{a}{6} + \\frac{2}{3}y \\quad (3)\n\\end{align*}\n\nNow, let's substitute this into equation (2):\n\\begin{align*}\n6y - 9\\left(\\frac{a}{6} + \\frac{2}{3}y\\right) &= b \\\\\n6y - \\frac{3}{2}a - 6y &= b \\\\\n-\\frac{3}{2}a &= b\n\\end{align*}\n\nMultiplying both sides by $-\\frac{2}{3}$ gives us:\n\\begin{align*}\na &= -\\frac{2}{3}b\n\\end{align*}\n\nThus, the ratio $\\frac{a}{b}$ is:\n\\begin{align*}\n\\frac{a}{b} &= -\\frac{2}{3}\n\\end{align*}\n\nSince the problem states that there exists a solution $(x, y)$ where both $x$ and $y$ are nonzero, we can conclude the ratio without solving for the actual values of $x$ and $y$ because the ratio only depends on the coefficients of $x$ and $y$ in the equations.\n\nFinal Answer: The ratio $\\frac{a}{b}$ is $-\\frac{2}{3}$.
-$-\\frac{2}{3}$
+def solution():
+    '''
+    The domain of the expression $\frac{\sqrt{x-2}}{\sqrt{5-x}}$ is determined by the conditions under which both the numerator and denominator are defined and the denominator is not zero. Specifically:
+    
+    1. The numerator $\sqrt{x-2}$ requires $x-2 \geq 0$, which implies $x \geq 2$.
+    2. The denominator $\sqrt{5-x}$ requires $5-x > 0$, which implies $x < 5$.
+    
+    Combining these two conditions, the domain of the expression is $2 \leq x < 5$.
+    '''
+    # Since the domain is a simple condition, we return it as a string, concisely with bracket and parenthesis.
+    return "[2,5)"
 
+---
+math 1
+            "Problem:
+            If $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$
+            ",
+WRONG
+def solution():
+    # Step 1: Given values for determinants of A and B
+    det_A = 2
+    det_B = 12
+    
+    # Step 2: Incorrectly calculate the determinant of the product of matrices A and B
+    # Mistake: Assuming det(AB) = det(A) + det(B)
+    det_product = det_A + det_B
+    
+    # Step 3: Return the incorrect result
+    return det_product
+
+CORRECT
+def solution():
+    # Step 1: Given values for determinants of A and B
+    det_A = 2
+    det_B = 12
+
+    # Step 2: Calculate the determinant of the product of matrices A and B
+    det_product = det_A * det_B
+
+    # Step 3: Return the result
+    return det_product
 
 
 ---
+math 2
+            "Problem:
+            Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+            ",
 
-question 1
-            "Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n",
+WRONG 
+(N/A)
+
+CORRECT
+def solution():
+    '''
+    Create a function solution that returns the answer of the following question: Problem:
+    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+    
+    Let's think step by step.
+    1. Calculate the total weight lifted with the 20-pound weights.
+    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+    3. Return the number of lifts needed.
+    '''
+    # Step 1: Calculate the total weight lifted with the 20-pound weights.
+    weight_per_lift_20 = 2 * 20  # Two 20-pound weights
+    total_lifts_20 = 12
+    total_weight_20 = weight_per_lift_20 * total_lifts_20
+    
+    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+    weight_per_lift_15 = 2 * 15  # Two 15-pound weights
+    total_lifts_15 = total_weight_20 / weight_per_lift_15
+    
+    # Step 3: Return the number of lifts needed.
+    return total_lifts_15
+
+---
+math 3
+            "Problem:
+            If the system of equations
+            
+            \\begin{align*}
+            6x-4y&=a,\\\\
+            6y-9x &=b.
+            \\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,
+            find $\\frac{a}{b},$ assuming $b$ is nonzero.
+            "
+
+WRONG
+def solution():
+    '''
+    The function solution returns the answer to the algebraic problem presented.
+
+    We are given a system of equations:
+    6x - 4y = a  (1)
+    6y - 9x = b  (2)
+
+    We need to find the value of a/b, assuming x and y are both nonzero, and b is nonzero.
+
+    Step by step, we can transform the system of equations to express a in terms of b:
+
+    From equation (1), we can express x in terms of y and a:
+    6x = a + 4y  =>  x = (a + 4y)/6  (3)
+
+    Mistake: We can substitute x from equation (3) into equation (2) to find a relation between y and b, but we will make a mistake in the algebra:
+    6y - 9((a + 4y)/6) = b
+    Simplify the equation incorrectly:
+    6y - (3a + 12y)/2 = b
+    Multiply through by 2 incorrectly:
+    12y - 6a - 24y = 2b
+    Simplify further incorrectly:
+    -12a = 2b  =>  a = -6b  (4)
+
+    Now we have an incorrect relation for a in terms of b. The ratio a/b is then:
+    a/b = (-6b) / b
+    Simplify by canceling out b incorrectly:
+    a/b = -6
+
+    Since this is an incorrect algebraic solution, we still return the result.
+    '''
+    # make latex-comparable string
+    result = "-6"
+    return result
+
+CORRECT 
+
+def solution():
+    '''
+    The function solution returns the answer to the algebraic problem presented.
+
+    We are given a system of equations:
+    6x - 4y = a  (1)
+    6y - 9x = b  (2)
+
+    We need to find the value of a/b, assuming x and y are both nonzero, and b is nonzero.
+
+    Step by step, we can transform the system of equations to express a in terms of b:
+
+    From equation (1), we can express x in terms of y and a:
+    6x = a + 4y  =>  x = (a + 4y)/6  (3)
+
+    We can substitute x from equation (3) into equation (2) to find a relation between y and b:
+    6y - 9((a + 4y)/6) = b
+    Simplify the equation:
+    6y - (3/2)(a + 4y) = b
+    Multiply through by 2 to clear the fraction:
+    12y - 3a - 12y = 2b
+    Simplify further:
+    -3a = 2b  =>  a = -2b/3  (4)
+
+    Now we have a in terms of b. The ratio a/b is then:
+    a/b = (-2b/3) / b
+    Simplify by canceling out b:
+    a/b = -2/3
+
+    Since this is a fixed algebraic solution, we simply return the result.
+    '''
+    # make latex-comparable string
+    result = "-2/3"
+    return result
+
+-------
+-------
+ocw 0
+            Problem:
+            Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? 
+            Please format your answer as +n or -n.  
+            ,
+
 
 WRONG
 (N/A)
 
 CORRECT
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-"The determinant of the product of two square matrices is equal to the product of their determinants. Therefore, if you have two matrices $\\mathbf{A}$ and $\\mathbf{B}$ with determinants $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12$, respectively, then the determinant of their product $\\mathbf{A} \\mathbf{B}$ is given by:\n\n$$\\det (\\mathbf{A} \\mathbf{B}) = (\\det \\mathbf{A})(\\det \\mathbf{B}) = 2 \\cdot 12 = 24.$$\n\nSo, $\\det (\\mathbf{A} \\mathbf{B}) = 24$.",
-
-
---- 
-
-question 2
-            "Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n",
-
-
-WRONG
-(N/A) parsing fail exists, no real fail exists
-
-CORRECT
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-"Solution:\nIf Terrell lifts two 20-pound weights 12 times, he lifts a total weight of:\n$$\n\\text{Total weight with 20-pound weights} = 2 \\times 20 \\times 12 = 40 \\times 12 = 480 \\text{ pounds}\n$$\n\nIf he uses two 15-pound weights instead, and lifts them $n$ times, his total lifted weight with the 15-pound weights will be:\n$$\n\\text{Total weight with 15-pound weights} = 2 \\times 15 \\times n = 30n \\text{ pounds}\n$$\n\nWe want the total weight lifted with the 15-pound weights to equal the total weight lifted with the 20-pound weights:\n$$\n30n = 480\n$$\n\nTo find $n$, we solve for it:\n$$\nn = \\frac{480}{30} = 16\n$$\n\nTerrell must lift the two 15-pound weights 16 times to lift the same total weight as when he lifts two 20-pound weights 12 times.\n\nFinal Answer: Terrell must lift the 15-pound weights 16 times."
-
-
-
-
------
-
-ocw 
-
-question 0
-CORRECT
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-Arginine is an amino acid that has three groups that can either be protonated or deprotonated depending on the pH of the solution:\n\n1. The amino group (\u2013NH2) with a pKa around 9.0. Below this pH, it will be protonated (\u2013NH3+).\n2. The carboxyl group (\u2013COOH) with a pKa around 2.1. Below this pH, it will be protonated (-COOH).\n3. The side chain guanidinium group (\u2013NH\u2013C(=NH2)NH2+) with a pKa around 12.5. Below this pH, it will be protonated.\n\nAt pH 1.0, which is significantly below the pKa values of all the ionizable groups:\n\n- The amino group will be fully protonated, contributing +1 charge.\n- The carboxyl group will be fully protonated and neutral.\n- The guanidinium group on the side chain will also be fully protonated, contributing another +1 charge.\n\nTherefore, the net charge of arginine at pH 1.0 will be the sum of the charges of the protonated groups: +1 (from the amino group) + 0 (from the carboxyl group) + +1 (from the guanidinium group) = +2\n\nThe formatted answer: +2",
-
-WRONG
-src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
-"Solution:\nThe net charge of arginine in a solution of pH 1.0 can be calculated by considering the pKa values of its ionizable groups. Arginine has three ionizable groups: the carboxyl group with a pKa around 2.2, the amino group with a pKa around 9.0, and the guanidinium group with a pKa around 12.5.\n\nAt pH 1.0:\n- The carboxyl group will be protonated (+1 charge).\n- The amino group will be protonated (+1 charge).\n- The guanidinium group will be protonated (+1 charge).\n\nTherefore, the net charge of arginine at pH 1.0 is +3.\n\nFinal answer: The net charge of arginine in a solution of pH 1.0 is +3.",
-
----
-
-question 1 
-
-CORRECT
-src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
-"Solution:\nWe can simplify the given Laplace Transform using partial fractions:\n\\[Y(s) = \\frac{1}{(s+a)(s+b)} = \\frac{A}{s+a} + \\frac{B}{s+b}\\]\n\nMultiplying both sides by \\((s+a)(s+b)\\) gives:\n\\[1 = A(s+b) + B(s+a)\\]\n\nNow, we can solve for \\(A\\) and \\(B\\) by setting \\(s=-a\\) and \\(s=-b\\):\nSetting \\(s=-a\\):\n\\[1 = A(-a+b) \\implies A = \\frac{1}{b-a}\\]\n\nSetting \\(s=-b\\):\n\\[1 = B(-b+a) \\implies B = \\frac{1}{a-b}\\]\n\nTherefore, the partial fraction decomposition is:\n\\[Y(s) = \\frac{1}{b-a} \\cdot \\frac{1}{s+a} - \\frac{1}{a-b} \\cdot \\frac{1}{s+b}\\]\n\nTaking the inverse Laplace Transform, the function \\(y(t)\\) is:\n\\[y(t) = \\frac{1}{b-a}(e^{-at} - e^{-bt})\\]\n\nFinal answer: The function \\(y(t)\\) is \\(\\frac{1}{b-a}(e^{-at} - e^{-bt})\\)."
-
-WRONG
-(N/A) (mostly fails to compare eq and exp )
+def solution():
+    # pKa values for arginine
+    pKa_carboxyl = 2.0
+    pKa_amino = 9.0
+    pKa_guanidinium = 12.5
+    
+    # pH value for the solution
+    pH = 1.0
+    
+    # Determine the charge state of each group at pH 1.0
+    charge_carboxyl = 0 if pH < pKa_carboxyl else -1
+    charge_amino = 1 if pH < pKa_amino else 0
+    charge_guanidinium = 1 if pH < pKa_guanidinium else 0
+    
+    # Calculate the net charge
+    net_charge = charge_carboxyl + charge_amino + charge_guanidinium
+    
+    # Format the net charge
+    formatted_charge = f"+{net_charge}" if net_charge >= 0 else f"{net_charge}"
+    return formatted_charge
 
 
 ---
-question 2
+ocw 1
+            Problem:
+            Preamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):
+            Subproblem 0: 
+            \\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]
+            ,
+WRONG
+def solution():
+    # Define the Laplace variable and the time-domain variable
+    s, t = symbols('s t')
+    a, b = symbols('a b', real=True, positive=True)
+    
+    # Define the Laplace-transformed function Y(s)
+    Y_s = 1 / ((s + a) * (s + b))
+    
+    # Apply partial fraction decomposition
+    Y_s_apart = apart(Y_s)
+    
+    # Find the inverse Laplace Transform of each term
+    y_t = inverse_laplace_transform(Y_s_apart, s, t)
+    
+    # Return the result
+    return y_t
+(code fails to execute)
+
+CORRECT  // below will not be evaluated as correct, tho the answer itself is semantically correct. GPT4 even could not reach the correct code that exactly match the ground truth tex expression
+from sympy import symbols, apart, simplify, latex, exp
+
+def solution():
+    s, a, b, t = symbols('s a b t')
+    Y = 1/((s+a)*(s+b))
+    
+    # Partial fraction expansion
+    A, B = apart(Y, s).as_coefficients_dict()
+    
+    # Inverse Laplace transform
+    y = A * exp(-a * t) + B * exp(-b * t)
+    simplified_y = simplify(y)
+    latex_solution = latex(simplified_y)
+    return latex_solution
+
+---
+ocw 2
+            Problem:
+            Preamble: The following subproblems refer to the differential equation 
+            $\\ddot{x}+b \\dot{x}+x=0$.
+            Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+            $\\ddot{x}+b \\dot{x}+x=0$?
+            ,
+WRONG
+def solution():
+    '''
+    The function solution returns the characteristic polynomial of the given differential equation.
+
+    The differential equation given is:
+    \[\ddot{x} + b\dot{x} + x = 0\]
+
+    The characteristic equation is obtained by assuming a solution of the form \(x(t) = e^{rt}\), where \(r\) is a constant. This leads to the characteristic polynomial:
+    \[r^2 + br + 1 = 0\]
+
+    This is the characteristic polynomial p(r) for the given differential equation.
+    '''
+    # Since this is a mathematical problem and the characteristic polynomial is already determined above,
+    # we can simply return the polynomial in string format.
+    return "r^2 + br + 1 = 0"
 
 CORRECT
-src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-"The characteristic polynomial \\( p(s) \\) for a differential equation can be derived by replacing \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1.\n\nGiven the differential equation:\n\\[ \\ddot{x} + b \\dot{x} + x = 0 \\]\n\nReplace \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1 to get the characteristic polynomial:\n\\[ p(s) = s^2 + bs + 1 \\]\n\nSo the characteristic polynomial \\( p(s) \\) is \\( s^2 + bs + 1 \\).
-\\( s^2 + bs + 1 \\)
+def solution():
+    '''
+    Create a function solution that returns the answer of the following question: Problem:
+Preamble: The following subproblems refer to the differential equation 
+$\ddot{x}+b \dot{x}+x=0$.
+Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+$\ddot{x}+b \dot{x}+x=0$?
+    '''
+    # The characteristic polynomial is derived by assuming a solution of the form e^(st) to the differential equation.
+    # This means we replace the second derivative ddot{x} with s^2, the first derivative dot{x} with s, and x with 1.
+    # The characteristic polynomial p(s) for the given differential equation is then:
+    # p(s) = s^2 + b*s + 1 = 0
+    # We can return this as a string in the function.
+    
+    return "s^2 + b*s + 1"
+
+
+---
+ocw 3
+            Problem:
+            Subproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation 
+            $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     
 
 WRONG
-src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
-"Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is obtained by substituting $x(t) = e^{st}$ into the differential equation to get the characteristic equation:\n\nSubstitute $x(t) = e^{st}$ into the differential equation:\n\\[\\begin{aligned} \\ddot{x} + b\\dot{x} + x &= 0 \\\\\ns^2e^{st} + be^{st} + e^{st} &= 0 \\\\\n(s^2 + b + 1)e^{st} &= 0 \\end{aligned}\\]\n\nThis gives us the characteristic polynomial:\n\\[p(s) = s^2 + b + 1\\]\n\nTherefore, the characteristic polynomial $p(s)$ of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is $\\boxed{s^2 + b + 1}$.\n",
-$\\boxed{s^2 + b + 1}$
+import cmath
+
+def solution():
+    # Define the complex number z
+    z = 1 + cmath.sqrt(3) * 1j
+    
+    # Calculate z to the fourth power directly
+    z_fourth_power = z ** 4
+    
+    # Extract the real and imaginary parts of z to the fourth power
+    a = z_fourth_power.real
+    b = z_fourth_power.imag
+    
+    # Round the real and imaginary parts to avoid floating point precision issues
+    a = round(a)
+    b = round(b)
+    
+    # Return the result as an ordered pair
+    return (a, b)
+
+CORRECT
+def solution():
+    '''
+    Create a function solution that returns the answer of the following question: Problem:
+Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     
+    '''
+
+    # Given z = 1 + sqrt(3) * i
+    z = complex(1, (3)**0.5)  # Here, we use "complex" to represent the complex number z
+
+    # Step 1: Calculate z^2
+    z_squared = z**2
+
+    # Step 2: Calculate z^4
+    z_fourth = z_squared**2
+
+    # Step 3: Extract Real and Imaginary Parts
+    a = z_fourth.real  # Extract real part
+    b = z_fourth.imag  # Extract imaginary part
+
+    # Step 4: Express the Answer
+    answer = (a, b)  # Combine real and imaginary parts into an ordered pair
+
+    return answer
+

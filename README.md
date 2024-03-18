@@ -59,7 +59,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] bunch of evaluation fixes and tests
 - [x] harvest wrong / correct sets and prepare the followings
     - [x] if not applicable, create example with claude sonnet. 
-    - [ ] fewshots_p2c_math_ocw.txt (WIP)
+    - [x] fewshots_p2c_math_ocw.txt (WIP)
 - [x] p2c prompts: coding challenges
     - [x] MBPP prompts in the paper
 - [x] cot prompts: dataset-specific
@@ -72,7 +72,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] GSM, util
     - [ ] OCW (WIP)
     - [ ] MATH
-    - [ ] renew `get_prompt()` 
+    - [x] renew `get_prompt()` 
 - [ ] RIMS prompts: dataset-specific
     - [ ] OCW
     - [ ] MATH

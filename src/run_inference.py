@@ -422,6 +422,14 @@ def baseline_complete_row(
         list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
     )
 
+    # ensure solmap is Dict[str, str]
+    for k,v in solmap.items():
+        if not isinstance(v, str):
+            if isinstance(v[0],str):
+                solmap[k] = v[0]
+            else:
+                raise ValueError(f"sth's going wrong with {solmap=}")
+
     if majority_ans is None:  # do selection
         chosen_method, selection_str, _ = query_selection(
             question,
@@ -429,6 +437,7 @@ def baseline_complete_row(
             cot_solution=solmap["cot"],
             pal_solution=solmap["pal"],
             p2c_plan_code_solution=solmap["p2c"],
+            dataset_type=dataset_type,
         )
         if chosen_method is not None: 
             row["selection_or_rims"] = {
@@ -436,6 +445,7 @@ def baseline_complete_row(
                 "good_answer": ansmap[chosen_method],
                 "good_solution": solmap[chosen_method],
                 "selection_str": selection_str,
+                "dataset_type": dataset_type,
             }
         else:
             row['selection_or_rims'] = {
@@ -443,6 +453,7 @@ def baseline_complete_row(
                 "good_answer": None,
                 "good_solution": None,
                 "selection_str": selection_str,
+                "dataset_type": dataset_type,
             }
         row["majority_ans"] = row['selection_or_rims']['good_answer']
     else:
@@ -450,12 +461,7 @@ def baseline_complete_row(
         row["majority_ans"] = majority_ans
     row["prompt_file"] = prompt_f
     row["inference_mode"] = f"baseline {num_methods} methods"
-    # except Exception as e:
-    #     print(e)
-    #     row["selection_or_rims"] = {"error": True, "exception": str(e)}
-    #     row["majority_ans"] = None
-    #     row["prompt_file"] = prompt_f
-    #     row["inference_mode"] = f"baseline {num_methods} methods"
+
     return row
 
 

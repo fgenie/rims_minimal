@@ -18,17 +18,29 @@ def count_difference(row:dict)->dict:
 if __name__ == "__main__":
     # gsmjslf = "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/gsm_0613long/ablation/chatgpt0613long_rims_gsm.jsonl"
     # records = list(jsl.open(gsmjslf))
-    # 6 None's, nothing changed
 
-    OCW_RESULT = "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/ocw_0613long/chatgpt0613long_model_selection3_ocw.jsonl"
-    records = list(jsl.open(OCW_RESULT))
-    # as expected, sympy results are convereted 
-    # 82 over 272 diff.
-    # 58 None's
+    # OCW_RESULT = "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/ocw_0613long/chatgpt0613long_model_selection3_ocw.jsonl"
+    # records = list(jsl.open(OCW_RESULT))
+
+    # GSM: (no effective change) 
+    # 6 None's, nothing changed
+    # OCW: (24 effective change) 
+    # 82 rows change over 272.
+    # 58 None's 
+    # MATH: (147 effective change)
+    # 1318 rows change over 4996
+    # 1172 None's 
+
+    MATH_RESULT = "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/math_full_0613long/chatgpt0613long_model_selection3_math_merged.jsonl"
+    records = list(jsl.open(MATH_RESULT))
+
+
 
     # solmap.pal execute == ansmap.pal count
-    for row in tqdm(records):
-        row = count_difference(row)
+    # for row in tqdm(records):
+    #     row = count_difference(row)
+    records = pqdm(records, count_difference, n_jobs=8)
+    records = [row for row in records if isinstance(row, dict)] # avoid exception
     
     df = pd.DataFrame(records)
     mask = df.newexec != df.oldexec

@@ -2,7 +2,7 @@ import re
 import os
 from itertools import combinations, chain
 from pathlib import Path
-from typing import Any, Literal, Union, List
+from typing import Any, Literal, Union, List, Dict
 from collections import Counter
 import yaml
 
@@ -33,6 +33,7 @@ THIS_PARENT = Path(__file__).parent.resolve()
 #     max_retries=3,
 # )
 
+# when to use gpt4turbo as a backbone
 client = AzureOpenAI(
     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
@@ -112,7 +113,7 @@ def query_cot(
         # timeout=120,
         # max_retry=3,
         )
-    completion_usage = resp.usage
+    # completion_usage = resp.usage
 
     if n == 1:
         completions = [resp.choices[0].message.content]
@@ -120,7 +121,7 @@ def query_cot(
         completions = [
             resp.choices[i].message.content for i in range(n)
         ]
-    return completions, query_message, completion_usage
+    return completions, query_message, resp
 
 
 # actual llm query function for p2c method
@@ -150,20 +151,20 @@ def _query(  # key,
         seed=seed,
         # timeout=120,
         )
-    completion_usage = resp.usage
+    # completion_usage = resp.usage
     if n == 1:
         content = resp.choices[0].message.content  # str
         if mode == "plan":
             plan = postprocess_plan(content)  # it will complain when failing
-            return plan, completion_usage
+            return plan, resp#completion_usage
         elif mode == "code":
             code = postprocess_code(content)
-            return code, completion_usage
+            return code, resp#completion_usage
     else:  # n>1
         contents = [ch.message.content for ch in resp.choices]
         postprocess = postprocess_plan if mode == "plan" else postprocess_code
         res_strs = [postprocess(c) for c in contents]
-        return res_strs, completion_usage
+        return res_strs, resp#completion_usage
 
 
 # p2c: querying plan and code separately inside
@@ -278,7 +279,7 @@ def query_pal(question: str,
         n=n,
         # timeout=120,
         )
-    completion_usage = resp.usage
+    # completion_usage = resp.usage
 
     if n == 1:
         completions.extend(
@@ -289,18 +290,23 @@ def query_pal(question: str,
         completions = [
             resp.choices[i].message.content for i in range(n)
         ]
-    return completions, query_message, completion_usage
+    return completions, query_message, resp
 
 @CountTokens
 def query_selection(
     question: str,
     backbone: str,
+    dataset_type: Literal["gsm", "svamp", "ocw", "math"]=None,
     cot_solution: str = "",
     pal_solution: str = "",
-    p2c_plan_code_solution: str = "",
+    p2c_plan_code_solution: str = "", # former, this was actually List[str] and get_select_prompt() did pop()'d p2c solution out of list... which is super ugly and confusing 
     temperature: float = 0.,
     max_tokens: int = 400,
+    n:int = 1,
 ):
+    if dataset_type not in "gsm ocw math svamp":
+        raise ValueError(f"query_selection(): {dataset_type=} is not supported")
+    
     def postprocess_selection(selection_str: str) -> str:
         ptn = r"\([A-C]\)"
         matches = re.findall(ptn, selection_str)
@@ -322,8 +328,8 @@ def query_selection(
 
     cot_pal_p2c_solution_d = dict(zip("cot pal p2c".split(), cot_pal_p2c_solution_list))
 
-    selection_message = get_select_prompt(
-        question, cot_pal_p2c_solution_d, backbone=backbone
+    selection_message = get_select_prompt2(
+        question, cot_pal_p2c_solution_d, backbone=backbone, dataset_type=dataset_type,
     )
     response = client.chat.completions.create(model=model_name,
         max_tokens=max_tokens,
@@ -332,14 +338,14 @@ def query_selection(
         messages=selection_message,
         temperature=temperature,
         top_p=1.0,
-        n=1,
+        n=n,
         # timeout=60,
         )
-    completion_usage = response.usage
+    # completion_usage = response.usage
     select_str = response.choices[0].message.content
 
     final_answer = postprocess_selection(select_str)
-    return final_answer, select_str, completion_usage  # 'pal'|'p2c'|'cot'
+    return final_answer, select_str, response#completion_usage  # 'pal'|'p2c'|'cot'
 
 @CountTokens
 def query_rims_inference(
@@ -603,7 +609,7 @@ def query_rims_inference(
         n=n,
         # timeout=120,
         )
-    completion_usage = response.usage
+    # completion_usage = response.usage
 
     # postprocess string out
     if n == 1:
@@ -625,7 +631,7 @@ def query_rims_inference(
             print()
             raise ValueError("failed processing rims output")
 
-        return eval_friendly_d, parsed_dict, raw_query_out, messages, completion_usage
+        return eval_friendly_d, parsed_dict, raw_query_out, messages, response#completion_usage
 
     else:  # guess this part is for self-consistency setting of RIMS prompting... should we explore here? 
         raw_query_outs = [
@@ -648,14 +654,57 @@ def query_rims_inference(
             process_rims_out_dict(parsed_dict) for parsed_dict in parsed_dicts
         ]
 
-        return eval_friendly_ds, parsed_dicts, raw_query_outs, messages, completion_usage
+        return eval_friendly_ds, parsed_dicts, raw_query_outs, messages, response#completion_usage
 
 
 ### getting prompts for each method ###
+def get_select_prompt2(
+        question:str, 
+        cot_pal_p2c_sln_d:dict=None, 
+        backbone:str="chatgpt", 
+        dataset_type:Literal["gsm", "svamp", "ocw", "math"]=None
+) -> List[Dict[str,str]]:
+    # open up prompt template yaml file 
+    prompt_yml = THIS_PARENT/"model_selection_prompts.yaml"
+    prompt_d:Dict[str, Any] = yaml.full_load(open(prompt_yml))
+    
+    select_prompt_key = f"{dataset_type}_select"
+    ds_prom_d:Dict[str,Any] = prompt_d[select_prompt_key] 
+    
+    # process with the question/solutions of interest to result in gpt_messages     
+    system:str = ds_prom_d["system_msg"]
+    fewshots_user = ds_prom_d["user"]
+    fewshots_assistant = ds_prom_d["assistant"]
+
+    # make user's query from (question, cot_pal_p2c_sln_d)
+    q = question  # data['question']
+    to_replace_keys = "{COT_SOLUTION} {PAL_SOLUTION} {P2C_SOLUTION}"
+    user_tmp:str = ds_prom_d["user_tmp"]
+    for to_replace, to_be in zip(to_replace_keys.split(), cot_pal_p2c_sln_d.values()):
+        user_tmp = user_tmp.replace(to_replace, to_be)
+    user_attempt = user_tmp 
+
+    msgs: List[Dict[str, str]] = [
+        {"role": "system", "content": system},
+    ]
+    for fu, fa in zip(fewshots_user, fewshots_assistant):
+        usr = {"role": "user", "content": fu}
+        astnt = {"role": "assistant", "content": fa}
+        msgs.append(usr)
+        msgs.append(astnt)
+
+    msgs.append({"role": "user", "content": user_attempt})
+
+    return msgs
+
+
+
+
 def get_select_prompt(
     question: str, cot_pal_p2c_sln_d: dict, backbone: str = "chatgpt"
 ):
     """
+    DEPRECATED and not used (marked on mar18)
     This function is used to generate the selection prompt.
     """
     if len(cot_pal_p2c_sln_d) == 3:

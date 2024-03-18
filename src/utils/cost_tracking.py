@@ -24,6 +24,7 @@ class CountTokens:
         self.func = func
         self.n_called = 0
         # for cost tracking
+        self.n_sample = 0 # *.completion.create(n:int=)
         self.total_toks_in = 0
         self.total_toks_out = 0
         # for context length estimation 
@@ -34,31 +35,35 @@ class CountTokens:
     def tok_info_from_query_funcs(
             self,
             query_returns:Any=None
-            )->Dict[str, Any]:
+            )->tuple:
         """
         from `query_returns` of query functions (query_cot|pal|plancode|selection...etc), get the total_number of the 
         """
 
         # if the query func does not return multiple variables as a tuple, then wrap it in a tuple
         if not isinstance(query_returns, tuple): 
-            query_returns = (query_returns,)
+            query_returns = (query_returns,) 
         
         # CompletionUsage(completion_tokens:int, prompt_tokens:int, total_tokens:int)
-        completion_usage = query_returns[-1].usage 
+        response = query_returns[-1]
+        completion_usage = response.usage
+        n:int = len(response.choices)
         
-        return completion_usage
+        
+        return completion_usage, n
 
     def __call__(self, *args, **kwargs):
         # Call the original function
         results = self.func(*args, **kwargs)
         
-        completion_usage:Dict[str, int] = self.tok_info_from_query_funcs(results)
+        completion_usage, n = self.tok_info_from_query_funcs(results)
         toks_in, toks_out = completion_usage.prompt_tokens, completion_usage.completion_tokens
 
         # update counts 
         self.n_called += 1
+        self.n_sample = max(n, self.n_sample)
         self.max_toks_in = max(self.max_toks_in, toks_in)
-        self.max_toks_out = max(self.max_toks_out, toks_out)
+        self.max_toks_out = max(self.max_toks_out, toks_out/n)
         self.total_toks_in += toks_in
         self.total_toks_out += toks_out
         
@@ -67,13 +72,12 @@ class CountTokens:
     def print_summary(self):
         print(f"Function: {self.func.__name__}")
         print(f"Max tokens in: {self.max_toks_in}")
-        print(f"Max tokens out: {self.max_toks_out}")
+        print(f"Max tokens out: {self.max_toks_out:.1f}")
+        print(f"n_sample: {self.n_sample}")
         print(f"Total tokens in: {self.total_toks_in}")
         print(f"Total tokens out: {self.total_toks_out}")
         print(f"Number of calls: {self.n_called}")
     
-
-
     def tokens2usd(self, model: str="") -> float:
         """
         # Example usage

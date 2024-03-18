@@ -76,7 +76,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
 - [ ] RIMS prompts: dataset-specific
     - [ ] OCW
     - [ ] MATH
-- [ ] apply `@utils.cost_tracking.CountTokens`
+- [x] apply `@utils.cost_tracking.CountTokens`
     - [x] 1 more output for `token_info` dict
         - query_f's : _query, query_cot, query_selection, query_rims_inference 
     - [x] CountTokens need to crunch the `token_info`

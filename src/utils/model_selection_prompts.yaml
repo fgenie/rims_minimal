@@ -3,11 +3,14 @@ gsm_select:
   user_tmp: |
     Math problem: {QUESTION}
     
-    (A) {COT_SOLUTION}
+    (A) 
+    {COT_SOLUTION}
     
-    (B) {PAL_SOLUTION}
+    (B) 
+    {PAL_SOLUTION}
     
-    (C) {P2C_SOLUTION}
+    (C) 
+    {P2C_SOLUTION}
 
     Which of the above three choices can correctly answer the math problem?
   user:
@@ -141,11 +144,14 @@ ocw_select:
   user_tmp: |
     {QUESTION}
     
-    (A) {COT_SOLUTION}
+    (A) 
+    {COT_SOLUTION}
     
-    (B) {PAL_SOLUTION}
+    (B) 
+    {PAL_SOLUTION}
     
-    (C) {P2C_SOLUTION}
+    (C) 
+    {P2C_SOLUTION}
 
     Which of the above three choices can correctly answer the math problem?
   user:
@@ -261,11 +267,14 @@ math_select:
   user_tmp: |
     {QUESTION}
     
-    (A) {COT_SOLUTION}
+    (A) 
+    {COT_SOLUTION}
     
-    (B) {PAL_SOLUTION}
+    (B) 
+    {PAL_SOLUTION}
     
-    (C) {P2C_SOLUTION}
+    (C) 
+    {P2C_SOLUTION}
 
     Which of the above three choices can correctly answer the math problem?
   user:

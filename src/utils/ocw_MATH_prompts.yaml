@@ -65,7 +65,27 @@ ocw_cot:
     - "$2$"
     - "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]"
     - "$s^{2}+b s+1$"
-    - "$\\left(-8, -8\\sqrt{3}\\right)$"  
+    - "$\\left(-8, -8\\sqrt{3}\\right)$" 
+  questions: # only for fewshot harvesting
+    - |
+      Problem:
+      Subproblem 0: What is the net charge of arginine in a solution of $\mathrm{pH} 1.0$? 
+      Please format your answer as +n or -n.  
+    - |
+      Problem:
+      Preamble: For each Laplace Transform \(Y(s)\), find the function \(y(t)\):
+      Subproblem 0: 
+      \[Y(s)=\boxed{\frac{1}{(s+a)(s+b)}}\]
+    - |
+      Problem:
+      Preamble: The following subproblems refer to the differential equation 
+      $\ddot{x}+b \dot{x}+x=0$.
+      Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+      $\ddot{x}+b \dot{x}+x=0$?
+    - |
+      Problem:
+      Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+      $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     
 
 ocw_pal:
   system: "You are a helpful assistant that can solve problems by using Python code."
@@ -222,8 +242,25 @@ math_cot:
     - 24
     - 16
     - -\frac{2}{3}
+  questions: # only for fewshot harvesting
+    - |
+      Problem:
+      Find the domain of the expression  $\frac{\sqrt{x-2}}{\sqrt{5-x}}$.}
+    - |
+      Problem:
+      If $\det \mathbf{A} = 2$ and $\det \mathbf{B} = 12,$ then find $\det (\mathbf{A} \mathbf{B}).$
+    - |
+      Problem:
+      Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+    - |
+      Problem:
+      If the system of equations
 
-
+      \begin{align*}
+      6x-4y&=a,\\
+      6y-9x &=b.
+      \end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,
+      find $\frac{a}{b},$ assuming $b$ is nonzero.
 math_pal:
   system: "You are a helpful assistant that can solve math problems by using Python code."
   user_tmp: |

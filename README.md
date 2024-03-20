@@ -65,18 +65,19 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
 - [x] cot prompts: dataset-specific
     - [x] OCW 
     - [x] MATH
-- [x] (NEW!) pal prompts: dataset-specific
+- [x] pal prompts: dataset-specific
     - [x] OCW
     - [x] MATH 
-- [ ] selection prompts: dataset-specific
+- [x] selection prompts: dataset-specific
     - [x] GSM, util
-    - [ ] OCW (WIP)
-    - [ ] MATH
+    - [x] OCW 
+    - [x] MATH
     - [x] renew `get_prompt()` 
 - [ ] RIMS prompts: dataset-specific
     - [ ] OCW
     - [ ] MATH
-- [x] apply `@utils.cost_tracking.CountTokens`
+- [ ] apply `@utils.cost_tracking.CountTokens` <!--only for synchronous run for now...-->
+    - incompatible with multiprocessing because of pickling error (client) --> async compatible possible, but later.
     - [x] 1 more output for `token_info` dict
         - query_f's : _query, query_cot, query_selection, query_rims_inference 
     - [x] CountTokens need to crunch the `token_info`

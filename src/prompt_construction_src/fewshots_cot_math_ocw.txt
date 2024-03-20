@@ -12,7 +12,25 @@ $\\boxed{[2,5]}$
 
 CORRECT
 src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
-To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we must consider two main constraints:\n\n1. The radicand (the expression inside the square root) of the numerator, $x - 2$, must be greater than or equal to zero.\n2. The radicand of the denominator, $5 - x$, must be greater than zero (not merely non-negative since the denominator cannot be zero).\n\nLet's address these constraints.\n\nFor the numerator, we want $x - 2 \\geq 0$, which simplifies to:\n$$x \\geq 2.$$\n\nFor the denominator, we want $5 - x > 0$, which simplifies to:\n$$x < 5.$$\n\nNow we combine these two inequalities to find the domain where both conditions are met:\n$$2 \\leq x < 5.$$\n\nThis is an interval from 2 to 5, including 2 but not including 5.\n\nTherefore, the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is $[2, 5)$.
+To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we must consider two main constraints:
+
+1. The radicand (the expression inside the square root) of the numerator, $x - 2$, must be greater than or equal to zero.
+2. The radicand of the denominator, $5 - x$, must be greater than zero (not merely non-negative since the denominator cannot be zero).
+
+Let's address these constraints.
+
+For the numerator, we want $x - 2 \\geq 0$, which simplifies to:
+$$x \\geq 2.$$
+
+For the denominator, we want $5 - x > 0$, which simplifies to:
+$$x < 5.$$
+
+Now we combine these two inequalities to find the domain where both conditions are met:
+$$2 \\leq x < 5.$$
+
+This is an interval from 2 to 5, including 2 but not including 5.
+
+Therefore, the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is $[2, 5)$.
 $[2, 5)$
 
 --- 
@@ -39,8 +57,13 @@ $-\\frac{2}{3}$
 question 1
             "Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n",
 
-WRONG
-(N/A)
+WRONG (chatgpt suggested to add instead of product)... so I manually fixed it.
+The determinant of the product of two square matrices is equal to the sum of their determinants. Therefore, if you have two matrices $\\mathbf{A}$ and $\\mathbf{B}$ with determinants $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12$, respectively, then the determinant of their product $\\mathbf{A} \\mathbf{B}$ is given by:
+
+$$\\det (\\mathbf{A} \\mathbf{B}) = (\\det \\mathbf{A})+(\\det \\mathbf{B}) = 2 + 12 = 14.$$
+
+So, $\\det (\\mathbf{A} \\mathbf{B}) = 12$.,
+$\\det (\\mathbf{A} \\mathbf{B}) = 12$
 
 CORRECT
 src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
@@ -53,8 +76,25 @@ question 2
             "Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n",
 
 
-WRONG
-(N/A) parsing fail exists, no real fail exists
+WRONG (manual)
+Terrell usually lifts 20-pound weights 12 times. 
+
+      First, we look at the total weight lifted with the 20-pound weights:
+      $$
+      \text{Total weight with 20-pound weights} = 20 \times 12 = 240 \text{ pounds}
+      $$
+
+      Now, equate this with two 15-pound weights lifted \(n\) times:
+      $$
+      2*15*n = 240
+      $$
+
+      solving for \(n\) would give us:
+      $$
+      n = \frac{240}{30} = 8
+      $$
+
+      This suggests that Terrell needs to lift the 15-pound weights 8 times.
 
 CORRECT
 src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
@@ -104,3 +144,23 @@ WRONG
 src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
 "Solution:\nThe characteristic polynomial of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is obtained by substituting $x(t) = e^{st}$ into the differential equation to get the characteristic equation:\n\nSubstitute $x(t) = e^{st}$ into the differential equation:\n\\[\\begin{aligned} \\ddot{x} + b\\dot{x} + x &= 0 \\\\\ns^2e^{st} + be^{st} + e^{st} &= 0 \\\\\n(s^2 + b + 1)e^{st} &= 0 \\end{aligned}\\]\n\nThis gives us the characteristic polynomial:\n\\[p(s) = s^2 + b + 1\\]\n\nTherefore, the characteristic polynomial $p(s)$ of the differential equation $\\ddot{x} + b\\dot{x} + x = 0$ is $\\boxed{s^2 + b + 1}$.\n",
 $\\boxed{s^2 + b + 1}$
+
+
+question 3
+WRONG chatgpt3.5 temp 1.2
+Subproblem 1: Find the fourth power of $z$. 
+
+Solution:
+We start by finding $z^2$:
+$z^2 = (1+\sqrt{3}i)(1+\sqrt{3}i) = 1 + 2\sqrt{3}i + 3i^2 = 1 + 2\sqrt{3}i - 3 = -2 + 2\sqrt{3}i$
+
+Now, we can find $z^4$ by squaring $z^2$:
+$( -2 + 2\sqrt{3}i)^2 = 4 - 4(2\sqrt{3}) + 12i -4 = -12 - 8\sqrt{3}i$
+
+Therefore, $z^4 = -12 - 8\sqrt{3}i$. 
+
+Subproblem 2: Identify $a, b$ such that $z^4 = a + bi$. 
+
+From our previous calculations, we can see that $a=-12$ and $b=-8\sqrt{3}$. 
+
+Therefore, the ordered pair $(a,b) = (-12, -8\sqrt{3})$.

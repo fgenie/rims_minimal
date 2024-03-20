@@ -73,7 +73,7 @@ class PromptStr(str):
 
 
 ### llm query functions ###
-@CountTokens
+# @CountTokens
 def query_cot(
     question: str, dataset_type:Literal["gsm", "ocw", "math"]="", 
     temperature: float = 0.0, backbone: str = "chatgpt", n:int=1, seed:int=777, max_tokens:int=1024,
@@ -125,7 +125,7 @@ def query_cot(
 
 
 # actual llm query function for p2c method
-@CountTokens
+# @CountTokens
 def _query(  # key,
     model_name: str = "gpt-3.5-turbo-1106", # "gpt-3.5-turbo-16k-0613",
     max_tokens: int = 1024,
@@ -241,7 +241,7 @@ def query_plancode(
     else:
         return None, None, {"codequery": None, "planquery": plan_query_msg}
 
-@CountTokens
+# @CountTokens
 def query_pal(question: str, 
               temperature: float, 
               backbone: str, 
@@ -292,7 +292,7 @@ def query_pal(question: str,
         ]
     return completions, query_message, resp
 
-@CountTokens
+# @CountTokens
 def query_selection(
     question: str,
     backbone: str,
@@ -329,7 +329,7 @@ def query_selection(
     cot_pal_p2c_solution_d = dict(zip("cot pal p2c".split(), cot_pal_p2c_solution_list))
 
     selection_message = get_select_prompt2(
-        question, cot_pal_p2c_solution_d, backbone=backbone, dataset_type=dataset_type,
+        question, cot_pal_p2c_solution_d, dataset_type=dataset_type,
     )
     response = client.chat.completions.create(model=model_name,
         max_tokens=max_tokens,
@@ -347,7 +347,7 @@ def query_selection(
     final_answer = postprocess_selection(select_str)
     return final_answer, select_str, response#completion_usage  # 'pal'|'p2c'|'cot'
 
-@CountTokens
+# @CountTokens
 def query_rims_inference(
     question: str,
     prompt_f: str,
@@ -661,8 +661,8 @@ def query_rims_inference(
 def get_select_prompt2(
         question:str, 
         cot_pal_p2c_sln_d:dict=None, 
-        backbone:str="chatgpt", 
         dataset_type:Literal["gsm", "svamp", "ocw", "math"]=None
+        # backbone:str="chatgpt", 
 ) -> List[Dict[str,str]]:
     # open up prompt template yaml file 
     prompt_yml = THIS_PARENT/"model_selection_prompts.yaml"
@@ -1341,6 +1341,8 @@ def get_concordant_answer(
     output: ans if concordant else None
 
     *recommend to put answers in the order of cot going first (usually they are intgers)
+
+    **for math and ocw, safe_execute_turbo polishes returned answer with `sp.latex` if the result is sympy object (See the last line of `def _execute`)
     """
     if ensure_unanimity:
         if len(set(answers_no_none)) == 1:
@@ -1385,49 +1387,54 @@ def get_concordant_answer(
             math_util.normalize_final_answer(str(a)) for a in answers_no_none
         ]
         if ensure_unanimity:
-            if len(set(answers_normalized)) == 1:
-                return answers_no_none.pop()
-            else:
-                return None
+            raise NotImplementedError("ensure_unanimity is not supported for now: math")
         else:
             if len(answers_normalized) == 0:
                 return None
             elif len(answers_normalized) == 1:
                 return answers_no_none.pop()
             elif len(answers_normalized) == 2:
-                if math_util.is_equiv(answers_normalized[0], answers_normalized[1]):
-                    return answers_no_none[0]
-                else:
-                    return None
+                try:
+                    if math_util.is_equiv(answers_normalized[0], answers_normalized[1]):
+                        return answers_no_none[0]
+                except Exception as e:
+                    print(e)
+                return None 
             else:  # len()==3
                 revert_normalized = dict(zip(answers_normalized, answers_no_none))
                 for a1, a2 in combinations(answers_normalized, 2):
-                    if math_util.is_equiv(a1, a2):
-                        return revert_normalized[a1]
+                    try:
+                        if math_util.is_equiv(a1, a2):
+                            return revert_normalized[a1]
+                    except Exception as e:
+                        print(e)
+                        continue
                 return None  # no concordant answers
     elif dataset_type in ["ocw"]:
         if ensure_unanimity:
-            answers_normalized = [
-                math_util.normalize_final_answer(str(a)) for a in answers_no_none
-            ]
-            if len(set(answers_normalized)) == 1:
-                return answers_no_none.pop()
-            else:
-                return None
+            raise NotImplementedError("ensure_unanimity is not supported for now: ocw")
         else:
             if len(answers_no_none) == 0:
                 return None
             elif len(answers_no_none) == 1:
                 return answers_no_none.pop()
             elif len(answers_no_none) == 2:
-                if math_util.is_equiv_ocw(answers_no_none[0], answers_no_none[1]):
-                    return answers_no_none[0]
-                else:
-                    return None
+                try:
+                    if math_util.is_equiv_ocw(answers_no_none[0], answers_no_none[1]):
+                        return answers_no_none[0]
+                    else:
+                        return None
+                except Exception as e:
+                    print(e)
+                return None
             else:  # len()==3
                 for a1, a2 in combinations(answers_no_none, 2):
-                    if math_util.is_equiv_ocw(a1, a2):
-                        return a1
+                    try:
+                        if math_util.is_equiv_ocw(a1, a2):
+                            return a1
+                    except Exception as e:
+                        print(e)
+                        continue
                 return None  # no concordant answers
             
 
@@ -1443,62 +1450,6 @@ def solution2blurb(method: str = "", solution: str = "", ans: Any = ""):
     }
     blurb_str = f"`Method`: {abbr2full[method]} ({method})\n`Attempt 1`: {solution}\n`Answer 1`: {ans}"
     return blurb_str
-
-
-if __name__ == "__main__":
-    questions = []
-    for line in math_prompt.TURBO_SELECT_USER.split("\n"):
-        if line.lower().startswith("math problem: "):
-            q = line.replace("Math problem: ", "").replace("Math Problem: ", "")
-            questions.append(q)
-            print(q)
-
-    """
-    Question: Olivia has $23. She bought five bagels for $3 each. How much money does she have left?
-    Question: Michael had 58 golf balls. On tuesday, he lost 23 golf balls. On wednesday, he lost 2 more. How many golf balls did he have at the end of wednesday?
-    Question: There were nine computers in the server room. Five more computers were installed each day, from monday to thursday. How many computers are now in the server room?
-    Question: Shawn has five toys. For Christmas, he got two toys each from his mom and dad. How many toys does he have now?
-    Question: There are 15 trees in the grove. Grove workers will plant trees in the grove today. After they are done, there will be 21 trees. How many trees did the grove workers plant today?
-    """
-
-    # for q in questions:
-    #     codes, plans, querymsgs = query_plancode(
-    #                                                 q,
-    #                                                 plan_temperature=1.0,
-    #                                                 code_temperature=1.0,
-    #                                                 backbone='chatgpt',
-    #                                                 n=1,
-    #                                                 seed=777
-    #                                                 )
-    #     solution = plans[0] + "\n" + codes[0]
-    #     print("====================================")
-    #     print(f"Question: {q}")
-    #     print(solution)
-    p2c_chatgptout = open("p2c_chatgptout.txt").read().strip()
-    q_sln_lst = p2c_chatgptout.split("====")
-
-    ab_examples = math_prompt.TURBO_SELECT_USER.split(
-        "Which of the above two choices can correctly answer the math problem?"
-    )
-    attempt_choice3 = (
-        "Which of the above three choices can correctly answer the math problem?"
-    )
-
-    select3_prompt = []
-    for q_sln, ab in zip(q_sln_lst, ab_examples):
-        q, sln = q_sln.split("Question: ")[1].split("\n", 1)
-        print(f"Question: {q}")
-        print("solution")
-        print(sln)
-        print("answer")
-        print(f"{safe_execute_turbo(sln)=}")
-        print("====")
-
-        abc_user = f"{ab}(C)\n{sln}\n\n{attempt_choice3}\n\n\n\n"
-        select3_prompt.append(abc_user)
-
-    select3_prompt = "".join(select3_prompt).strip()
-    print(select3_prompt, file=open("select3user.txt", "w"))
 
 
 
@@ -1522,3 +1473,4 @@ def backbone2model(backbone:str)->str:
     else:
         raise ValueError(f"backbone: {backbone} is not supported")
     return model_name
+

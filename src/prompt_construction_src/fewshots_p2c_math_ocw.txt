@@ -1,7 +1,7 @@
 
 math 0
             "Problem:
-            Find the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}
+            Find the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.
             ",
 WRONG
 def solution():
@@ -11,7 +11,7 @@ def solution():
     1. The numerator $\sqrt{x-2}$ requires $x-2 > 0$, which implies $x > 2$. (Mistake: Using a strict inequality instead of a non-strict inequality)
     2. The denominator $\sqrt{5-x}$ requires $5-x \geq 0$, which implies $x \leq 5$. (Correct)
 
-    Combining these two conditions, the domain of the expression is $2 < x \leq 5$. (Mistake: Using incorrect inequalities based on the previous mistakes)
+    Combining these two conditions, the domain of the expression is $2 < x \leq 5$. 
     '''
     # Since the domain is a simple condition, we return it as a string, incorrectly with parentheses instead of brackets.
     return "(2,5]"
@@ -122,19 +122,18 @@ def solution():
 
     Mistake: We can substitute x from equation (3) into equation (2) to find a relation between y and b, but we will make a mistake in the algebra:
     6y - 9((a + 4y)/6) = b
-    Simplify the equation incorrectly:
+    Simplify the equation:
     6y - (3a + 12y)/2 = b
-    Multiply through by 2 incorrectly:
+    Multiply through by 2:
     12y - 6a - 24y = 2b
-    Simplify further incorrectly:
+    Simplify further:
     -12a = 2b  =>  a = -6b  (4)
 
     Now we have an incorrect relation for a in terms of b. The ratio a/b is then:
     a/b = (-6b) / b
-    Simplify by canceling out b incorrectly:
+    Simplify by canceling out b:
     a/b = -6
 
-    Since this is an incorrect algebraic solution, we still return the result.
     '''
     # make latex-comparable string
     result = "-6"
@@ -307,8 +306,8 @@ WRONG
 import cmath
 
 def solution():
-    # Define the complex number z
-    z = 1 + cmath.sqrt(3) * 1j
+    # Define the complex number z (wrong, should use cmath for complex operations)
+    z = 1 + sqrt(3) * i
     
     # Calculate z to the fourth power directly
     z_fourth_power = z ** 4
@@ -316,10 +315,6 @@ def solution():
     # Extract the real and imaginary parts of z to the fourth power
     a = z_fourth_power.real
     b = z_fourth_power.imag
-    
-    # Round the real and imaginary parts to avoid floating point precision issues
-    a = round(a)
-    b = round(b)
     
     # Return the result as an ordered pair
     return (a, b)

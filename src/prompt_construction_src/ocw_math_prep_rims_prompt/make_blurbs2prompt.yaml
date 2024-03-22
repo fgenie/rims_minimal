@@ -9,5 +9,6 @@ system: |
 instruction: |
   Now, try the `Question` below following the same procedure as above. Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Workaround Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt.
 
-  `Question`: {QUESTION}
+  `Question`:
+  [QUESTION]
 sep: "\n\n\n\n"

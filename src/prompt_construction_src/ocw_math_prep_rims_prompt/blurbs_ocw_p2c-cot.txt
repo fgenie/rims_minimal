@@ -1,18 +1,60 @@
-0
-`Mistakes`: The mistakes in the first attempt are using incorrect pKa values, incorrect logic for determining the charge states, and incorrect calculation of the net charge. The logic doesn't account for the fact that the groups are protonated at pHs lower than their pKa values.
-
-`Hint for a better Method choice`: Using the Chain of Thought method can help in understanding the protonation states of the amino acid groups at a given pH and use the correct pKa values, thus preventing computational errors and incorrect assumptions.
-
-
-
-====================
-
-
+0: Manually modified good
+1: BAD. r == s then the wrong answer gets correct
+2: not bad but..
 
 0
-`Mistakes`: The mistakes in the first attempt include incorrect pKa values used for arginine and incorrect logic for determining the charge state for each group at pH 1.0, leading to incorrect calculation of the net charge.
+`Question`: 
+Problem:
+Subproblem 0: What is the net charge of arginine in a solution of $\mathrm{pH} 1.0$? 
+Please format your answer as +n or -n.
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 
+def solution():
+    # pKa values for arginine (incorrect values)
+    pKa_carboxyl = 3.0
+    pKa_amino = 8.0
+    pKa_guanidinium = 11.0
 
-`Hint for a better Method choice`: Using Chain of Thought will help understand the protonation states of different groups within arginine at low pH, correctly leading to the determination of the net charge.
+    # pH value for the solution
+    pH = 1.0
+
+    # Determine the charge state of each group at pH 1.0 (incorrect logic)
+    charge_carboxyl = 1 if pH > pKa_carboxyl else 0
+    charge_amino = -1 if pH > pKa_amino else 0
+    charge_guanidinium = -1 if pH > pKa_guanidinium else 0
+
+    # Calculate the net charge (incorrect calculation)
+    net_charge = charge_carboxyl - charge_amino - charge_guanidinium
+
+    # Format the net charge (correct formatting)
+    formatted_charge = f"+{net_charge}" if net_charge >= 0 else f"{net_charge}"
+    return formatted_charge
+`Answer 1`: +0
+`Evaluation`: Wrong
+`Mistakes`: The attempt above wrongly calculates the net charge and also uses wrong charges for functional groups. Carboxyl group will not have a positive charge; protonation of the carboxyl group actually neutralizes its charge. Additionally, the guanidinium group already has a positive charge at neutral pH, and this charge does not change at pH 1.0. The amino group does carry a positive charge at low pH.
+`Workaround Method`: Chain of Thought (cot)
+`Attempt 2`: 
+Arginine is an amino acid with three groups that can be protonated and contribute to its net charge, depending on the solution's pH:
+
+1. The carboxyl group (-COOH), which typically has a pKa around 2.17.
+2. The amino group (-NH3+), with a pKa around 9.04.
+3. The side chain (guanidinium group, -C(NH2)2+), which has a pKa of approximately 12.48.
+
+At a pH of 1.0, all three groups are in their protonated forms due to the low pH value being well below their respective pKa values. The carboxyl group would be COOH, the amino group would be NH3+, and the side chain would be protonated as well. The net charge of arginine in this situation is the sum of the charges of these groups:
+
+- The carboxyl group (-COOH) is neutral at this pH.
+- The amino group (-NH3+) carries a charge of +1.
+- The guanidinium group (-C(NH2)2+) carries a charge of +1.
+
+Net charge = 0 (from -COOH) +1 (from -NH3+) +1 (from -C(NH2)2+)
+
+Net charge = +2
+
+Thus, the net charge of arginine in a solution of pH 1.0 is +2.
+
+Final answer: The net charge of arginine at pH 1.0 is +2.
+`Answer 2`: $2$
+`Evaluation`: Correct
 
 
 
@@ -21,9 +63,46 @@
 
 
 1
-`Mistakes`: The characteristic polynomial is incorrect. It provides the constant term as '1' instead of the correct coefficient which should be 'x' from the original differential equation.
+`Question`: 
+Problem:
+Preamble: The following subproblems refer to the differential equation 
+$\ddot{x}+b \dot{x}+x=0$.
+Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+$\ddot{x}+b \dot{x}+x=0$?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 
+def solution():
+    '''
+    The function solution returns the characteristic polynomial of the given differential equation.
 
-`Hint for a better Method choice`: The cot method would allow for a step-by-step thought process to properly derive the characteristic polynomial, which can avoid the oversight of the wrong constant term.
+    The differential equation given is:
+    \[\ddot{x} + b\dot{x} + x = 0\]
+
+    The characteristic equation is obtained by assuming a solution of the form \(x(t) = e^{rt}\), where \(r\) is a constant. This leads to the characteristic polynomial:
+    \[r^2 + br + 1 = 0\]
+
+    This is the characteristic polynomial p(r) for the given differential equation.
+    '''
+    # Since this is a mathematical problem and the characteristic polynomial is already determined above,
+    # we can simply return the polynomial in string format.
+    return "r^2 + br + 1 = 0"
+`Answer 1`: r^2 + br + 1 = 0
+`Evaluation`: Wrong
+`Mistakes`: The coefficient of the x term in the characteristic polynomial was incorrectly given as 1 instead of simply \(s^0\) or just \(1\). The correct characteristic polynomial should be \(s^2 + bs + 1\) rather than \(r^2 + br + 1\).
+`Hint for a better Method choice`: A Chain of Thought method could allow for step-by-step derivation of the characteristic polynomial, ensuring that each term is correctly substituted.
+`Workaround Method`: Chain of Thought (cot)
+`Attempt 2`: 
+The characteristic polynomial \\( p(s) \\) for a differential equation can be derived by replacing \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1.
+
+Given the differential equation:
+\\[ \\ddot{x} + b \\dot{x} + x = 0 \\]
+
+Replace \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1 to get the characteristic polynomial:
+\\[ p(s) = s^2 + bs + 1 \\]
+
+So the characteristic polynomial \\( p(s) \\) is \\( s^2 + bs + 1 \\).
+`Answer 2`: $s^{2}+b s+1$
+`Evaluation`: Correct
 
 
 
@@ -32,9 +111,46 @@
 
 
 1
-`Mistakes`: The attempt erroneously substitutes the constant term $x$ with 1 in the characteristic polynomial, whereas it should be replaced by $s^0$ which is also equal to 1. However, the standard form of the characteristic polynomial for a second-order differential equation with constant coefficients is $s^2 + bs + 1$. The correct form is $s^2 + bs + c$ where $c$ corresponds to the coefficient of $x$, which is just 1 in this case. The initial solution mistakenly writes the final polynomial as $r^2 + br + 1 = 0$ instead of $s^2 + bs + 1 = 0$.
+`Question`: 
+Problem:
+Preamble: The following subproblems refer to the differential equation 
+$\ddot{x}+b \dot{x}+x=0$.
+Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+$\ddot{x}+b \dot{x}+x=0$?
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 
+def solution():
+    '''
+    The function solution returns the characteristic polynomial of the given differential equation.
 
-`Hint for a better Method choice`: A Chain of Thought method can help clarify the process of forming the characteristic polynomial by symbolically substituting the derivatives with powers of $s$. This can rectify the misunderstanding of the characteristic equation's formation.
+    The differential equation given is:
+    \[\ddot{x} + b\dot{x} + x = 0\]
+
+    The characteristic equation is obtained by assuming a solution of the form \(x(t) = e^{rt}\), where \(r\) is a constant. This leads to the characteristic polynomial:
+    \[r^2 + br + 1 = 0\]
+
+    This is the characteristic polynomial p(r) for the given differential equation.
+    '''
+    # Since this is a mathematical problem and the characteristic polynomial is already determined above,
+    # we can simply return the polynomial in string format.
+    return "r^2 + br + 1 = 0"
+`Answer 1`: r^2 + br + 1 = 0
+`Evaluation`: Wrong
+`Mistakes`: The error lies in the constant term of the characteristic polynomial. Instead of 1, it should be the coefficient of \( x \) from the original differential equation.
+`Hint for a better Method choice`: A Chain of Thought would directly allow us to translate the differential equation into the characteristic polynomial without the need for coding, which could help avoid incorrect coefficients.
+`Workaround Method`: Chain of Thought (cot)
+`Attempt 2`: 
+The characteristic polynomial \\( p(s) \\) for a differential equation can be derived by replacing \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1.
+
+Given the differential equation:
+\\[ \\ddot{x} + b \\dot{x} + x = 0 \\]
+
+Replace \\( \\ddot{x} \\) with \\( s^2 \\), \\( \\dot{x} \\) with \\( s \\), and \\( x \\) with 1 to get the characteristic polynomial:
+\\[ p(s) = s^2 + bs + 1 \\]
+
+So the characteristic polynomial \\( p(s) \\) is \\( s^2 + bs + 1 \\).
+`Answer 2`: $s^{2}+b s+1$
+`Evaluation`: Correct
 
 
 
@@ -43,9 +159,70 @@
 
 
 2
-`Mistakes`: The attempt uses incorrect syntax for defining a complex number in Python. The `sqrt` function and `i` for the imaginary unit are not directly accessible without the correct module `cmath`. The variable `i` is also not defined and would cause a NameError in Python. Additionally, there's no import statement for `sqrt`.
+`Question`: 
+Problem:
+Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 
+import cmath
 
-`Hint for a better Method choice`: A chain of thought process would allow solving the problem step by step without the need for code syntax, making it easier to focus on the mathematical operations rather than debugging programming errors.
+def solution():
+    # Define the complex number z (wrong, should use cmath for complex operations)
+    z = 1 + sqrt(3) * i
+    
+    # Calculate z to the fourth power directly
+    z_fourth_power = z ** 4
+    
+    # Extract the real and imaginary parts of z to the fourth power
+    a = z_fourth_power.real
+    b = z_fourth_power.imag
+    
+    # Return the result as an ordered pair
+    return (a, b)
+`Answer 1`: Programming Error
+`Evaluation`: Wrong
+`Mistakes`: The attempt uses incorrect syntax for defining a complex number in Python. The `sqrt` function and `i` for the imaginary unit are not directly accessible without the correct module and the imaginary unit is represented by `j` in Python, not `i`. 
+`Hint for a better Method choice`: Use Chain of Thought to manually calculate the power of the complex number, which avoids the syntax errors present in programming languages.
+`Workaround Method`: Chain of Thought (cot)
+`Attempt 2`: 
+To solve the subproblem, we want to find $z^4$ where $z = 1 + \sqrt{3}i$. We start by writing $z$ in polar form. The polar form of a complex number is given by $z = r(\cos\theta + i\sin\theta)$, where $r$ is the magnitude of $z$ and $\theta$ is the argument of $z$.
+
+First, we find the magnitude of $z$:
+$$ r = |z| = \sqrt{1^2 + (\sqrt{3})^2} = \sqrt{1 + 3} = \sqrt{4} = 2 $$
+
+Next, we find the argument $\theta$. The argument is the angle the complex number makes with the positive real axis. We have
+
+$$ \tan(\theta) = \frac{\text{Im}(z)}{\text{Re}(z)} = \frac{\sqrt{3}}{1} = \sqrt{3} $$
+
+Therefore, $\theta = \arctan(\sqrt{3})$. Since $z$ is in the first quadrant, $\theta = \frac{\pi}{3}$.
+
+Now we have the polar form of $z$:
+
+$$ z = 2\left(\cos\left(\frac{\pi}{3}\right) + i\sin\left(\frac{\pi}{3}\right)\right) $$
+
+By De Moivre's Theorem, to raise a complex number in polar form to an integer power $n$, we raise the magnitude to the power of $n$ and multiply the argument by $n$:
+
+$$ z^n = r^n\left(\cos(n\theta) + i\sin(n\theta)\right) $$
+
+For $n = 4$, we get:
+
+$$ z^4 = 2^4\left(\cos\left(4 \cdot \frac{\pi}{3}\right) + i\sin\left(4 \cdot \frac{\pi}{3}\right)\right) $$
+$$ z^4 = 16\left(\cos\left(\frac{4\pi}{3}\right) + i\sin\left(\frac{4\pi}{3}\right)\right) $$
+
+The angle $\frac{4\pi}{3}$ corresponds to one of the special angles in the unit circle, and its cosine and sine values are well known:
+
+$$ \cos\left(\frac{4\pi}{3}\right) = -\frac{1}{2} $$
+$$ \sin\left(\frac{4\pi}{3}\right) = -\frac{\sqrt{3}}{2} $$
+
+Therefore,
+
+$$ z^4 = 16\left(-\frac{1}{2} - i\frac{\sqrt{3}}{2}\right) $$
+$$ z^4 = -8 - 8\sqrt{3}i $$
+
+So $a = -8$ and $b = -8\sqrt{3}$, and the ordered pair is $(-8, -8\sqrt{3})$.
+`Answer 2`: $\left(-8, -8\sqrt{3}\right)$
+`Evaluation`: Correct
 
 
 
@@ -54,9 +231,70 @@
 
 
 2
+`Question`: 
+Problem:
+Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.
+`Method`: Plan-and-then-Code (p2c)
+`Attempt 1`: 
+import cmath
+
+def solution():
+    # Define the complex number z (wrong, should use cmath for complex operations)
+    z = 1 + sqrt(3) * i
+    
+    # Calculate z to the fourth power directly
+    z_fourth_power = z ** 4
+    
+    # Extract the real and imaginary parts of z to the fourth power
+    a = z_fourth_power.real
+    b = z_fourth_power.imag
+    
+    # Return the result as an ordered pair
+    return (a, b)
+`Answer 1`: Programming Error
+`Evaluation`: Wrong
 `Mistakes`: The code uses undefined variables and functions like `sqrt`, `i`, and normal multiplication instead of complex multiplication provided by `cmath`.
+`Hint for a better Method choice`: Chain of Thought would avoid programming syntax errors and allows for step-by-step reasoning using mathematical properties of complex numbers.
+`Workaround Method`: Chain of Thought (cot)
+`Attempt 2`: 
+To solve the subproblem, we want to find $z^4$ where $z = 1 + \sqrt{3}i$. We start by writing $z$ in polar form. The polar form of a complex number is given by $z = r(\cos\theta + i\sin\theta)$, where $r$ is the magnitude of $z$ and $\theta$ is the argument of $z$.
 
-`Hint for a better Method choice`: Chain of Thought would avoid programming syntax errors and allows for step-by-step validation of mathematical operations.
+First, we find the magnitude of $z$:
+$$ r = |z| = \sqrt{1^2 + (\sqrt{3})^2} = \sqrt{1 + 3} = \sqrt{4} = 2 $$
+
+Next, we find the argument $\theta$. The argument is the angle the complex number makes with the positive real axis. We have
+
+$$ \tan(\theta) = \frac{\text{Im}(z)}{\text{Re}(z)} = \frac{\sqrt{3}}{1} = \sqrt{3} $$
+
+Therefore, $\theta = \arctan(\sqrt{3})$. Since $z$ is in the first quadrant, $\theta = \frac{\pi}{3}$.
+
+Now we have the polar form of $z$:
+
+$$ z = 2\left(\cos\left(\frac{\pi}{3}\right) + i\sin\left(\frac{\pi}{3}\right)\right) $$
+
+By De Moivre's Theorem, to raise a complex number in polar form to an integer power $n$, we raise the magnitude to the power of $n$ and multiply the argument by $n$:
+
+$$ z^n = r^n\left(\cos(n\theta) + i\sin(n\theta)\right) $$
+
+For $n = 4$, we get:
+
+$$ z^4 = 2^4\left(\cos\left(4 \cdot \frac{\pi}{3}\right) + i\sin\left(4 \cdot \frac{\pi}{3}\right)\right) $$
+$$ z^4 = 16\left(\cos\left(\frac{4\pi}{3}\right) + i\sin\left(\frac{4\pi}{3}\right)\right) $$
+
+The angle $\frac{4\pi}{3}$ corresponds to one of the special angles in the unit circle, and its cosine and sine values are well known:
+
+$$ \cos\left(\frac{4\pi}{3}\right) = -\frac{1}{2} $$
+$$ \sin\left(\frac{4\pi}{3}\right) = -\frac{\sqrt{3}}{2} $$
+
+Therefore,
+
+$$ z^4 = 16\left(-\frac{1}{2} - i\frac{\sqrt{3}}{2}\right) $$
+$$ z^4 = -8 - 8\sqrt{3}i $$
+
+So $a = -8$ and $b = -8\sqrt{3}$, and the ordered pair is $(-8, -8\sqrt{3})$.
+`Answer 2`: $\left(-8, -8\sqrt{3}\right)$
+`Evaluation`: Correct
 
 
 

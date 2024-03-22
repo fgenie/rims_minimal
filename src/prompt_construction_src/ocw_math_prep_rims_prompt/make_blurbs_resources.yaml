@@ -464,7 +464,7 @@ math: # exclude prob #3, it looks just like gsm
             find $\frac{a}{b},$ assuming $b$ is nonzero.
     answers: # only used for prompt preparation, not for actual prompting inference
         - "[2,5)"
-        - 24
+        - "24"
         # - 16
         - -\frac{2}{3}
     correct:

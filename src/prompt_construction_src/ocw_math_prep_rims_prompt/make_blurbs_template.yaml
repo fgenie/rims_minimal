@@ -7,7 +7,8 @@ system: |
 
     Now guess the most likely `Mistakes`, and `Hint for a better Method choice` in the examples below. In `Mistakes`, you write the diagnosis of the first attempt. In `Hint for a better Method choice`, you write the hint that starks the benefit of alternative method which helps improving on `Mistakes`.
 user: |
-    `Question`: {QUESTION}
+    `Question`: 
+    {QUESTION}
     `Method`: {WRONG_METHOD}
     `Attempt 1`: 
     {WRONG_SOLUTION}

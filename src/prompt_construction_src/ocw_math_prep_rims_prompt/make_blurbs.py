@@ -202,7 +202,7 @@ async def main():
     2. take good examples for correct (and wrong too)
 
     v3 p2c-cot pal-p2c pal-cot
-    math 1,2,3    1(weak)  1,2,3   
+    math 1,2,3    aug  1,2,3   
     ocw  1        1,2,3     3
 
 

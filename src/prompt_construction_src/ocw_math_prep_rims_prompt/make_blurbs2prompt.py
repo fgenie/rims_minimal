@@ -28,25 +28,55 @@ from pathlib import Path
 def ablate(
         blurb: str,
     )->Dict[str,str]:
-    # find the end of attempt 1 = mistakes start 
-    attempt1_start = blurb.find ("`Attempt 1`: ")
-    attempt1_end = blurb.find("`Mistakes`: ")
+    """
+    blurb text is as follows, we will ablate 
+    (1) -hint,
+    (2) -hint -mistakes,
+    (3) -hint -mistakes -attempt1
+
+    `Question`: 
+    {QUESTION}
+    `Method`: {WRONG_METHOD}
+    `Attempt 1`: 
+    {WRONG_SOLUTION}
+    `Answer 1`: {WRONG_PRED}
+    `Evaluation`: Wrong
+    `Mistakes`: <one_liner_explanation_for_whats_gone_wrong_in_the_attempt>
+    `Hint for a better Method choice`: <one_liner_hint_to_workaround_with_different_method>
+    `Workaround Method`: {CORRECT_METHOD}
+    `Attempt 2`: 
+    {CORRECT_SOLUTION}
+    `Answer 2`: {CORRECT_PRED}
+    `Evaluation`: Correct
     
-    # find the end of mistakes = hint start
-    mistakes_start = attempt1_end
-    mistakes_end = blurb.find("`Hint for a better Method choice`: ")    
-    
-    # find the end of hint = attempt 2 start ( whole reflection ablated)
-    hint_start = mistakes_end 
+    """
+    # (1) -hint
+    hint_start = blurb.find("`Hint for a better Method choice`: ")
     hint_end = blurb.find("`Workaround Method`: ")
+    blurb_h = blurb[:hint_start] + blurb[hint_end:]
+    
+    # (2) -hint -mistakes
+    mistake_start = blurb_h.find("`Mistakes`: ")
+    mistake_end = blurb_h.find("`Workaround Method`: ")
+    blurb_h_m = blurb_h[:mistake_start] + blurb_h[mistake_end:]
+    
+    # (3) -hint -mistakes -attempt1
+    attempt1_start = blurb_h_m.find("`Method`: ")
+    attempt1_end = blurb_h_m.find("`Workaround Method`: ")
+    blurb_h_m_a1 = blurb_h_m[:attempt1_start] + blurb_h_m[attempt1_end:]
+    blurb_h_m_a1 = blurb_h_m_a1.replace(
+        "`Workaround Method`: ", "`Method`: ").replace(
+        "`Attempt 2`: ", "`Attempt 1`: ").replace(
+        "`Answer 2`: ", "`Answer 1`: ")
     
 
-    raise NotImplementedError("Ablation not implemented yet")
+
 
     ablations = {
-        "-hint":, 
-        "-hint-mistakes":,
-        "-hint-mistakes-attempt1":, 
+        "_": blurb,
+        "-hint": blurb_h, 
+        "-hint-mistakes": blurb_h_m,
+        "-hint-mistakes-attempt1": blurb_h_m_a1, 
     }
     return ablations
     
@@ -68,19 +98,24 @@ def construct_prompt(
     # get the template
     system = template_d.system
     # get the blurbs
-    blurbs = []
+    prompts_d = defaultdict(list)
     for direction in blurb_order:
         current_dir_idx = dirmap[direction]
-        current_blurb = blurbs_d[current_dir_idx]
-        blurbs.append(current_blurb)
-    sep = template_d.sep
+        current_blurb = blurbs_d[direction][current_dir_idx].strip()
+        abl_blurbs: Dict[str,str] = ablate(current_blurb)
+        for k,v in abl_blurbs.items():
+            prompts_d[k].append(v)
     
+    sep = template_d.sep
     inst = template_d.instruction 
 
-    all_parts_in_order = [system] + blurbs + [inst]
-    
-    rims_prompt = sep.join(all_parts_in_order)
-    return rims_prompt
+    # all parts ready to be joined with sep
+    for k, v in prompts_d.items():
+        all_parts_to_join = [system] + prompts_d[k] + [inst]
+        rims_prompt = sep.join(all_parts_to_join)
+        prompts_d[k] = rims_prompt
+
+    return prompts_d
 
 
 def main():
@@ -88,11 +123,14 @@ def main():
     columns = "p2c-cot pal-p2c pal-cot".split()
     prompt_mappings: Dict[List] = {
         "ocw": [
-                dict(zip(columns, [0,2,1]))
+                # dict(zip(columns, [0,2,1]))
+                dict(zip(columns, [0,0,1])) 
                 ],
         "math": [
-                dict(zip(columns, [2,0,1])), 
-                dict(zip(columns, [1,0,2])),
+                # dict(zip(columns, [2,0,1])), 
+                # dict(zip(columns, [1,0,2])),
+                dict(zip(columns, [1,0,0])), 
+                dict(zip(columns, [0,0,1])),
                 ]
     }
 
@@ -107,13 +145,16 @@ def main():
     # make the prompt
     for ds, dirmappings_list in prompt_mappings.items():
         for dirmap in dirmappings_list: 
-            prompt: str = construct_prompt(template_d, blurbs_d[ds], dirmap, blurb_order = columns)    
-            outf = f"rims_{ds}_{'.'.join(columns)}.txt"
-            if Path(outf).exists():
-                outf = outf.replace(".txt", ".txt1")
-            with open(outf, "w") as writer:
-                writer.write(prompt)
-                print(outf)
+            prompt_d: Dict[str, str] = construct_prompt(template_d, blurbs_d[ds], dirmap, blurb_order = columns)    
+            for abl_setting, prompt_str in prompt_d.items():
+                outf = f"prompts/rims_{ds}_{'.'.join(columns)}_{abl_setting}.txt"
+                if not Path(outf).parent.exists():
+                    Path(outf).parent.mkdir(parents=True)
+                if Path(outf).exists():
+                    outf = outf.replace(".txt", ".txt1")
+                with open(outf, "w") as writer:
+                    writer.write(prompt_str)
+                    print(outf)
 
 
 if __name__ == "__main__":

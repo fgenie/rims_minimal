@@ -213,10 +213,10 @@ ocw: # exclude prob #2
                 def solution():
                     '''
                     Create a function solution that returns the answer of the following question: Problem:
-                Preamble: The following subproblems refer to the differential equation 
-                $\ddot{x}+b \dot{x}+x=0$.
-                Subproblem 0: What is the characteristic polynomial $p(s)$ of 
-                $\ddot{x}+b \dot{x}+x=0$?
+                    Preamble: The following subproblems refer to the differential equation 
+                    $\ddot{x}+b \dot{x}+x=0$.
+                    Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+                    $\ddot{x}+b \dot{x}+x=0$?
                     '''
                     # The characteristic polynomial is derived by assuming a solution of the form e^(st) to the differential equation.
                     # This means we replace the second derivative ddot{x} with s^2, the first derivative dot{x} with s, and x with 1.
@@ -251,6 +251,22 @@ ocw: # exclude prob #2
 
                     return answer
     wrong:
+        preds:
+            cot:
+                - "+3"
+                # - 
+                - "$\\boxed{s^2 + b + 1}$"
+                - $(a,b) = (-12, -8\sqrt{3})$
+            pal:
+                - "Programming Error"
+                # -
+                - "- b s + s^{2} - 1"
+                - "('-2', '2 \\sqrt{3}')"
+            p2c: 
+                - "+0"
+                # -
+                - "r^2 + br + 1 = 0"
+                - "Programming Error"
         cot:
             - |
                 Solution:
@@ -350,11 +366,11 @@ ocw: # exclude prob #2
                     z_4 = z**2 
                     z_4_simplified = z_4.expand(complex=True)
 
-                    # Extract real and imaginary parts (based on the incorrect calculation)
+                    # Extract real and imaginary parts 
                     a = z_4_simplified.as_real_imag()[0]
                     b = z_4_simplified.as_real_imag()[1]
 
-                    return latex(a, b)
+                    return latex(a), latex(b)
         p2c:
             - |
                 def solution():
@@ -679,6 +695,22 @@ math: # exclude prob #3, it looks just like gsm
                     result = "-2/3"
                     return result
     wrong:
+        preds:
+            cot:
+                - "$\\boxed{[2,5]}$"
+                - "$\\det (\\mathbf{A} \\mathbf{B}) = 14$" 
+                # - 
+                - "$\\frac{a}{b} = \\boxed{-3}$"
+            pal:
+                - "[2, 3, 4]"
+                - "14"
+                # -
+                - "DividedByZero Error"
+            p2c:
+                - "(2,5]"
+                - "14"
+                # -
+                - "-6"
         cot:
             - |
                Solution:

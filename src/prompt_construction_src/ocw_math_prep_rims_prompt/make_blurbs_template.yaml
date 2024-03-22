@@ -7,16 +7,18 @@ system: |
 
     Now guess the most likely `Mistakes`, and `Hint for a better Method choice` in the examples below. In `Mistakes`, you write the diagnosis of the first attempt. In `Hint for a better Method choice`, you write the hint that starks the benefit of alternative method which helps improving on `Mistakes`.
 user: |
-    `Question`: $QUESTION
-    `Method`: $WRONG_METHOD
-    `Attempt 1`: $WRONG_SOLUTION
-    `Answer 1`: $WRONG_PRED
+    `Question`: {QUESTION}
+    `Method`: {WRONG_METHOD}
+    `Attempt 1`: 
+    {WRONG_SOLUTION}
+    `Answer 1`: {WRONG_PRED}
     `Evaluation`: Wrong
     `Mistakes`: <one_liner_explanation_for_whats_gone_wrong_in_the_attempt>
     `Hint for a better Method choice`: <one_liner_hint_to_workaround_with_different_method>
-    `Workaround Method`: $CORRECT_METHOD
-    `Attempt 2`: $CORRECT_SOLUTION
-    `Answer 2`: $CORRECT_PRED
+    `Workaround Method`: {CORRECT_METHOD}
+    `Attempt 2`: 
+    {CORRECT_SOLUTION}
+    `Answer 2`: {CORRECT_PRED}
     `Evaluation`: Correct
 stop: | # null --> checked that the llm generation replicates the part after `workaround method`. validated.
  `Workaround Method`:

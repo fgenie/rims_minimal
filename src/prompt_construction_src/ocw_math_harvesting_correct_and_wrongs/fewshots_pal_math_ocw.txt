@@ -285,7 +285,7 @@ question 3
       Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
       $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$. 
 
-CORRECT (gpt4zeroshot)
+CORRECT 
 from sympy import symbols, I, sqrt, latex
 def solution():
     # Define the complex number z
@@ -299,3 +299,18 @@ def solution():
     b = z_4_simplified.as_real_imag()[1]
     return latex(a, b)
 "\\left( -8, \\  - 8 \\sqrt{3}\\right)"
+
+WRONG # sonnet
+from sympy import symbols, I, sqrt, latex
+
+def solution():
+    # define and simplify the complex number
+    z = 1 + sqrt(3) * I
+    z_4 = z**2 
+    z_4_simplified = z_4.expand(complex=True)
+
+    # Extract real and imaginary parts (based on the incorrect calculation)
+    a = z_4_simplified.as_real_imag()[0]
+    b = z_4_simplified.as_real_imag()[1]
+
+    return latex(a, b)

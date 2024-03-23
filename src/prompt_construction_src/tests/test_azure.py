@@ -46,10 +46,12 @@ for mod in models:
             temperature=0.7, 
             model=mod, # 'laba-gpt-35-turbo-0125', #or "GPT-35",
             seed=777,
-            n=1,
+            n=2,
             messages = [{"role": "user", "content": "are you working?"}]
     )
 
     print(mod)
-    print(response.model) # ChatCompletion object
+    print(response.model) # ChatCompletion object 
+    print(response.usage.completion_tokens) # regardless of n=1 or n>1
+    print(response.usage.prompt_tokens)
     print()

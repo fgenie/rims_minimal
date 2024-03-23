@@ -9,11 +9,11 @@ src/result.txt
 #  local only
 __pycache__/
 seonil_scripts/
-.vscode/
-launch.json
+# .vscode/
+# launch.json
 
 # dbgoutdir/
 
-
+src/outputs/
 src/prompt_construction_src/tests/*.jsonl
 src/prompt_construction_src/tests/*.json

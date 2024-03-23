@@ -47,37 +47,50 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
 ```
 
 ## to check
- - [ ] self-consistency condition of baseline, T>0 experiment
+
 
 ## reset experiment prompts 
- - [x] `query_rims_inference()` do not require max_token == 2048, long p2c to pal reflection blurb is around 700, so I set its value to 1024, which would be 1.5x of the long blurb (observation: max reflection = 2 times)
- - [ ] prompts
-    - [x] p2c prompts
-        - [x] MBPP prompts in the paper
-    - [x] cot prompts
-        - [x] OCW
-        - [x] MATH
-    - [x] util test for aboves 
-    - [x] does OCW parsing function, changed, works better than before??
-        - [x] changing ocw parsing function does not do any good...
-        - updating eval makes sense
-    - [x] isn't `num_extract_turbo()` too specific for GSM and SVAMP?
-        - [x] indeed! and found it does not parse scientific-formatting as well so I've fixed it.   
-        - [x] re-evaluate the previous `MATH`, `ocw_courses` results 
-    - [x] harvest wrong / correct sets and prepare the followings
-        - done
-    - [ ] selection prompts
-        - exclude edgecases for those
-        - [x] GSM, util
-        - [ ] OCW
-        - [ ] MATH
-        - [ ] double check if the cot path of the solution is also appropriate (not correct by chance)
-    - [ ] RIMS prompts
-        - [ ] OCW
-        - [ ] MATH
-        - [ ] util test 
-    - [ ] dbg (`run_inference.py`)
-        - [ ] backbone-modelname problem?
-    - [ ] test after applying `@utils.cost_tracking.CountTokens`
-        - [ ] query_f's' returns need to include in/out tokens information (do not change the number of outputs of query_f's) 
-         
+- [x] tests
+    - azure, evaluation, parsing, fewshot harvesting, how these affects the older results...
+- [x] CoT parsing for OCW, MATH: isn't `extract_num_turbo()` too specific for GSM and SVAMP?
+    - [x] indeed! --> implemented `extract_ans_from_cot_MATHnOCW`   
+- [x] problem of latex/sympy evaluation
+    - [x] code execution: `try` `sp.latex(solution())` at the end (this do not affect gsm)
+    - [x] bunch of evaluation fixes and tests
+- [x] harvest wrong / correct sets and prepare the followings
+    - [x] if not applicable, create example with claude sonnet. 
+    - [x] fewshots_p2c_math_ocw.txt (WIP)
+- [x] p2c prompts: coding challenges
+    - [x] MBPP prompts in the paper
+- [x] cot prompts: dataset-specific
+    - [x] OCW 
+    - [x] MATH
+- [x] pal prompts: dataset-specific
+    - [x] OCW
+    - [x] MATH 
+- [x] selection prompts: dataset-specific
+    - [x] GSM, util
+    - [x] OCW 
+    - [x] MATH
+    - [x] renew `get_prompt()` 
+- [x] RIMS prompts: dataset-specific
+    - [x] OCW
+    - [x] MATH
+    - [x] ablations
+- [ ] ~~apply `@utils.cost_tracking.CountTokens` <!--only for synchronous run for now...-->~~
+    - incompatible with multiprocessing because of pickling error (client) --> async compatible possible, but later.
+    - [x] 1 more output for `token_info` dict
+        - query_f's : _query, query_cot, query_selection, query_rims_inference 
+    - [x] CountTokens need to crunch the `token_info`
+- [ ] dbg (`run_inference.py`)
+    - [x] python run_inference.py baseline_inference
+    - [ ] python run_inference.py rims_inference 
+- [ ] run (T=0, greedy decoding)
+    - [ ] result gathering in one file (jsonlines)
+    - [ ] math, ocw, gsm (chatgptlong 0613)
+        - base, rims, ablations
+        - base-old vs base
+        - individual method diff / intersection 
+        - individual method performance
+- [ ] experiments further
+     - [ ] self-consistency condition of baseline, T>0 experiment

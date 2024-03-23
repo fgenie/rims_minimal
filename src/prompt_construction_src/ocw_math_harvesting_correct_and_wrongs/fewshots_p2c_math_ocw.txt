@@ -1,0 +1,368 @@
+
+math 0
+            "Problem:
+            Find the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.
+            ",
+WRONG
+def solution():
+    '''
+    The domain of the expression $\frac{\sqrt{x-2}}{\sqrt{5-x}}$ is determined by the conditions under which both the numerator and denominator are defined and the denominator is not zero. Specifically:
+
+    1. The numerator $\sqrt{x-2}$ requires $x-2 > 0$, which implies $x > 2$. (Mistake: Using a strict inequality instead of a non-strict inequality)
+    2. The denominator $\sqrt{5-x}$ requires $5-x \geq 0$, which implies $x \leq 5$. (Correct)
+
+    Combining these two conditions, the domain of the expression is $2 < x \leq 5$. 
+    '''
+    # Since the domain is a simple condition, we return it as a string, incorrectly with parentheses instead of brackets.
+    return "(2,5]"
+
+CORRECT 
+def solution():
+    '''
+    The domain of the expression $\frac{\sqrt{x-2}}{\sqrt{5-x}}$ is determined by the conditions under which both the numerator and denominator are defined and the denominator is not zero. Specifically:
+    
+    1. The numerator $\sqrt{x-2}$ requires $x-2 \geq 0$, which implies $x \geq 2$.
+    2. The denominator $\sqrt{5-x}$ requires $5-x > 0$, which implies $x < 5$.
+    
+    Combining these two conditions, the domain of the expression is $2 \leq x < 5$.
+    '''
+    # Since the domain is a simple condition, we return it as a string, concisely with bracket and parenthesis.
+    return "[2,5)"
+
+---
+math 1
+            "Problem:
+            If $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$
+            ",
+WRONG
+def solution():
+    # Step 1: Given values for determinants of A and B
+    det_A = 2
+    det_B = 12
+    
+    # Step 2: Incorrectly calculate the determinant of the product of matrices A and B
+    # Mistake: Assuming det(AB) = det(A) + det(B)
+    det_product = det_A + det_B
+    
+    # Step 3: Return the incorrect result
+    return det_product
+
+CORRECT
+def solution():
+    # Step 1: Given values for determinants of A and B
+    det_A = 2
+    det_B = 12
+
+    # Step 2: Calculate the determinant of the product of matrices A and B
+    det_product = det_A * det_B
+
+    # Step 3: Return the result
+    return det_product
+
+
+---
+math 2
+            "Problem:
+            Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+            ",
+
+WRONG 
+def solution():
+    '''
+    Create a function solution that returns the answer of the following question: Problem:
+
+    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+
+    Let's think step by step.
+
+    1. Calculate the total weight lifted with the 20-pound weights.
+    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+    3. Return the number of lifts needed.
+    '''
+
+    # Step 1: Calculate the total weight lifted with the 20-pound weights.
+    weight_per_lift_20 = 2 * 20  # Two 20-pound weights
+    total_lifts_20 = 12
+    total_weight_20 = weight_per_lift_20 * total_lifts_20
+
+    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+    weight_per_lift_15 = 2 * 15  # Two 15-pound weights
+
+    # calculating the total_lifts_15
+    total_lifts_15 = total_weight_20 // weight_per_lift_15
+
+    # Step 3: Return the number of lifts needed.
+    return total_lifts_15
+
+CORRECT
+def solution():
+    '''
+    Create a function solution that returns the answer of the following question: Problem:
+    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+    
+    Let's think step by step.
+    1. Calculate the total weight lifted with the 20-pound weights.
+    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+    3. Return the number of lifts needed.
+    '''
+    # Step 1: Calculate the total weight lifted with the 20-pound weights.
+    weight_per_lift_20 = 2 * 20  # Two 20-pound weights
+    total_lifts_20 = 12
+    total_weight_20 = weight_per_lift_20 * total_lifts_20
+    
+    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+    weight_per_lift_15 = 2 * 15  # Two 15-pound weights
+    total_lifts_15 = total_weight_20 / weight_per_lift_15
+    
+    # Step 3: Return the number of lifts needed.
+    return total_lifts_15
+
+---
+math 3
+            "Problem:
+            If the system of equations
+            
+            \\begin{align*}
+            6x-4y&=a,\\\\
+            6y-9x &=b.
+            \\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,
+            find $\\frac{a}{b},$ assuming $b$ is nonzero.
+            "
+
+WRONG
+def solution():
+    '''
+    The function solution returns the answer to the algebraic problem presented.
+
+    We are given a system of equations:
+    6x - 4y = a  (1)
+    6y - 9x = b  (2)
+
+    We need to find the value of a/b, assuming x and y are both nonzero, and b is nonzero.
+
+    Step by step, we can transform the system of equations to express a in terms of b:
+
+    From equation (1), we can express x in terms of y and a:
+    6x = a + 4y  =>  x = (a + 4y)/6  (3)
+
+    We can substitute x from equation (3) into equation (2) to find a relation between y and b, but we will make a mistake in the algebra:
+    6y - 9((a + 4y)/6) = b
+    Simplify the equation:
+    6y - (3a + 12y)/2 = b
+    Multiply through by 2:
+    12y - 6a - 24y = 2b
+    Simplify further:
+    -12a = 2b  =>  a = -6b  (4)
+
+    Now we have an incorrect relation for a in terms of b. The ratio a/b is then:
+    a/b = (-6b) / b
+    Simplify by canceling out b:
+    a/b = -6
+
+    '''
+    # make latex-comparable string
+    result = "-6"
+    return result
+
+CORRECT 
+
+def solution():
+    '''
+    The function solution returns the answer to the algebraic problem presented.
+
+    We are given a system of equations:
+    6x - 4y = a  (1)
+    6y - 9x = b  (2)
+
+    We need to find the value of a/b, assuming x and y are both nonzero, and b is nonzero.
+
+    Step by step, we can transform the system of equations to express a in terms of b:
+
+    From equation (1), we can express x in terms of y and a:
+    6x = a + 4y  =>  x = (a + 4y)/6  (3)
+
+    We can substitute x from equation (3) into equation (2) to find a relation between y and b:
+    6y - 9((a + 4y)/6) = b
+    Simplify the equation:
+    6y - (3/2)(a + 4y) = b
+    Multiply through by 2 to clear the fraction:
+    12y - 3a - 12y = 2b
+    Simplify further:
+    -3a = 2b  =>  a = -2b/3  (4)
+
+    Now we have a in terms of b. The ratio a/b is then:
+    a/b = (-2b/3) / b
+    Simplify by canceling out b:
+    a/b = -2/3
+
+    Since this is a fixed algebraic solution, we simply return the result.
+    '''
+    # make latex-comparable string
+    result = "-2/3"
+    return result
+
+-------
+-------
+ocw 0
+            Problem:
+            Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? 
+            Please format your answer as +n or -n.  
+            ,
+
+
+WRONG
+(N/A)
+
+CORRECT
+def solution():
+    # pKa values for arginine
+    pKa_carboxyl = 2.0
+    pKa_amino = 9.0
+    pKa_guanidinium = 12.5
+    
+    # pH value for the solution
+    pH = 1.0
+    
+    # Determine the charge state of each group at pH 1.0
+    charge_carboxyl = 0 if pH < pKa_carboxyl else -1
+    charge_amino = 1 if pH < pKa_amino else 0
+    charge_guanidinium = 1 if pH < pKa_guanidinium else 0
+    
+    # Calculate the net charge
+    net_charge = charge_carboxyl + charge_amino + charge_guanidinium
+    
+    # Format the net charge
+    formatted_charge = f"+{net_charge}" if net_charge >= 0 else f"{net_charge}"
+    return formatted_charge
+
+
+---
+ocw 1
+            Problem:
+            Preamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):
+            Subproblem 0: 
+            \\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]
+            ,
+WRONG
+def solution():
+    # Define the Laplace variable and the time-domain variable
+    s, t = symbols('s t')
+    a, b = symbols('a b', real=True, positive=True)
+    
+    # Define the Laplace-transformed function Y(s)
+    Y_s = 1 / ((s + a) * (s + b))
+    
+    # Apply partial fraction decomposition
+    Y_s_apart = apart(Y_s)
+    
+    # Find the inverse Laplace Transform of each term
+    y_t = inverse_laplace_transform(Y_s_apart, s, t)
+    
+    # Return the result
+    return y_t
+(code fails to execute)
+
+CORRECT  // below will not be evaluated as correct, tho the answer itself is semantically correct. GPT4 even could not reach the correct code that exactly match the ground truth tex expression
+from sympy import symbols, apart, simplify, latex, exp
+
+def solution():
+    s, a, b, t = symbols('s a b t')
+    Y = 1/((s+a)*(s+b))
+    
+    # Partial fraction expansion
+    A, B = apart(Y, s).as_coefficients_dict()
+    
+    # Inverse Laplace transform
+    y = A * exp(-a * t) + B * exp(-b * t)
+    simplified_y = simplify(y)
+    latex_solution = latex(simplified_y)
+    return latex_solution
+
+---
+ocw 2
+            Problem:
+            Preamble: The following subproblems refer to the differential equation 
+            $\\ddot{x}+b \\dot{x}+x=0$.
+            Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+            $\\ddot{x}+b \\dot{x}+x=0$?
+            ,
+WRONG
+def solution():
+    '''
+    The function solution returns the characteristic polynomial of the given differential equation.
+
+    The differential equation given is:
+    \[\ddot{x} + b\dot{x} + x = 0\]
+
+    The characteristic equation is obtained by assuming a solution of the form \(x(t) = e^{rt}\), where \(r\) is a constant. This leads to the characteristic polynomial:
+    \[r^2 + br + 1 = 0\]
+
+    This is the characteristic polynomial p(r) for the given differential equation.
+    '''
+    # Since this is a mathematical problem and the characteristic polynomial is already determined above,
+    # we can simply return the polynomial in string format.
+    return "r^2 + br + 1 = 0"
+
+CORRECT
+def solution():
+    '''
+    Create a function solution that returns the answer of the following question: Problem:
+Preamble: The following subproblems refer to the differential equation 
+$\ddot{x}+b \dot{x}+x=0$.
+Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+$\ddot{x}+b \dot{x}+x=0$?
+    '''
+    # The characteristic polynomial is derived by assuming a solution of the form e^(st) to the differential equation.
+    # This means we replace the second derivative ddot{x} with s^2, the first derivative dot{x} with s, and x with 1.
+    # The characteristic polynomial p(s) for the given differential equation is then:
+    # p(s) = s^2 + b*s + 1 = 0
+    # We can return this as a string in the function.
+    
+    return "s^2 + b*s + 1"
+
+
+---
+ocw 3
+            Problem:
+            Subproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation 
+            $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     
+
+WRONG
+import cmath
+
+def solution():
+    # Define the complex number z (wrong, should use cmath for complex operations)
+    z = 1 + sqrt(3) * i
+    
+    # Calculate z to the fourth power directly
+    z_fourth_power = z ** 4
+    
+    # Extract the real and imaginary parts of z to the fourth power
+    a = z_fourth_power.real
+    b = z_fourth_power.imag
+    
+    # Return the result as an ordered pair
+    return (a, b)
+
+CORRECT
+def solution():
+    '''
+    Create a function solution that returns the answer of the following question: Problem:
+    Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+    $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     
+    '''
+    # Given z = 1 + sqrt(3) * i
+    z = complex(1, (3)**0.5)  # Here, we use "complex" to represent the complex number z
+    # Step 1: Calculate z^2
+    z_squared = z**2
+    # Step 2: Calculate z^4
+    z_fourth = z_squared**2
+    # Step 3: Extract Real and Imaginary Parts
+    a = z_fourth.real  # Extract real part
+    b = z_fourth.imag  # Extract imaginary part
+    # Step 4: Express the Answer
+    answer = (a, b)  # Combine real and imaginary parts into an ordered pair
+    return answer
+
+
+

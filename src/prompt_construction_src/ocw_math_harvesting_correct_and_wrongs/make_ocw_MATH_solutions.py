@@ -1,5 +1,5 @@
-from utils.llm_query_utils import query_cot, query_pal, query_plancode, \
-                                safe_execute_turbo, extract_num_turbo, extract_ans_from_cot_MATHnOCW
+from utils.llm_query_utils import query_cot, query_pal, query_plancode, _query, \
+                                safe_execute_turbo, extract_num_turbo, extract_ans_from_cot_MATHnOCW, backbone2model
 from utils.math_util import is_equiv, \
                             is_equiv_ocw, \
                             normalize_final_answer
@@ -87,10 +87,10 @@ def main():
     # prompt_d = OmegaConf.load(ymlf)
     prompt_d = yaml.full_load(open(ymlf))
 
-    math_questions = prompt_d["math_cot"]["user"]
+    math_questions = prompt_d["math_cot"]["questions"]
     math_answers = prompt_d["math_cot"]["answers"]
 
-    ocw_questions = prompt_d["ocw_cot"]["user"]
+    ocw_questions = prompt_d["ocw_cot"]["questions"]
     ocw_answers = prompt_d["ocw_cot"]["answers"]
 
     # test
@@ -109,6 +109,7 @@ def main():
         seed=None,
     )
     pal_kwargs = dict(
+        dataset_type = "tobefilled", 
         temperature=1., 
         backbone = "gpt4turbo",
         seed=None,
@@ -116,14 +117,15 @@ def main():
     p2c_kwargs = dict(
         # question: str,  
         # n=1,
-        plan_temperature = 1.,
-        code_temperature = 1.,
-        backbone = "gpt4turbo", # chatgpt0125
+        plan_temperature = 2.,
+        code_temperature = 2., # to get the wrong ones!
+        backbone = "chatgpt0125", #  
         seed = None,
     )
 
     dataset_types = ["math", "ocw"]
-    methods = ["cot", "pal", "p2c"]
+    # methods = ["cot", "pal", "p2c"]
+    methods = ["p2c"]
     
 
     """
@@ -170,9 +172,9 @@ def main():
             result_dict[dstype]["questions"] = questions
             result_dict[dstype]["answers"] = answers
             kwargs = eval(f"{m}_kwargs")
-            if m == "cot":
+            if m in "cot pal":
                 kwargs.update({"dataset_type": dstype})
-            for i, q, a in tqdm(zip(range(len(questions)), questions, answers), total = len(questions)):
+            for i, q, a in tqdm(zip(range(len(questions)), questions, answers), total = len(questions), desc = f"{dstype} / {m}"):
                 result_dict[dstype][m][i] = correct_incorrect_query_results(
                                                                 question=q, 
                                                                 answer=a,
@@ -181,10 +183,15 @@ def main():
                                                                 inference_kwargs=kwargs, 
                                                                 )    
     
-    jsonf = "gpt4turbo1106_ocw_prep_prompt_mar16.json" # chatgpt one looked bad..
+    jsonf = "p2c_chatgpt_hightemp_mar18_1.json"
     with open(jsonf, "w") as f:
         json.dump(result_dict, f, indent=4)
         print(jsonf, "saved")
+    
+    # cost printout
+    model = backbone2model("gpt4turbo")
+    _query.print_summary()
+    _query.tokens2usd(model)
 
 if __name__ == "__main__":
     Fire(main)

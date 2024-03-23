@@ -1,0 +1,316 @@
+math 
+
+
+question 0
+            "Problem:\nFind the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}\n",
+
+
+CORRECT
+gpt4 UI
+import sympy as sp
+
+def solution():
+    x = sp.symbols('x')
+    expr = sp.sqrt(x - 2) / sp.sqrt(5 - x)
+    
+    # Define the conditions for the numerator and denominator
+    num_cond = x - 2 >= 0
+    den_cond = 5 - x > 0
+    
+    # Solve the inequalities to find the domain
+    num_sol = sp.solve_univariate_inequality(num_cond, x, relational=False)
+    den_sol = sp.solve_univariate_inequality(den_cond, x, relational=False)
+    
+    # Find the intersection of the solutions to get the domain
+    domain = sp.latex(sp.Intersection(num_sol, den_sol))
+    return domain
+
+WRONG 
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+def solution():
+    """Find the domain of the expression sqrt(x-2) / sqrt(5-x)"""
+    # The expression is defined when the denominator is not zero and the radicand is non-negative
+    # Denominator is not zero when x != 5
+    # Radicands are non-negative when x >= 2 and x <= 5
+    domain = [x for x in range(2, 6) if x != 5]
+    return domain
+[2, 3, 4]
+
+--- 
+
+question 3 
+            "Problem:\nIf the system of equations\n\n\\begin{align*}\n6x-4y&=a,\\\\\n6y-9x &=b.\n\\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,\nfind $\\frac{a}{b},$ assuming $b$ is nonzero.\n"
+
+CORRECT 
+gpt4 
+import sympy as sp
+
+def solution():
+    x, y, a, b = sp.symbols('x y a b')
+    
+    # Define the equations
+    eq1 = sp.Eq(6*x - 4*y, a)
+    eq2 = sp.Eq(6*y - 9*x, b)
+    
+    # Solve the equations for a and b
+    solutions = sp.solve([eq1, eq2], (a, b), dict=True)
+    
+    # If solutions are found, express a/b
+    if solutions:
+        a_expr = solutions[0][a]
+        b_expr = solutions[0][b]
+        ratio = a_expr / b_expr
+        return sp.simplify(ratio)
+    return "No solution found"
+-2/3
+
+WRONG
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+def solution():
+    """Solve for a/b in the system of equations 6x-4y=a and 6y-9x=b"""
+    # Given equations: 6x-4y=a, 6y-9x=b
+    # Since the system has a solution where x and y are both nonzero,
+    # we can set these equations equal to each other and solve for a/b
+    # 6x-4y = 6y-9x
+    # 15x = 10y
+    # x/y = 10/15 = 2/3
+    a = 6*(2/3) - 4*(1)  # Substitute x=2, y=3 in first equation
+    b = 6*(3) - 9*(2)    # Substitute x=2, y=3 in second equation
+
+    result = a / b
+    return result
+ZeroDivisionError: float division by zero
+
+
+
+---
+
+question 1
+            "Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n",
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+def solution():
+    """If det A = 2 and det B = 12, find det(AB)."""
+    det_A = 2
+    det_B = 12
+    det_AB = det_A * det_B
+    result = det_AB
+    return result
+24
+
+WRONG
+claude sonnet
+def wrong_solution():
+    """If det A = 2 and det B = 12, find det(AB)."""
+
+    det_A = 2
+    det_B = 12
+
+    # Wrong assumption: Adding determinants instead of multiplying
+    det_AB = det_A + det_B
+
+    result = det_AB
+
+    return result
+14
+
+
+
+
+--- 
+
+question 2
+            "Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n",
+
+
+
+CORRECT
+src/prompt_construction_src/ocw_MATH_solved_chatgpt777.json
+def solution():
+    """Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?"""
+    weight1 = 20
+    weight2 = 15
+    lifts1 = 12
+    total_weight1 = weight1 * 2 * lifts1
+    lifts2 = total_weight1 / (weight2 * 2)
+    result = lifts2
+    return result
+16.0
+
+WRONG
+prep'd by claude sonnet
+def solution():
+    weight1 = 20
+    weight2 = 15
+    lifts1 = 12
+
+    # Incorrectly assuming that the number of lifts is proportional to the weight
+    lifts2 = lifts1 * (weight2 / weight1)
+
+    return lifts2
+9.0
+
+
+
+
+
+-----
+
+ocw 
+
+question 0
+      Problem:                                                                                
+      Subproblem 0: What is the net charge of arginine in a solution of $\mathrm{pH} 1.0$? 
+      Please format your answer as +n or -n.  
+
+CORRECT
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+def arginine_net_charge_at_ph1():
+    # These are the expected charges at pH 1.0
+    charge_alpha_amino = +1     # protonated amino group
+    charge_alpha_carboxyl = 0   # protonated carboxyl group is neutral
+    charge_guanidino = +1       # protonated guanidino group
+    
+    net_charge = charge_alpha_amino + charge_alpha_carboxyl + charge_guanidino
+    return f"+{net_charge}"
++2
+
+WRONG
+src/prompt_construction_src/gpt4turbo1106_ocw_prep_prompt_mar16.json
+def calculate_charge_of_arginine(pH, pKa_carboxyl=2.17, pKa_amino=9.04, pKa_guanidinium=12.48):
+    # At pH 1.0, the carboxyl group COOH is protonated and has a charge of 0.
+    charge_carboxyl = 0 if pH < pKa_carboxyl else -1
+    
+    # At pH 1.0, the amino group NH3+ is protonated and has a charge of +1.
+    charge_amino = +1 if pH < pKa_amino else 0
+    
+    # At pH 1.0, the guanidinium group is protonated and has a charge of +1.
+    charge_guanidinium = +1 if pH < pKa_guanidinium else 0
+    
+    # Net charge is the sum of individual group charges.
+    net_charge = charge
+NameError: name 'charge' is not defined
+
+---
+
+question 1 
+      Problem:
+      Preamble: For each Laplace Transform \(Y(s)\), find the function \(y(t)\):
+      Subproblem 0: 
+      \[Y(s)=\boxed{\frac{1}{(s+a)(s+b)}}\]
+
+
+CORRECT # does not evaluate to `true` but is correct for sure.
+import sympy as sp
+def solution():
+    # Define variables
+    s, t, a, b = sp.symbols('s t a b')
+    # Define the Laplace transform
+    Y_s = 1 / ((s + a) * (s + b))
+    # Calculate the inverse Laplace transform
+    y_t = sp.inverse_laplace_transform(Y_s, s, t)
+    # Check if y_t is an equation and extract the RHS
+    if isinstance(y_t, sp.Eq):
+        y_t_rhs = y_t.rhs
+    else:
+        y_t_rhs = y_t
+    return y_t_rhs
+
+WRONG
+prep by claude sonnet zeroshot
+import sympy as sp
+
+def solution():
+    s = sp.symbols('s')
+    a, b = sp.symbols('a b', positive=True)
+    Y = 1/((s+a)*(s+b))
+    
+    # Mistake: Assuming the inverse Laplace transform is the same as the Laplace transform
+    y = Y
+    latex_y = sp.latex(y)
+    
+    result = latex_y
+    return result
+'\\frac{1}{\\left(a + s\\right) \\left(b + s\\right)}'
+
+---
+question 2
+      Problem:
+      Preamble: The following subproblems refer to the differential equation 
+      $\ddot{x}+b \dot{x}+x=0$.
+      Subproblem 0: What is the characteristic polynomial $p(s)$ of 
+      $\ddot{x}+b \dot{x}+x=0$?
+
+
+CORRECT
+import sympy as sp
+from sympy import symbols, Function, Eq, diff
+
+def solution():
+    # Define the symbols
+    t, b, s = symbols('t b s')
+    x = Function('x')(t)
+
+    # Define the differential equation
+    diffeq = Eq(diff(x, t, t) + b * diff(x, t) + x, 0)
+
+    # Find the characteristic equation by replacing d^2x/dt^2 with s^2, dx/dt with s, and x with 1
+    char_eq = diffeq.subs({diff(x, t, t): s**2, diff(x, t): s, x: 1}).lhs
+
+    return sp.latex(char_eq)
+b s + s^{2} + 1
+
+WRONG
+import sympy as sp
+from sympy import symbols, Function, Eq, diff
+
+def faulty_solution():
+    # Define the symbols
+    t, b, s = symbols('t b s')
+    x = Function('x')(t)
+    # Define the differential equation incorrectly
+    diffeq = Eq(diff(x, t, t) - b * diff(x, t) - x, 0)  # Faulty: Used subtraction instead of addition
+    # Find the characteristic equation by replacing d^2x/dt^2 with s^2, dx/dt with s, and x with 1
+    # This is also done incorrectly due to the incorrect differential equation
+    char_eq = diffeq.subs({diff(x, t, t): s**2, diff(x, t): s, x: 1}).lhs
+    return sp.latex(char_eq)
+- b s + s^{2} - 1
+
+
+--- 
+
+question 3
+      Problem:
+      Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
+      $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$. 
+
+CORRECT 
+from sympy import symbols, I, sqrt, latex
+def solution():
+    # Define the complex number z
+    z = 1 + sqrt(3) * I
+    # Calculate z^4
+    z_4 = z**4
+    # Simplify the result to get it in the form a + bi
+    z_4_simplified = z_4.expand(complex=True)
+    # Extract real and imaginary parts
+    a = z_4_simplified.as_real_imag()[0]
+    b = z_4_simplified.as_real_imag()[1]
+    return latex(a, b)
+"\\left( -8, \\  - 8 \\sqrt{3}\\right)"
+
+WRONG # sonnet
+from sympy import symbols, I, sqrt, latex
+
+def solution():
+    # define and simplify the complex number
+    z = 1 + sqrt(3) * I
+    z_4 = z**2 
+    z_4_simplified = z_4.expand(complex=True)
+
+    # Extract real and imaginary parts (based on the incorrect calculation)
+    a = z_4_simplified.as_real_imag()[0]
+    b = z_4_simplified.as_real_imag()[1]
+
+    return latex(a, b)

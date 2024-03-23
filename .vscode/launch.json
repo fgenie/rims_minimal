@@ -1,0 +1,122 @@
+{
+    // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
+    // 기존 특성에 대한 설명을 보려면 가리킵니다.
+    // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
+    "version": "0.2.0",
+    "configurations": [
+        // python run_inference.py  baseline_inference \
+        // --backbone chatgpt \
+        // --outdir seonil_scripts/sj_result_fix/new \
+        // --gsm_jslf /Users/seonils/dev/rims_minimal/dataset/MATH/MATH-prealgebra.jsonl \
+        // --dataset_type math \ 
+        // --start_idx 841 --dbg
+        {
+            "name": "baseline dbg",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "args": ["baseline_inference", 
+                        // "--gsm_jslf", "../dataset/dbg_others.jsonl",
+                        // "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/outputs/dbg_others_dt.gsm/model_selection_prompts/03_23_13_22_29_error.jsonl",
+                        // "--dataset_type", "gsm",
+                        // "--dataset_type", "math",
+                        // "--dbg",
+                        // "--gsm_jslf", "../dataset/dbg_ocw.jsonl",
+                        // "--dataset_type", "ocw",
+                        // "--start_idx", "1300",
+                        "--backbone", "back", "--gsm_jslf", "kwy", "--dataset_type", "ksd"
+                    ],
+                    // python run_inference.py  baseline_inference \
+                    // --backbone chatgpt0613long \
+                    // --outdir seonil_scripts/0_RESULTS_v1/math_full_0613long/pt2 \
+                    // --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
+                    // --dataset_type math \
+                    // --err_idxs_f seonil_scripts/0_RESULTS_v1/math_full_0613long/pt2/chatgpt0613long_model_selection3_math.jsonl.error_idxs
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "rims dbg (math)",
+           
+            "env": {
+                "PYTEST_ADDOPTS": "--numprocesses=auto"
+            },
+            "subProcess": true,
+            "subProcessParentEnvMapping": {
+                "PYTEST_ADDOPTS": "${env:PYTEST_ADDOPTS}"
+            }, // multiprocessing
+           
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "args": ["rims_inference", 
+            "--prompt_f", "prompt_construction_src/prep_rims_prompts/gsm_prompts/3_reflectonce_cot2p2c.pal2cot.pal2p2c.txt_rm_ans", 
+            "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/math_full/math_full_leftover_1106.jsonl",
+            "--dataset_type", "math",
+            "--backbone", "chatgpt", 
+            "--outdir", "seonil_scripts/dbg", 
+            "--dbg", 
+            // "--turn_based",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "eval dbg",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "args": [
+                "--eval_jslf", "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RES_v3/ocw_0613long/chatgpt0613long_rims_ocw.jsonl", 
+                "--eval_type", "ocw",
+                //python run_evaluation.py --eval_jslf seonil_scripts/0_RESULTS_v1/svamp/chatgpt_rims_svamp.jsonl  --eval_type svamp
+        ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Current File: Python",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "args": [
+                // "baseline_inference",
+            // "--backbone", "chatgpt", 
+            // "--outdir", "seonil_scripts/sj_result_fix/dbg", 
+            // "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/seonil_scripts/sj_result_fix/prev/gpt4_MATH-prealgebra_01_21_21_04_model_selection3_startidx0.jsonl",
+            // "--dataset_type", "math", 
+            // "--reuse_selection_if_exist", 
+            // "--re_execute_sln",
+            // "--start_idx", "2",
+            // "--dbg",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },    
+        {
+            "version": "0.2.0",
+            "configurations": [
+                {
+                    "name": "Python: Multi-Threaded/Multi-Process",
+                    "type": "python",
+                    "request": "launch",
+                    "program": "${file}",
+                    "console": "integratedTerminal",
+                    "env": {
+                        "PYTEST_ADDOPTS": "--numprocesses=auto"
+                    },
+                    "subProcess": true,
+                    "subProcessParentEnvMapping": {
+                        "PYTEST_ADDOPTS": "${env:PYTEST_ADDOPTS}"
+                    }
+                }
+            ]
+        }
+
+    ]
+
+}

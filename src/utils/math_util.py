@@ -22,6 +22,7 @@ from typing import Callable, List, Optional, Any
 ### high-level functions ###
 def gsm_check_answer(a1, a2):
     try: 
+        a1, a2 = map(float, [a1, a2])
         decision = abs(a1-a2)<1e-3
     except Exception as e:
         print(e)
@@ -32,16 +33,24 @@ def ocw_check_answer(a1, a2):
     """
     check if a1 and a2 are equivalent in ocw
     """
-    a1, a2 = map(str, [a1, a2])
-    decision = is_equiv_ocw(a1, a2) 
+    try:
+        a1, a2 = map(str, [a1, a2])
+        decision = is_equiv_ocw(a1, a2)
+    except Exception as e:
+        print(e)
+        decision = False 
     return decision
 
 def math_check_answer(a1, a2):
     """
     check if a1 and a2 are equivalent in math
     """
-    a1, a2 = map(str, [a1, a2])
-    decision = is_equiv(normalize_final_answer(a1), normalize_final_answer(a2))
+    try:
+        a1, a2 = map(str, [a1, a2])
+        decision = is_equiv(normalize_final_answer(a1), normalize_final_answer(a2))
+    except Exception as e:
+        print(e)
+        decision = False
     return decision
 
 class timeout:

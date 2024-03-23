@@ -1,0 +1,198 @@
+math: # exclude prob #3, it looks just like gsm
+    questions: # only for fewshot harvesting
+        # - |
+        #     Problem:
+        #     Find the domain of the expression  $\frac{\sqrt{x-2}}{\sqrt{5-x}}$.}
+        # - |
+        #     Problem:
+        #     If $\det \mathbf{A} = 2$ and $\det \mathbf{B} = 12,$ then find $\det (\mathbf{A} \mathbf{B}).$
+        - |
+            Problem:
+            Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+        # - |
+        #     Problem:
+        #     If the system of equations
+
+        #     \begin{align*}
+        #     6x-4y&=a,\\
+        #     6y-9x &=b.
+        #     \end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,
+        #     find $\frac{a}{b},$ assuming $b$ is nonzero.
+    answers: # only used for prompt preparation, not for actual prompting inference
+        # - "[2,5)"
+        # - "24"
+        - "16"
+        # - -\frac{2}{3}
+    correct:
+        cot:
+            # - |
+            #     To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we must consider two main constraints:
+
+            #     1. The radicand (the expression inside the square root) of the numerator, $x - 2$, must be greater than or equal to zero.
+            #     2. The radicand of the denominator, $5 - x$, must be greater than zero (not merely non-negative since the denominator cannot be zero).
+
+            #     Let's address these constraints.
+
+            #     For the numerator, we want $x - 2 \\geq 0$, which simplifies to:
+            #     $$x \\geq 2.$$
+
+            #     For the denominator, we want $5 - x > 0$, which simplifies to:
+            #     $$x < 5.$$
+
+            #     Now we combine these two inequalities to find the domain where both conditions are met:
+            #     $$2 \\leq x < 5.$$
+
+            #     This is an interval from 2 to 5, including 2 but not including 5.
+
+            #     Therefore, the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is $[2, 5)$.
+            # - |
+            #     The determinant of the product of two square matrices is equal to the product of their determinants. Therefore, if you have two matrices $\\mathbf{A}$ and $\\mathbf{B}$ with determinants $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12$, respectively, then the determinant of their product $\\mathbf{A} \\mathbf{B}$ is given by:
+
+            #     $$\\det (\\mathbf{A} \\mathbf{B}) = (\\det \\mathbf{A})(\\det \\mathbf{B}) = 2 \\cdot 12 = 24.$$
+
+            #     So, $\\det (\\mathbf{A} \\mathbf{B}) = 24$.
+            - |
+                Solution:
+                If Terrell lifts two 20-pound weights 12 times, he lifts a total weight of:
+                $$
+                \\text{Total weight with 20-pound weights} = 2 \\times 20 \\times 12 = 40 \\times 12 = 480 \\text{ pounds}
+                $$
+
+                If he uses two 15-pound weights instead, and lifts them $n$ times, his total lifted weight with the 15-pound weights will be:
+                $$
+                \\text{Total weight with 15-pound weights} = 2 \\times 15 \\times n = 30n \\text{ pounds}
+                $$
+
+                We want the total weight lifted with the 15-pound weights to equal the total weight lifted with the 20-pound weights:
+                $$
+                30n = 480
+                $$
+
+                To find $n$, we solve for it:
+                $$
+                n = \\frac{480}{30} = 16
+                $$
+
+                Terrell must lift the two 15-pound weights 16 times to lift the same total weight as when he lifts two 20-pound weights 12 times.
+
+                Final Answer: Terrell must lift the 15-pound weights 16 times.
+            # - |
+            #     Let's examine the system of equations:
+            #     \\begin{align*}
+            #         6x - 4y &= a \\quad (1) \\\\
+            #         6y - 9x &= b \\quad (2)
+            #         \\end{align*}
+
+            #     To find $\\frac{a}{b}$, we can solve for $x$ in terms of $y$ (or $y$ in terms of $x$) by rearranging one of the equations and then substitute it into the other equation.
+
+            #     From equation (1), we can rearrange for $x$:
+            #     \\begin{align*}
+            #         6x &= a + 4y \\\\
+            #         x &= \\frac{a}{6} + \\frac{2}{3}y \\quad (3)
+            #         \\end{align*}
+
+            #     Now, let's substitute this into equation (2):
+            #     \\begin{align*}
+            #         6y - 9\\left(\\frac{a}{6} + \\frac{2}{3}y\\right) &= b \\\\
+            #         6y - \\frac{3}{2}a - 6y &= b \\\\
+            #         -\\frac{3}{2}a &= b
+            #         \\end{align*}
+
+            #     Multiplying both sides by $-\\frac{2}{3}$ gives us:
+            #     \\begin{align*}
+            #         a &= -\\frac{2}{3}b
+            #         \\end{align*}
+
+            #     Thus, the ratio $\\frac{a}{b}$ is:
+            #     \\begin{align*}
+            #         \\frac{a}{b} &= -\\frac{2}{3}
+            #         \\end{align*}
+
+            #     Since the problem states that there exists a solution $(x, y)$ where both $x$ and $y$ are nonzero, we can conclude the ratio without solving for the actual values of $x$ and $y$ because the ratio only depends on the coefficients of $x$ and $y$ in the equations.
+
+            #     Final Answer: The ratio $\\frac{a}{b}$ is $-\\frac{2}{3}$.
+        pal:
+            - |
+                def solution():
+                    """Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?"""
+                    weight1 = 20
+                    weight2 = 15
+                    lifts1 = 12
+                    total_weight1 = weight1 * 2 * lifts1
+                    lifts2 = total_weight1 / (weight2 * 2)
+                    result = lifts2
+                    return result
+        p2c:
+            - |
+                def solution():
+                    '''
+                    Create a function solution that returns the answer of the following question: Problem:
+                    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?
+                    
+                    Let's think step by step.
+                    1. Calculate the total weight lifted with the 20-pound weights.
+                    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+                    3. Return the number of lifts needed.
+                    '''
+                    # Step 1: Calculate the total weight lifted with the 20-pound weights.
+                    weight_per_lift_20 = 2 * 20  # Two 20-pound weights
+                    total_lifts_20 = 12
+                    total_weight_20 = weight_per_lift_20 * total_lifts_20
+                    
+                    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.
+                    weight_per_lift_15 = 2 * 15  # Two 15-pound weights
+                    total_lifts_15 = total_weight_20 / weight_per_lift_15
+                    
+                    # Step 3: Return the number of lifts needed.
+                    return total_lifts_15
+            # - |
+            #     def solution():
+            #         '''
+            #         The function solution returns the answer to the algebraic problem presented.
+
+            #         We are given a system of equations:
+            #         6x - 4y = a  (1)
+            #         6y - 9x = b  (2)
+
+            #         We need to find the value of a/b, assuming x and y are both nonzero, and b is nonzero.
+
+            #         Step by step, we can transform the system of equations to express a in terms of b:
+
+            #         From equation (1), we can express x in terms of y and a:
+            #         6x = a + 4y  =>  x = (a + 4y)/6  (3)
+
+            #         We can substitute x from equation (3) into equation (2) to find a relation between y and b:
+            #         6y - 9((a + 4y)/6) = b
+            #         Simplify the equation:
+            #         6y - (3/2)(a + 4y) = b
+            #         Multiply through by 2 to clear the fraction:
+            #         12y - 3a - 12y = 2b
+            #         Simplify further:
+            #         -3a = 2b  =>  a = -2b/3  (4)
+
+            #         Now we have a in terms of b. The ratio a/b is then:
+            #         a/b = (-2b/3) / b
+            #         Simplify by canceling out b:
+            #         a/b = -2/3
+
+            #         Since this is a fixed algebraic solution, we simply return the result.
+            #         '''
+            #         # make latex-comparable string
+            #         result = "-2/3"
+            #         return result
+    wrong:
+        preds:
+            pal:
+                - "9"
+            p2c:
+                - "N/A"
+        pal:
+            - |
+                def solution():
+                    weight1 = 20
+                    weight2 = 15
+                    lifts1 = 12
+                    # assuming that the number of lifts is proportional to the weight
+                    lifts2 = lifts1 * (weight2 / weight1)
+                    return lifts2
+        

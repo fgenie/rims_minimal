@@ -1,0 +1,568 @@
+{
+    "math": {
+        "p2c": {
+            "0": {
+                "incorrect": [
+                    "def solution():\n    '''\n    The function solution returns the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.\n    The domain is the set of all possible values of x for which the expression is defined and real.\n    '''\n    # Define the domain in terms of inequalities\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# Use the function\n# print(solution())",
+                    "def solution():\n    '''\n    The function solution returns the domain of the given expression.\n    The domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is the set of all x values for which the expression is defined.\n    '''\n    # The domain is all x such that x is between 2 and 5, including 2 but not including 5.\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# Example usage of the function:\n# print(solution())\n",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Find the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.\n\n    To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we need to consider the conditions under which the expression is defined. Here are the steps to follow:\n\n    1. The numerator $\\sqrt{x-2}$ requires that $x-2 \\geq 0$.\n    2. The denominator $\\sqrt{5-x}$ requires that $5-x > 0$.\n    3. Combining these conditions, we find the domain where both conditions are satisfied.\n\n    Let's implement the function:\n    '''\n    # The domain of the expression is all x such that x is between 2 and 5, including 2 but not including 5.\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# Example usage:\n# print(solution())\n\n# This function simply returns a string representing the domain of the given expression.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Find the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.\n    '''\n\n    # The domain of the expression is all x such that x is between 2 and 5, including 2 but not including 5.\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# Use the function\n# print(solution())",
+                    "def solution():\n    '''\n    The function solution returns the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ by considering the constraints for the expression to be valid.\n    '''\n    # The domain of the expression is all x such that x is between 2 and 5, including 2 but not including 5.\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# Use the function\n# print(solution())",
+                    "\n    def solution():\n        # The domain of the expression is all x such that x is between 2 and 5, including 2 but not including 5.\n        domain = \"The domain of the expression is 2 <= x < 5.\"\n        return domain\n    \n    # Use the function\n    print(solution())\n    ",
+                    "def solution():\n    '''\n    Create a function solution that returns the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.\n    \n    Let's think step by step.\n    To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we need to consider the conditions under which the expression is defined. Here are the steps to follow:\n    \n    1. Identify the constraints for the expression to be valid:\n       a. The numerator $\\sqrt{x-2}$ implies that $x-2$ must be greater than or equal to 0 because the square root of a negative number is not a real number.\n       b. The denominator $\\sqrt{5-x}$ implies that $5-x$ must be greater than 0 (not just greater than or equal to 0, because the denominator cannot be zero).\n    \n    2. Translate these constraints into inequalities:\n       a. For the numerator: $x-2 \\geq 0 \\Rightarrow x \\geq 2$\n       b. For the denominator: $5-x > 0 \\Rightarrow x < 5$\n    \n    3. Combine the inequalities to find the intersection of the two ranges, which will give us the domain of the expression:\n       a. The domain is $x$ such that $2 \\leq x < 5$.\n    \n    Now we can write the function in Python to output the domain:\n    '''\n    # The domain of the expression is all x such that x is between 2 and 5, including 2 but not including 5.\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# Use the function\n# print(solution())",
+                    "def solution():\n    '''\n    The function solution returns the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.\n    The domain is defined as the set of values of x for which the expression is valid, which means:\n    - The expression under the square root in the numerator must be non-negative, so $x-2 \\geq 0$.\n    - The expression under the square root in the denominator must be positive, so $5-x > 0$.\n    These conditions must be met simultaneously.\n    '''\n    # The domain is all x such that 2 <= x < 5.\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# You can then call the function and print the result.\n# print(solution())",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Find the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.\n    \n    Let's think step by step.\n    To find the domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$, we can follow these steps:\n    \n    1. The expression under the square root in the numerator must be greater than or equal to 0 for the square root to be defined for real numbers.\n       Thus, $x - 2 \\geq 0$ or $x \\geq 2$.\n    \n    2. The expression under the square root in the denominator must be greater than 0 as the denominator can't be zero.\n       Thus, $5 - x > 0$ or $x < 5$.\n    \n    3. Combine these conditions to find the domain where both conditions are satisfied:\n       The domain is $2 \\leq x < 5$.\n    \n    Return the domain in a readable format.\n    '''\n    # The domain of the expression is all x such that x is between 2 and 5, including 2 but not including 5.\n    domain = \"The domain of the expression is 2 <= x < 5.\"\n    return domain\n\n# Use the function\n# print(solution())",
+                    "def solution():\n    '''\n    The domain of the expression $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$ is determined by the conditions under which both the numerator and denominator are defined and the denominator is not zero. Specifically:\n    \n    1. The numerator $\\sqrt{x-2}$ requires $x-2 \\geq 0$, which implies $x \\geq 2$.\n    2. The denominator $\\sqrt{5-x}$ requires $5-x > 0$, which implies $x < 5$.\n    \n    Combining these two conditions, the domain of the expression is $2 \\leq x < 5$.\n    '''\n    # Since the domain is a simple condition, we return it as a string.\n    return \"The domain of the expression is 2 <= x < 5.\"\n\n# Usage\n# print(solution())  # This should output: \"The domain of the expression is 2 <= x < 5.\""
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ],
+                    [
+                        "The domain of the expression is 2 <= x < 5.",
+                        "[2,5)",
+                        "incorrect"
+                    ]
+                ]
+            },
+            "1": {
+                "correct": [
+                    "def solution():\n    # Given the determinants of matrices A and B\n    det_A = 2\n    det_B = 12\n\n    # Using the property that the determinant of the product of two matrices\n    # is the product of their determinants.\n    det_AB = det_A * det_B\n\n    # Return the determinant of the product AB\n    return det_AB\n\n# Calling the solution function to get the determinant of AB\ndet_AB = solution()\n\n# If you want to print the result\n# print(f\"The determinant of AB is: {det_AB}\")\n\n# Note: The solution function does not need to accept arguments in this case,\n# because the determinants of A and B are provided in the problem statement.",
+                    "\ndef solution():\n    # Step 1: Given values for determinants of A and B\n    det_A = 2\n    det_B = 12\n\n    # Step 2: Calculate the determinant of the product of matrices A and B\n    det_product = det_A * det_B\n\n    # Step 3: Return the result\n    return det_product\n\n# When you call the function, it will return the determinant of AB\nresult = solution()\n# print(f\"The determinant of AB is: {result}\")\n",
+                    "\ndef solution():\n    # Given values of the determinants\n    det_A = 2\n    det_B = 12\n\n    # Step 2: Calculate the determinant of the product of matrices A and B\n    det_AB = det_A * det_B\n\n    # Step 3: Return the resulting determinant\n    return det_AB\n\n# To get the answer, you call the function\nanswer = solution()\n# print(f\"The determinant of AB is: {answer}\")\n",
+                    "\ndef solution():\n    # Given values\n    det_A = 2\n    det_B = 12\n    \n    # Step 2: Calculate the determinant of the product of matrices A and B\n    det_product = det_A * det_B\n    \n    # Step 3: Return the result\n    return det_product\n\n# Call the solution function to get the determinant of AB\ndet_AB = solution()\n\n# Output the result\n# print(f\"The determinant of AB is: {det_AB}\")\n",
+                    "\ndef solution():\n    # Given determinants\n    det_A = 2\n    det_B = 12\n    \n    # Step 2: Calculate the determinant of the product of matrices A and B\n    det_AB = det_A * det_B\n    \n    # Step 3: Return the result\n    return det_AB\n\n# Call the function and print the result\n# print(f\"The determinant of AB is: {solution()}\")\n",
+                    "def solution():\n    '''\n    The function solution calculates the determinant of the product of two matrices A and B, given the determinants of A and B.\n    '''\n    # Given values\n    det_A = 2\n    det_B = 12\n    \n    # Step 2: Calculate the determinant of the product of matrices A and B by multiplying the determinants of A and B.\n    det_AB = det_A * det_B\n    \n    # Step 3: Return the result\n    return det_AB\n\n# Call the solution function and print the result\n# print(f\"The determinant of AB is: {solution()}\")",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n \n    \n    Let's think step by step.\n    To solve this problem, we will use the property of determinants that states the determinant of the product of two matrices is equal to the product of their determinants. Here are the steps to implement the function:\n    \n    1. Define the function that accepts two arguments representing the determinants of matrices A and B.\n    2. Calculate the determinant of the product of matrices A and B by multiplying the determinants of A and B.\n    3. Return the result.\n    \n    Here is the Python function:\n    '''\n    # Step 1: Define the function that accepts two arguments representing the determinants of matrices A and B.\n    def det_of_product(det_A, det_B):\n        # Step 2: Calculate the determinant of the product of matrices A and B by multiplying the determinants of A and B.\n        det_product = det_A * det_B\n        \n        # Step 3: Return the result\n        return det_product\n\n    # Since we already know the determinants of A and B, we can directly calculate the determinant of AB.\n    det_A = 2\n    det_B = 12\n\n    # Calculate determinant of the product AB\n    det_AB = det_of_product(det_A, det_B)\n\n    # Return the result\n    return det_AB\n\n# Output the result\n#print(f\"The determinant of AB is: {solution()}\")\n# This would output: \"The determinant of AB is: 24\"\n\n# To keep the function concise and focused on the specific question, we can simply return the result.\n# The caller of the function can then print the result if needed. \n\n# Call the solution function\nresult = solution()\n# Return the result\nresult\n",
+                    "\ndef solution():\n    det_A = 2\n    det_B = 12\n    det_AB = det_A * det_B\n    return det_AB\n"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        24.0,
+                        24,
+                        "correct"
+                    ],
+                    [
+                        null,
+                        24,
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        24,
+                        "incorrect"
+                    ]
+                ],
+                "incorrect": [
+                    "\ndet_AB = solution()\n# print(f\"The determinant of AB is: {det_AB}\")\n",
+                    "\n# print(solution())  # Output: 24\n"
+                ]
+            },
+            "2": {
+                "correct": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n\n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    # Terrell lifts two 20-pound weights, so one lift is 2 * 20 pounds.\n    # He does this 12 times.\n    total_weight_20 = 2 * 20 * 12\n\n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    # One lift with two 15-pound weights is 2 * 15 pounds.\n    # We want to find out how many times he has to do this to match total_weight_20.\n    lifts_needed_with_15 = total_weight_20 / (2 * 15)\n\n    # Step 3: Return the number of lifts needed (rounded up since he can't do a partial lift).\n    return lifts_needed_with_15\n\n# Call the solution function and print the result\n# print(solution())\n",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n    \n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    \n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_per_lift_20 = 20 * 2  # Total weight for each lift with 20-pound weights.\n    total_lifts_20 = 12  # Number of times the weights are lifted.\n    total_weight_20 = weight_per_lift_20 * total_lifts_20  # Total weight lifted with 20-pound weights.\n\n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_per_lift_15 = 15 * 2  # Total weight for each lift with 15-pound weights.\n    total_lifts_15 = total_weight_20 / weight_per_lift_15  # Number of times the 15-pound weights must be lifted.\n\n    # Step 3: Return the number of lifts needed.\n    return int(total_lifts_15)\n\n# Call the function to get the result\n# print(solution())  # Expected output would be the number of times Terrell must lift the 15-pound weights.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n\n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_per_lift_20 = 20 * 2\n    total_lifts_20 = 12\n    total_weight_20 = weight_per_lift_20 * total_lifts_20\n    \n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_per_lift_15 = 15 * 2\n    total_lifts_15 = total_weight_20 / weight_per_lift_15\n    \n    # Step 3: Return the number of lifts needed.\n    return total_lifts_15\n\n# Call the function to get the result\nresult = solution()\nresult",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n \n    \n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    \n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_per_lift_20_lb = 20 * 2  # weight per lift when lifting two 20-pound weights\n    total_lifts_20_lb = 12\n    total_weight_20_lb = weight_per_lift_20_lb * total_lifts_20_lb\n    \n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_per_lift_15_lb = 15 * 2  # weight per lift when lifting two 15-pound weights\n    total_lifts_15_lb = total_weight_20_lb / weight_per_lift_15_lb\n    \n    # Step 3: Return the number of lifts needed.\n    return total_lifts_15_lb\n\n# When you call the solution function, it will return the number of lifts Terrell must do with two 15-pound weights.\n# Note: Depending on the context, you might want to round the number to the nearest whole number or ensure it's an integer.\n# If that's the case, you can wrap the result with the int() function to get an integer value.\n\n# Example call:\n# print(solution())",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n    \n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    \n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_per_lift_20 = 20 * 2  # since there are two weights\n    total_lifts_20 = 12\n    total_weight_lifted_20 = weight_per_lift_20 * total_lifts_20\n    \n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_per_lift_15 = 15 * 2  # since there are two weights\n    total_lifts_needed_15 = total_weight_lifted_20 / weight_per_lift_15\n    \n    # Step 3: Return the number of lifts needed.\n    return total_lifts_needed_15\n\n# Calling the function to get the solution\nsolution()",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n\n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    \n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_per_lift_20 = 20 * 2  # Two 20-pound weights\n    total_lifts_20 = 12\n    total_weight_20 = weight_per_lift_20 * total_lifts_20\n    \n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_per_lift_15 = 15 * 2  # Two 15-pound weights\n    total_lifts_15 = total_weight_20 // weight_per_lift_15\n    \n    # Since we want to lift the exact same total weight, if there's a remainder we need one more lift\n    if total_weight_20 % weight_per_lift_15 != 0:\n        total_lifts_15 += 1\n    \n    # Step 3: Return the number of lifts needed.\n    return total_lifts_15\n\n# Call the function and print the result\n# print(solution())",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n    \n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_per_lift_20 = 2 * 20  # Two 20-pound weights\n    total_lifts_20 = 12\n    total_weight_20 = weight_per_lift_20 * total_lifts_20\n    \n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_per_lift_15 = 2 * 15  # Two 15-pound weights\n    total_lifts_15 = total_weight_20 / weight_per_lift_15\n    \n    # Step 3: Return the number of lifts needed.\n    return total_lifts_15\n\n# Call the function and print the result\n# print(solution())",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Terrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n\n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_20 = 20\n    lifts_20 = 12\n    total_weight_20 = weight_20 * lifts_20 * 2 # Multiplied by 2 because there are two weights\n\n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_15 = 15\n    # The number of lifts with 15-pound weights is unknown, let it be x\n    # Set up the equation: weight_15 * 2 * x = total_weight_20, and solve for x\n    lifts_15 = total_weight_20 / (weight_15 * 2)\n\n    # Step 3: Return the number of lifts needed.\n    return lifts_15\n\n# Call the function to test\n# print(solution())  # Expected output for the problem at hand\n",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n\n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    \n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_20_lbs = 20\n    lifts_20_lbs = 12\n    total_weight_lifted_20_lbs = 2 * weight_20_lbs * lifts_20_lbs\n    \n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_15_lbs = 15\n    # The total weight lifted must be the same, so we solve for lifts_15_lbs:\n    # 2 * weight_15_lbs * lifts_15_lbs = total_weight_lifted_20_lbs\n    lifts_15_lbs = total_weight_lifted_20_lbs / (2 * weight_15_lbs)\n    \n    # Step 3: Return the number of lifts needed.\n    # Since the number of lifts must be a whole number, we'll round up in case we get a decimal\n    return int(lifts_15_lbs)\n\n# Let's call the function and print the result\n# print(solution())  # This should return the number of times Terrell must lift the 15-pound weights.",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n \n    Let's think step by step.\n    1. Calculate the total weight lifted with the 20-pound weights.\n    2. Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    3. Return the number of lifts needed.\n    \n    '''\n    # Step 1: Calculate the total weight lifted with the 20-pound weights.\n    weight_per_lift_20 = 2 * 20  # Two 20-pound weights\n    total_lifts_20 = 12\n    total_weight_20 = weight_per_lift_20 * total_lifts_20\n\n    # Step 2: Calculate the number of lifts needed with the 15-pound weights to match the total weight.\n    weight_per_lift_15 = 2 * 15  # Two 15-pound weights\n    total_lifts_15 = total_weight_20 / weight_per_lift_15\n    \n    # Step 3: Return the number of lifts needed.\n    return total_lifts_15\n\n# Call the function and print the result\n# print(solution())"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ],
+                    [
+                        16.0,
+                        16,
+                        "correct"
+                    ]
+                ]
+            },
+            "3": {
+                "incorrect": [
+                    "def solution():\n    '''\n    Since the problem is purely algebraic and does not require any computation that would change based on input, we do not need to write a Python function to solve it dynamically. Instead, we can directly state the answer based on the algebraic manipulation provided in the description:\n\n    The value of \\(\\frac{a}{b}\\) when the system of equations \n    \n    \\begin{align*}\n    6x - 4y &= a, \\\\\n    6y - 9x &= b\n    \\end{align*}\n    \n    has a nonzero solution for \\(x\\) and \\(y\\) is \\(-\\frac{2}{3}\\).\n\n    Therefore, the function simply returns this value:\n    '''\n    return -2/3\n\n# Calling the function will always return -2/3 for this particular problem.\n# print(solution()) # Output will be -0.6666666666666666",
+                    "\ndef solution():\n    return -2/3\n",
+                    "def solution():\n    # Since the system of equations is:\n    # 6x - 4y = a  (1)\n    # 6y - 9x = b  (2)\n    # and x and y are both nonzero, the ratio a/b can be found algebraically.\n    # If we multiply the first equation by 6 and the second by 4, we get:\n    # 36x - 24y = 6a  (3)\n    # -36x + 24y = 4b  (4)\n    # Adding (3) and (4) gives us:\n    # 0 = 6a + 4b\n    # Which simplifies to:\n    # 6a = -4b\n    # Dividing both sides by 6b (assuming b is nonzero), we get:\n    # a/b = -4/6\n    # Simplifying the fraction gives us -2/3. Therefore, the answer is -2/3.\n    return -2/3\n\n# The function returns the constant value of the ratio a/b, which is -2/3.\n# This is a direct consequence of the algebraic manipulation of the given system of equations.",
+                    "def solution():\n    '''\n    This function returns the answer to the given algebra problem.\n    '''\n    # Since the problem is already solved algebraically and we have deduced that a/b = -2/3,\n    # we just return the answer as a fixed value.\n    return -2/3\n\n# There is no need to implement the algebraic steps in the function, as the solution is a constant based on the given problem.",
+                    "def solution():\n    '''\n    The function solution will simply return the answer of the algebraic problem provided, which is the ratio of a to b. We found that the ratio a/b is -2/3 by solving the system of equations algebraically.\n    '''\n    return -2/3\n\n# The function does not perform any calculations but directly returns the value of a/b based on the algebraic solution we derived.",
+                    "def solution():\n    '''\n    The function solution returns the answer to the algebraic problem presented.\n\n    We are given a system of equations:\n    6x - 4y = a  (1)\n    6y - 9x = b  (2)\n\n    We need to find the value of a/b, assuming x and y are both nonzero, and b is nonzero.\n\n    Step by step, we can transform the system of equations to express a in terms of b:\n\n    From equation (1), we can express x in terms of y and a:\n    6x = a + 4y  =>  x = (a + 4y)/6  (3)\n\n    We can substitute x from equation (3) into equation (2) to find a relation between y and b:\n    6y - 9((a + 4y)/6) = b\n    Simplify the equation:\n    6y - (3/2)(a + 4y) = b\n    Multiply through by 2 to clear the fraction:\n    12y - 3a - 12y = 2b\n    Simplify further:\n    -3a = 2b  =>  a = -2b/3  (4)\n\n    Now we have a in terms of b. The ratio a/b is then:\n    a/b = (-2b/3) / b\n    Simplify by canceling out b:\n    a/b = -2/3\n\n    Since this is a fixed algebraic solution, we simply return the result.\n    '''\n    return -2/3\n\n# The function does not require any arguments and will always return the same result based on the algebraic manipulation above.\n",
+                    "def solution():\n    '''\n    The function solution will return the answer of the question asked.\n    Problem:\n    If the system of equations has a solution (x, y) where x and y are both nonzero,\n    find a/b, assuming b is nonzero.\n    '''\n    # Since we've calculated the answer algebraically, we just need to return the value.\n    return -2/3\n\n# Let's test the function\n# print(solution())  # It should return -2/3\n\n# Explanation:\n# We have already worked through the algebraic steps in the docstring.\n# The final ratio a/b is -2/3, assuming x and y are both nonzero and b is nonzero.",
+                    "The solution to the system of equations does not require a Python function, as it is an algebraic problem and the answer is a fixed value. Here's the solution in detail:\n\n1. Write down the system of equations:\n   \\[\\begin{align*}\n   6x - 4y &= a, \\quad (1) \\\\\n   6y - 9x &= b. \\quad (2)\n   \\end{align*}\\]\n\n2. Express \\(y\\) from equation (1) and \\(x\\) from equation (2):\n   \\[\\begin{align*}\n   y &= \\frac{6x - a}{4}, \\quad (3) \\\\\n   x &= \\frac{6y - b}{9}. \\quad (4)\n   \\end{align*}\\]\n\n3. Substitute the expression for \\(y\\) from equation (3) into equation (4):\n   \\[\\begin{align*}\n   x &= \\frac{6\\left(\\frac{6x - a}{4}\\right) - b}{9}, \\\\\n   x &= \\frac{9x - 3a - b}{9}.\n   \\end{align*}\\]\n\n4. Multiply both sides by 9 to clear the denominator:\n   \\[9x = 9x - 3a - b.\\]\n\n5. Subtract \\(9x\\) from both sides to isolate the terms with \\(a\\) and \\(b\\):\n   \\[0 = -3a - b.\\]\n\n6. Express \\(a\\) in terms of \\(b\\):\n   \\[3a = -b,\\]\n   \\[a = -\\frac{b}{3}.\\]\n\n7. We can now find the ratio \\(\\frac{a}{b}\\):\n   \\[\\frac{a}{b} = \\frac{-\\frac{b}{3}}{b}.\\]\n\n8. Simplify the ratio by canceling out \\(b\\):\n   \\[\\frac{a}{b} = -\\frac{1}{3}.\\]\n\nSo, the final answer is \\(\\frac{a}{b} = -\\frac{1}{3}\\), assuming \\(b\\) is nonzero. This means that for the system of equations to have a solution where \\(x\\) and \\(y\\) are both nonzero, the ratio of \\(a\\) to \\(b\\) must be \\(-\\frac{1}{3}\\).",
+                    "def solution():\n    '''\n    The function solution returns the answer to the given problem.\n\n    Given the system of equations:\n    6x - 4y = a,\n    6y - 9x = b.\n\n    We want to find the ratio a/b, assuming x and y are both nonzero and b is nonzero.\n\n    By rearranging the equations and combining them, we can find the relationship between a and b. Let's do this step by step.\n    '''\n    # Equations given:\n    # 6x - 4y = a (equation 1)\n    # 6y - 9x = b (equation 2)\n    \n    # Multiply equation 1 by 9 and equation 2 by 6 to get the same coefficient for x:\n    # (9 * 6x) - (9 * 4y) = 9a => 54x - 36y = 9a\n    # (6 * 6y) - (6 * 9x) = 6b => 36y - 54x = 6b\n    \n    # Now add these two equations:\n    # (54x - 36y) + (-54x + 36y) = 9a + 6b\n    # Simplifies to:\n    # 0 = 9a + 6b\n    \n    # Since x and y are nonzero, and b is nonzero, we can conclude that for the system to have a solution:\n    # 9a + 6b = 0\n    # Therefore:\n    # 9a = -6b\n    # a/b = -6/9\n    # Simplifying the ratio by dividing both numerator and denominator by 3:\n    # a/b = -2/3\n    \n    # The fixed value for a/b is -2/3.\n    return -2/3\n\n# You can call the function to get the answer\n# print(solution())  # This will print -0.6666666666666666 which is -2/3.",
+                    "def solution():\n    '''\n    This function returns the ratio a/b for the given system of equations if x and y are both nonzero.\n    The algebraic solution has shown that a/b is a constant value when the system has a solution with x and y both nonzero.\n    '''\n    # The ratio a/b is -2/3\n    return -2/3\n\n# The function does not need to perform any calculation as the solution is derived algebraically.\n# Calling the function will always return the constant value -2/3.\n# print(solution())  # Output will be -0.6666666666666666 which is -2/3 in decimal form."
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ],
+                    [
+                        -0.6666666666666666,
+                        "-\\frac{2}{3}",
+                        "incorrect"
+                    ]
+                ]
+            }
+        },
+        "questions": [
+            "Problem:\nFind the domain of the expression  $\\frac{\\sqrt{x-2}}{\\sqrt{5-x}}$.}\n",
+            "Problem:\nIf $\\det \\mathbf{A} = 2$ and $\\det \\mathbf{B} = 12,$ then find $\\det (\\mathbf{A} \\mathbf{B}).$\n",
+            "Problem:\nTerrell usually lifts two 20-pound weights 12 times. If he uses two 15-pound weights instead, how many times must Terrell lift them in order to lift the same total weight?\n",
+            "Problem:\nIf the system of equations\n\n\\begin{align*}\n6x-4y&=a,\\\\\n6y-9x &=b.\n\\end{align*}has a solution $(x, y)$ where $x$ and $y$ are both nonzero,\nfind $\\frac{a}{b},$ assuming $b$ is nonzero.\n"
+        ],
+        "answers": [
+            "[2,5)",
+            24,
+            16,
+            "-\\frac{2}{3}"
+        ]
+    },
+    "ocw": {
+        "p2c": {
+            "0": {
+                "correct": [
+                    "def solution():\n    # pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n    \n    # pH of the solution\n    pH = 1.0\n    \n    # Determine the charge state of each group at pH 1.0\n    charge_carboxyl = 0 if pH < pKa_carboxyl else -1\n    charge_amino = 1 if pH < pKa_amino else 0\n    charge_guanidinium = 1 if pH < pKa_guanidinium else 0\n    \n    # Calculate the net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n    \n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# To use the function, simply call it:\nresult = solution()\nresult  # This should return \"+2\"",
+                    "\ndef solution():\n    # Given pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n\n    # Given pH value\n    pH = 1.0\n\n    # Determine the charge state of each group at pH 1.0\n    # Alpha-carboxyl group\n    charge_carboxyl = 0 if pH < pKa_carboxyl else -1\n    # Alpha-amino group\n    charge_amino = 1 if pH < pKa_amino else 0\n    # Guanidinium group\n    charge_guanidinium = 1 if pH < pKa_guanidinium else 0\n\n    # Calculate the net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n\n    # Format and return the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# Example usage:\n# print(solution())  # Output should be +2\n",
+                    "def solution():\n    '''\n    This function returns the net charge of arginine at a pH of 1.0.\n    Arginine has three groups that can be ionized: the alpha-amino group, the alpha-carboxyl group, and the guanidinium group of the side chain.\n    At pH 1.0, the alpha-carboxyl group would be protonated (neutral), the alpha-amino group would be protonated (positively charged), and the guanidinium group would also be protonated (positively charged).\n    \n    pKa values:\n    - Alpha-carboxyl group: ~2.0\n    - Alpha-amino group: ~9.0\n    - Guanidinium group: ~12.5\n    \n    At pH 1.0:\n    - The carboxyl group has a 0 charge (since the pH is below its pKa).\n    - The amino group has a +1 charge (since the pH is below its pKa).\n    - The guanidinium group has a +1 charge (since the pH is below its pKa).\n    \n    The net charge is the sum of the charges of these groups.\n    '''\n    # Charges at pH 1.0\n    charge_carboxyl = 0  # Protonated\n    charge_amino = +1    # Protonated\n    charge_guanidinium = +1  # Protonated\n    \n    # Net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n    \n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# Function execution\n# print(solution())  # Output should be +2",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Subproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \n    Please format your answer as +n or -n.  \n    \n    Let's think step by step.\n    To determine the net charge of arginine at a given pH, we need to consider the pKa values of all the ionizable groups in the arginine molecule and compare them to the pH of the solution. Arginine has four groups that can be ionized: the alpha-amino group, the alpha-carboxyl group, and the guanidinium group of the side chain.\n    '''\n    # pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n\n    # pH of the solution\n    pH = 1.0\n\n    # Determine the charge state of each group at pH 1.0\n    charge_carboxyl = 0 if pH < pKa_carboxyl else -1\n    charge_amino = 1 if pH < pKa_amino else 0\n    charge_guanidinium = 1 if pH < pKa_guanidinium else 0\n\n    # Calculate the net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n\n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# Example usage:\n# print(solution())  # Output should be +2",
+                    "def solution():\n    # pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n    \n    # pH value for the solution\n    pH = 1.0\n    \n    # Determine the charge state of each group at pH 1.0\n    charge_carboxyl = 0 if pH < pKa_carboxyl else -1\n    charge_amino = 1 if pH < pKa_amino else 0\n    charge_guanidinium = 1 if pH < pKa_guanidinium else 0\n    \n    # Calculate the net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n    \n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# The function solution is defined to calculate the net charge of arginine at pH 1.0.\n# The expected result is +2, as both the amino and guanidinium groups will be protonated and positively charged,\n# while the carboxyl group will be neutral.\n\n# Example usage:\n# print(solution())  # Output should be +2",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \nPlease format your answer as +n or -n.  \n    \n    To determine the net charge of arginine at a given pH, we need to consider the pKa values of all the ionizable groups in the arginine molecule and compare them to the pH of the solution. Arginine has four groups that can be ionized: the alpha-amino group, the alpha-carboxyl group, and the guanidinium group of the side chain.\n    \n    Here's the plan to calculate the net charge of arginine at pH 1.0:\n    \n    1. Identify the pKa Values:\n       - Alpha-carboxyl group: typically around 2.1\n       - Alpha-amino group: typically around 9.0\n       - Guanidinium group of the side chain: typically around 12.5\n    \n    2. Determine the State of Each Group at pH 1.0:\n       - Alpha-carboxyl group (pKa ~2.1): At pH 1.0, this group is protonated and has a charge of 0.\n       - Alpha-amino group (pKa ~9.0): At pH 1.0, this group is protonated and has a positive charge (+1).\n       - Guanidinium group (pKa ~12.5): At pH 1.0, this group is protonated and has a positive charge (+1).\n    \n    3. Calculate the Net Charge:\n       - Net charge = Charge of the alpha-amino group + Charge of the alpha-carboxyl group + Charge of the guanidinium group\n    \n    4. Return the Net Charge:\n       - Format the result as +n or -n, where n is the net charge calculated.\n       \n    Since we know the pKa values and the behavior of the amino acids at a given pH, we can directly calculate and return the result as follows:\n    '''\n    # Calculate the net charge\n    net_charge = 0 + 1 + 1  # Charge of carboxyl group + Charge of amino group + Charge of guanidinium group\n    \n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# Example usage:\n# print(solution())  # Output should be +2\n\n# The function `solution` returns the net charge of arginine at pH 1.0, which is expected to be +2.",
+                    "\ndef solution():\n    # pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n    \n    # pH value given in the problem\n    pH = 1.0\n    \n    # Determine the charge state of each group at pH 1.0\n    charge_carboxyl = 0 if pH < pKa_carboxyl else -1\n    charge_amino = 1 if pH < pKa_amino else 0\n    charge_guanidinium = 1 if pH < pKa_guanidinium else 0\n    \n    # Calculate the net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n    \n    # Format the net charge as +n or -n\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    \n    return formatted_charge\n\n# This is how you would call the solution function\n# print(solution())  # This should output +2\n",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer to the following question: Problem:\nSubproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \nPlease format your answer as +n or -n.\n    '''\n\n    # pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n\n    # pH of the solution\n    pH = 1.0\n\n    # Determine the charge state of each group at pH 1.0\n    # For the carboxyl group:\n    if pH < pKa_carboxyl:\n        charge_carboxyl = 0  # Protonated, neutral\n    else:\n        charge_carboxyl = -1  # Deprotonated, negative charge\n\n    # For the amino group:\n    if pH < pKa_amino:\n        charge_amino = 1  # Protonated, positive charge\n    else:\n        charge_amino = 0  # Deprotonated, neutral\n\n    # For the guanidinium group:\n    if pH < pKa_guanidinium:\n        charge_guanidinium = 1  # Protonated, positive charge\n    else:\n        charge_guanidinium = 0  # Deprotonated, neutral\n\n    # Sum the charges to get the net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n\n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# Since the net charge of arginine at pH 1.0 is known to be +2, we can directly return this value.\nreturn \"+2\""
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ],
+                    [
+                        null,
+                        "$2$",
+                        "incorrect"
+                    ],
+                    [
+                        2.0,
+                        "$2$",
+                        "correct"
+                    ]
+                ],
+                "incorrect": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$?\nPlease format your answer as +n or -n.\n\n    Let's think step by step.\n    To determine the net charge of arginine at a given pH, we need to consider the pKa values of all the ionizable groups in the arginine molecule and compare them to the pH of the solution. Arginine has four groups that can be ionized: the alpha-amino group, the alpha-carboxyl group, and the guanidinium group of the side chain.\n\n    Here's a step-by-step plan to calculate the net charge of arginine at pH 1.0:\n\n    1. **Identify the pKa Values:**\n       - Alpha-carboxyl group: typically around 2.0\n       - Alpha-amino group: typically around 9.0\n       - Guanidinium group of the side chain: typically around 12.5\n\n    2. **Determine the State of Each Group at pH 1.0:**\n       - If pH < pKa, the group is likely to be in its protonated form.\n       - If pH > pKa, the group is likely to be in its deprotonated form.\n\n    3. **Calculate the Charge of Each Group at pH 1.0:**\n       - Alpha-carboxyl group (pKa ~2.0): At pH 1.0, this group is protonated and has a charge of 0.\n       - Alpha-amino group (pKa ~9.0): At pH 1.0, this group is protonated and has a positive charge (+1).\n       - Guanidinium group (pKa ~12.5): At pH 1.0, this group is protonated and has a positive charge (+1).\n\n    4. **Sum the Charges:**\n       - Net charge = Charge of the alpha-amino group + Charge of the alpha-carboxyl group + Charge of the guanidinium group\n\n    5. **Return the Net Charge:**\n       - Format the result as +n or -n, where n is the net charge calculated.\n\n    Let's apply this plan in a Python function:\n    '''\n    # pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n    \n    # Determine the charge state of each group at pH 1.0\n    charge_carboxyl = 0 if pH < pKa_carboxyl else -1\n    charge_amino = 1 if pH < pKa_amino else 0\n    charge_guanidinium = 1 if pH < pKa_guanidinium else 0\n    \n    # Calculate the net charge\n    net_charge = charge_amino + charge_guanidinium  # alpha-carboxyl group is neutral at pH 1.0\n    \n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# Assuming the pH value is 1.0, as given in the problem statement.\npH = 1.0\n# Call the function to calculate the net charge of arginine at pH 1.0\nreturn solution()",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \nPlease format your answer as +n or -n.  \n \n    \n    Let's think step by step.\n    To determine the net charge of arginine at a given pH, we need to consider the pKa values of all the ionizable groups in the arginine molecule and compare them to the pH of the solution. Arginine has four groups that can be ionized: the alpha-amino group, the alpha-carboxyl group, and the guanidinium group of the side chain.\n    \n    Here's a step-by-step plan to calculate the net charge of arginine at pH 1.0:\n    \n    1. **Identify the pKa Values:** \n       - Alpha-carboxyl group: typically around 2.0\n       - Alpha-amino group: typically around 9.0\n       - Guanidinium group of the side chain: typically around 12.5\n    \n    2. **Determine the State of Each Group at pH 1.0:**\n       - If pH < pKa, the group is likely to be in its protonated form.\n       - If pH > pKa, the group is likely to be in its deprotonated form.\n    \n    3. **Calculate the Charge of Each Group at pH 1.0:**\n       - Alpha-carboxyl group (pKa ~2.0): At pH 1.0, this group is protonated and has a charge of 0.\n       - Alpha-amino group (pKa ~9.0): At pH 1.0, this group is protonated and has a positive charge (+1).\n       - Guanidinium group (pKa ~12.5): At pH 1.0, this group is protonated and has a positive charge (+1).\n    \n    4. **Sum the Charges:** \n       - Net charge = Charge of the alpha-amino group + Charge of the alpha-carboxyl group + Charge of the guanidinium group\n    \n    5. **Return the Net Charge:** \n       - Format the result as +n or -n, where n is the net charge calculated.\n    \n    Let's apply this plan in a Python function:\n    '''\n    # pKa values for arginine\n    pKa_carboxyl = 2.0\n    pKa_amino = 9.0\n    pKa_guanidinium = 12.5\n    \n    # Determine the charge state of each group at pH 1.0\n    charge_carboxyl = 0 if pH < pKa_carboxyl else -1\n    charge_amino = 1 if pH < pKa_amino else 0\n    charge_guanidinium = 1 if pH < pKa_guanidinium else 0\n    \n    # Calculate the net charge\n    net_charge = charge_carboxyl + charge_amino + charge_guanidinium\n    \n    # Format the net charge\n    formatted_charge = f\"+{net_charge}\" if net_charge >= 0 else f\"{net_charge}\"\n    return formatted_charge\n\n# Since we want to return the answer for a pH of 1.0, we can call the function directly with that value\nreturn solution(1.0)  # Should return \"+2\""
+                ]
+            },
+            "1": {
+                "incorrect": [
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, constant=True)\n    \n    # Define the Laplace-transformed function Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Apply partial fraction decomposition\n    Y_s_apart = apart(Y_s)\n    \n    # Find the inverse Laplace Transform of each term\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    return y_t\n\n# Call the solution function and print the result\ny_t_solution = solution()\n# print(y_t_solution)\n",
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    # Define the constants a and b to be real\n    a, b = symbols('a b', real=True, positive=True)\n\n    # Given Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n\n    # Apply partial fraction decomposition\n    Y_s_apart = apart(Y_s)\n\n    # Find the inverse Laplace Transform of each term\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n\n    # Return the result\n    return y_t\n\n# You can then call the solution function and it should return the inverse Laplace Transform of Y(s)\nresult = solution()\n# print(result)\n",
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform, Heaviside\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, constant=True)\n    \n    # Define the Laplace-transformed function Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Step 2: Apply partial fraction decomposition to express Y(s) as a sum of simpler fractions\n    Y_s_apart = apart(Y_s)\n    \n    # Step 3 & 4: Find the inverse Laplace Transform of each term separately and combine the results\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    # Step 5: Return the result as a string if needed\n    # We use Heaviside(t) to represent the unit step function (usually denoted as u(t))\n    y_t_string = str(y_t).replace(\"Heaviside(t)\", \"u(t)\")\n    \n    return y_t_string\n\n# Call the solution function and print the result\n# print(solution())\n",
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, positive=True)\n    \n    # Define the Laplace-transformed function Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Step 2: Apply partial fraction decomposition\n    Y_s_apart = apart(Y_s)\n    \n    # Step 3: Find the inverse Laplace Transform of each term\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    # Return the simplified inverse Laplace Transform\n    return y_t\n\n# Call the solution function and print the result\nresult = solution()\n# print(result)\n",
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, positive=True)\n    \n    # Define the Laplace-transformed function Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Apply partial fraction decomposition to Y(s)\n    Y_s_apart = apart(Y_s)\n    \n    # Find the inverse Laplace Transform of each term separately\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    # Return the result\n    return y_t\n\n# Call the solution function and print the result\n# print(solution())\n",
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, constant=True)\n    \n    # Define the Laplace-transformed function Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Step 2: Apply partial fraction decomposition\n    Y_s_apart = apart(Y_s)\n    \n    # Step 3 & 4: Find the inverse Laplace Transform of each term\n    # and combine the results\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    # Return the result\n    return y_t\n\n# You can call the solution function and print the result\nresult = solution()\n# print(result)\n",
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, positive=True)\n    \n    # Define the Laplace-transformed function Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Apply partial fraction decomposition\n    Y_s_apart = apart(Y_s)\n    \n    # Find the inverse Laplace Transform of each term\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    # Return the result\n    return y_t\n\n# Call the function and print the result\n# print(solution())\n",
+                    "from sympy import symbols, apart, inverse_laplace_transform, Heaviside\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, positive=True)\n    \n    # Define the Laplace-transformed function Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Step 2: Apply partial fraction decomposition\n    Y_s_apart = apart(Y_s)\n\n    # Step 3: Find the inverse Laplace Transform of each term\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    # We multiply by the Heaviside step function to ensure the function is defined for t >= 0\n    y_t *= Heaviside(t)\n\n    # Return the simplified result\n    return y_t.simplify()\n\n# Call the function and print the result\nresult = solution()\n# print(result)",
+                    "\nfrom sympy import symbols, apart, inverse_laplace_transform, simplify\n\ndef solution():\n    # Define the Laplace variable and the time-domain variable\n    s, t = symbols('s t')\n    a, b = symbols('a b', real=True, positive=True)\n    \n    # Define Y(s)\n    Y_s = 1 / ((s + a) * (s + b))\n    \n    # Apply partial fraction decomposition\n    Y_s_apart = apart(Y_s)\n    \n    # Find the inverse Laplace Transform of each term\n    y_t = inverse_laplace_transform(Y_s_apart, s, t)\n    \n    # Simplify the result\n    y_t = simplify(y_t)\n    \n    return y_t\n\n# Run the solution function and print the result\n# print(solution())\n",
+                    "\nresult = solution()\n# print(result)\n"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+                        "incorrect"
+                    ]
+                ]
+            },
+            "2": {
+                "incorrect": [
+                    "\ndef solution():\n    \"\"\"\n    Return the characteristic polynomial p(s) of the differential equation\n    ddot{x} + b * dot{x} + x = 0.\n    \"\"\"\n    # The characteristic polynomial p(s) of the equation is s^2 + b*s + 1 = 0.\n    # Since the value of b is not given in the problem statement, we will return\n    # the polynomial with b as a symbol.\n    return \"s^2 + b*s + 1 = 0\"\n\n# Example usage:\ncharacteristic_polynomial = solution()\n# print(\"The characteristic polynomial is:\", characteristic_polynomial)\n",
+                    "\ndef solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Preamble: The following subproblems refer to the differential equation \n    \\(\\ddot{x}+b \\dot{x}+x=0\\).\n    Subproblem 0: What is the characteristic polynomial \\(p(s)\\) of \n    \\(\\ddot{x}+b \\dot{x}+x=0\\)?\n\n    Let's think step by step.\n    1. Recognize that the given differential equation is a second-order linear homogeneous differential equation with constant coefficients.\n    2. Identify the coefficients from the given equation: \\(b\\) is the coefficient of \\(\\dot{x}\\), and \\(1\\) is the coefficient of \\(x\\).\n    3. Write down the characteristic equation by replacing \\(\\ddot{x}\\) with \\(s^2\\), \\(\\dot{x}\\) with \\(s\\), and \\(x\\) with \\(1\\).\n    4. Obtain the characteristic polynomial \\(p(s)\\) by equating the characteristic equation to zero.\n    5. Implement the function to return the characteristic polynomial.\n    '''\n    # Assuming b is known and given in the problem.\n    # For the sake of this function, let's use a placeholder value for b.\n    b = 'b'\n    \n    # The characteristic polynomial p(s) for the equation is s^2 + bs + 1 = 0.\n    characteristic_polynomial = f\"s^2 + {b}*s + 1 = 0\"\n    \n    # Return the characteristic polynomial as a string.\n    return characteristic_polynomial\n\n# Example usage:\n# print(solution())\n",
+                    "\ndef solution():\n    \"\"\"\n    Provide the characteristic polynomial of the differential equation\n    ddot{x} + b * dot{x} + x = 0 where b is a given constant.\n\n    Returns:\n    str: A string representing the characteristic polynomial p(s).\n    \"\"\"\n    # Assuming b is a known constant for the problem. For example, let's use b = 2.\n    b = 2\n    # The characteristic polynomial p(s) of the equation is s^2 + b*s + 1 = 0.\n    return f\"s^2 + {b}*s + 1\"\n\n# Example usage:\ncharacteristic_polynomial = solution()\n# print(\"The characteristic polynomial is:\", characteristic_polynomial)\n",
+                    "\ndef solution():\n    \"\"\"\n    Return the characteristic polynomial of the differential equation\n    ddot{x} + b * dot{x} + x = 0 as a string.\n    \n    Returns:\n    str: The characteristic polynomial p(s).\n    \"\"\"\n    # The characteristic polynomial p(s) of the equation is s^2 + b*s + 1 = 0.\n    return \"s^2 + b*s + 1 = 0\"\n\n# Example usage:\n# print(solution())  # Output will be the string \"s^2 + b*s + 1 = 0\"\n",
+                    "\ndef solution():\n    '''\n    Returns the characteristic polynomial p(s) for the differential equation\n    ddot{x} + b * dot{x} + x = 0.\n    '''\n    # Given the differential equation ddot{x} + b * dot{x} + x = 0,\n    # the characteristic polynomial is s^2 + b*s + 1 = 0.\n    \n    # Since the problem statement does not provide a specific value for b,\n    # we need to return the polynomial with b as a symbolic coefficient.\n    \n    # The characteristic polynomial is s^2 + b*s + 1.\n    # We represent this as a string, since we're not asked to evaluate it for a specific b.\n    return \"s^2 + b*s + 1 = 0\"\n\n# Example usage:\n# print(solution())\n",
+                    "def solution(b):\n    '''\n    Create a function solution that returns the characteristic polynomial \\( p(s) \\) of the differential equation \\( \\ddot{x} + b \\dot{x} + x = 0 \\).\n    '''\n    \n    # The characteristic polynomial p(s) of the equation is s^2 + b*s + 1 = 0.\n    # We are only interested in the polynomial itself, not the equation, so we ignore the \"= 0\" part.\n    return f\"s^2 + {b}*s + 1\"\n\n# Here we assume that the value of b is known and passed to the function when called.\n# If b needs to be hardcoded for a specific case, you can set b = <value> before calling solution(b).\n# Otherwise, the function will be called with the appropriate value of b."
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "s^2 + b*s + 1 = 0",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "s^2 + b*s + 1 = 0",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "s^2 + 2*s + 1",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "s^2 + b*s + 1",
+                        "$s^{2}+b s+1$",
+                        "correct"
+                    ],
+                    [
+                        "s^2 + b*s + 1 = 0",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        "s^2 + b*s + 1 = 0",
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ],
+                    [
+                        null,
+                        "$s^{2}+b s+1$",
+                        "incorrect"
+                    ]
+                ],
+                "correct": [
+                    "\ndef solution():\n    '''\n    Returns the characteristic polynomial of the differential equation\n    ddot{x} + b * dot{x} + x = 0.\n    \n    Return:\n    str: The characteristic polynomial p(s).\n    '''\n    # The characteristic polynomial p(s) of the equation is s^2 + b*s + 1 = 0.\n    # Since b is a general coefficient, we keep it as 'b' in the polynomial.\n    polynomial = \"s^2 + b*s + 1\"\n    \n    return polynomial\n\n# To use the function, simply call it:\ncharacteristic_polynomial = solution()\n\n# print(\"The characteristic polynomial is:\", characteristic_polynomial)\n",
+                    "\ndef solution():\n    \"\"\"\n    Returns the characteristic polynomial of the differential equation\n    ddot{x} + b * dot{x} + x = 0 in the most general form.\n    \n    Returns:\n    str: A string representing the general form of the characteristic polynomial p(s).\n    \"\"\"\n    # Return the general form of the characteristic polynomial p(s) for any b\n    return \"s^2 + b*s + 1\"\n\n# Example usage:\ncharacteristic_polynomial_general = solution()\n# print(\"The characteristic polynomial in general form is:\", characteristic_polynomial_general)\n",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nPreamble: The following subproblems refer to the differential equation \n$\\ddot{x}+b \\dot{x}+x=0$.\nSubproblem 0: What is the characteristic polynomial $p(s)$ of \n$\\ddot{x}+b \\dot{x}+x=0$?\n    '''\n    # The characteristic polynomial is derived by assuming a solution of the form e^(st) to the differential equation.\n    # This means we replace the second derivative ddot{x} with s^2, the first derivative dot{x} with s, and x with 1.\n    # The characteristic polynomial p(s) for the given differential equation is then:\n    # p(s) = s^2 + b*s + 1 = 0\n    # We can return this as a string in the function.\n    \n    return \"s^2 + b*s + 1\"\n\n# Since the question only asks for the characteristic polynomial of the given differential equation, we can simply return the string representation of p(s). \n# If b needs to be a variable that can be replaced with an actual value, the solution would be different. But as it stands, the characteristic polynomial is independent of the specific value of b and can be represented as shown above.\n",
+                    "\ndef solution():\n    # The characteristic polynomial p(s) of the equation is s^2 + b*s + 1.\n    # Since we're not given a specific value of b, we'll represent it as a variable in the string.\n    return \"s^2 + b*s + 1\"\n"
+                ]
+            },
+            "3": {
+                "incorrect": [
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n    '''\n\n    # Given z = 1 + sqrt(3) * i\n    z = complex(1, (3)**0.5)  # Here, we use \"complex\" to represent the complex number z\n\n    # Step 1: Calculate z^2\n    z_squared = z**2\n\n    # Step 2: Calculate z^4\n    z_fourth = z_squared**2\n\n    # Step 3: Extract Real and Imaginary Parts\n    a = z_fourth.real  # Extract real part\n    b = z_fourth.imag  # Extract imaginary part\n\n    # Step 4: Express the Answer\n    answer = (a, b)  # Combine real and imaginary parts into an ordered pair\n\n    return answer\n\n# Call the function and print the result\n# print(solution())",
+                    "def solution():\n    '''\n    The function solution will return the answer of the following question:\n    Problem:\n    Subproblem 0: Let \\( z = 1 + \\sqrt{3} i \\). Find \\( a, b \\) that satisfy the equation \n    \\( z^4 = a + bi \\). Express your answer as the ordered pair \\( (a,b) \\).\n    '''\n    # Given z = 1 + sqrt(3)i\n    # Step 1: Calculate z^2\n    # z^2 = (1 + sqrt(3)i)^2 = 1^2 + 2 * 1 * sqrt(3)i + (sqrt(3)i)^2\n    # Simplify the expression\n    # z^2 = 1 + 2sqrt(3)i + 3i^2\n    # Since i^2 = -1\n    # z^2 = 1 + 2sqrt(3)i - 3\n    # z^2 = -2 + 2sqrt(3)i\n    \n    # Step 2: Calculate z^4\n    # z^4 = (-2 + 2sqrt(3)i)^2\n    # z^4 = (-2)^2 + 2 * -2 * 2sqrt(3)i + (2sqrt(3)i)^2\n    # Simplify the expression\n    # z^4 = 4 - 8sqrt(3)i + 12i^2\n    # z^4 = 4 - 8sqrt(3)i - 12\n    # z^4 = -8 - 8sqrt(3)i\n    \n    # Step 3: Extract Real and Imaginary Parts\n    a = -8\n    b = -8 * (3 ** 0.5)  # sqrt(3) is equivalent to 3^0.5\n    \n    # Step 4: Express the Answer\n    return (a, b)\n\n# You can now call the solution function and it will return the answer.\n# print(solution())  # Output should be (-8, -8 * sqrt(3)) or (-8, -8 * (3 ** 0.5))",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n \n    Let's think step by step.\n    To solve the problem of finding \\( a \\) and \\( b \\) such that \\( z^4 = a + bi \\), where \\( z = 1 + \\sqrt{3} i \\), we can follow these steps:\n    \n    1. **Calculate \\( z^2 \\)**: Square the complex number \\( z \\) to get \\( z^2 \\).\n    2. **Calculate \\( z^4 \\)**: Square \\( z^2 \\) to get \\( z^4 \\).\n    3. **Extract Real and Imaginary Parts**: Once you have \\( z^4 \\), separate the real part (which will be \\( a \\)) and the imaginary part (which will be \\( b \\)).\n    4. **Express the Answer**: Write the answer as an ordered pair \\( (a,b) \\).\n    \n    Let's break down these steps in a more detailed manner for the implementation:\n    \n    ### Step 1: Calculate \\( z^2 \\)\n    \n    Given \\( z = 1 + \\sqrt{3} i \\), use the formula for squaring a complex number:\n    \n    \\( z^2 = (1 + \\sqrt{3} i)^2 = (1^2) + (2 \\cdot 1 \\cdot \\sqrt{3} i) + (\\sqrt{3} i)^2 \\)\n    \n    Simplify the expression:\n    \n    \\( z^2 = 1 + 2\\sqrt{3} i - 3 = -2 + 2\\sqrt{3} i \\)\n    \n    ### Step 2: Calculate \\( z^4 \\)\n    \n    Now, square \\( z^2 \\) to find \\( z^4 \\):\n    \n    \\( z^4 = (-2 + 2\\sqrt{3} i)^2 \\)\n    \\( z^4 = (-2)^2 + (2 \\cdot -2 \\cdot 2\\sqrt{3} i) + (2\\sqrt{3} i)^2 \\)\n    \n    Simplify the expression:\n    \n    \\( z^4 = 4 - 8\\sqrt{3} i - 12 \\)\n    \\( z^4 = -8 - 8\\sqrt{3} i \\)\n    \n    ### Step 3: Extract Real and Imaginary Parts\n    \n    From the simplified expression of \\( z^4 \\), identify the real part (which is \\( a \\)) and the imaginary part (which is \\( b \\)):\n    \n    \\( a = -8 \\)\n    \\( b = -8\\sqrt{3} \\)\n    \n    ### Step 4: Express the Answer\n    \n    Combine the real part \\( a \\) and the imaginary part \\( b \\) into an ordered pair:\n    \n    \\( (a,b) = (-8, -8\\sqrt{3}) \\)\n    \n    This is the final answer.\n    '''\n\n    a = -8\n    b = -8 * (3 ** 0.5)\n    return (a, b)\n\n# Now let's call the function to get the answer.\nanswer = solution()\n# print(answer)  # Expected output: (-8, -8\u221a3)\n",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\n    Subproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n    $z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n    '''\n    # Given z = 1 + sqrt(3)i, let's calculate z^2 first.\n    z = 1 + (3**0.5)*1j # z = 1 + sqrt(3)i\n    z_squared = z**2 # (1 + sqrt(3)i)^2\n\n    # Now calculate z^4 by squaring z^2.\n    z_fourth = z_squared**2 # ((1 + sqrt(3)i)^2)^2\n\n    # Extract a and b from the real and imaginary parts of z^4.\n    a = z_fourth.real\n    b = z_fourth.imag\n\n    # Return the answer as an ordered pair (a, b).\n    return (a, b)\n\n# Call the function and print the result\n# print(solution())",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n    '''\n    # Given z = 1 + sqrt(3)i, let's calculate z^4\n    # We will use the binomial theorem to expand (a + bi)^4\n    \n    # First calculate z^2\n    z = (1 + (3**0.5)*1j)\n    z_squared = z**2\n    \n    # Now calculate z^4\n    z_fourth = z_squared**2\n    \n    # Extract real and imaginary parts for a and b\n    a = z_fourth.real\n    b = z_fourth.imag\n    \n    # Return the answer as an ordered pair (a, b)\n    return (a, b)\n\n# Now we can call the function and print the solution\n# print(solution())",
+                    "\nimport math\n\ndef solution():\n    # Given complex number z\n    z = complex(1, math.sqrt(3))\n    \n    # Step 1: Calculate z^2\n    z_squared = z ** 2\n    \n    # Step 2: Calculate z^4\n    z_fourth_power = z_squared ** 2\n    \n    # Step 3: Extract Real and Imaginary Parts\n    a = z_fourth_power.real\n    b = z_fourth_power.imag\n    \n    # Step 4: Express the Answer\n    # Since the result must be rounded to integers (because the problem implies a and b are integers),\n    # we round the real and imaginary parts to the nearest integer.\n    return (round(a), round(b))\n\n# Call the function to get the result\n# print(solution())\n",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n \n    \n    Let's think step by step.\n    To solve the problem of finding \\( a \\) and \\( b \\) such that \\( z^4 = a + bi \\), where \\( z = 1 + \\sqrt{3} i \\), we can follow these steps:\n    \n    1. **Calculate \\( z^2 \\)**: Square the complex number \\( z \\) to get \\( z^2 \\).\n    2. **Calculate \\( z^4 \\)**: Square \\( z^2 \\) to get \\( z^4 \\).\n    3. **Extract Real and Imaginary Parts**: Once you have \\( z^4 \\), separate the real part (which will be \\( a \\)) and the imaginary part (which will be \\( b \\)).\n    4. **Express the Answer**: Write the answer as an ordered pair \\( (a,b) \\).\n    \n    Let's break down these steps in a more detailed manner for the implementation:\n    \n    ### Step 1: Calculate \\( z^2 \\)\n    \n    Given \\( z = 1 + \\sqrt{3} i \\), use the formula for squaring a complex number:\n    \n    \\[ z^2 = (1 + \\sqrt{3} i)^2 = (1^2) + (2 \\cdot 1 \\cdot \\sqrt{3} i) + (\\sqrt{3} i)^2 \\]\n    \n    Simplify the expression:\n    \n    \\[ z^2 = 1 + 2\\sqrt{3} i - 3 = -2 + 2\\sqrt{3} i \\]\n    \n    ### Step 2: Calculate \\( z^4 \\)\n    \n    Now, square \\( z^2 \\) to find \\( z^4 \\):\n    \n    \\[ z^4 = (-2 + 2\\sqrt{3} i)^2 \\]\n    \\[ z^4 = (-2)^2 + (2 \\cdot -2 \\cdot 2\\sqrt{3} i) + (2\\sqrt{3} i)^2 \\]\n    \n    Simplify the expression:\n    \n    \\[ z^4 = 4 - 8\\sqrt{3} i - 12 \\]\n    \\[ z^4 = -8 - 8\\sqrt{3} i \\]\n    \n    ### Step 3: Extract Real and Imaginary Parts\n    \n    From the simplified expression of \\( z^4 \\), identify the real part (which is \\( a \\)) and the imaginary part (which is \\( b \\)):\n    \n    \\[ a = -8 \\]\n    \\[ b = -8\\sqrt{3} \\]\n    \n    ### Step 4: Express the Answer\n    \n    Combine the real part \\( a \\) and the imaginary part \\( b \\) into an ordered pair:\n    \n    \\[ (a,b) = (-8, -8\\sqrt{3}) \\]\n    \n    This is the final answer.\n    '''\n    # Assign the real part a and the imaginary part b\n    a = -8\n    b = -8 * (3 ** 0.5)\n    \n    # Return the result as an ordered pair\n    return (a, b)\n\n# You can now call the function to get the answer\n# print(solution())",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n \n    \n    Let's think step by step.\n    To solve the problem of finding \\( a \\) and \\( b \\) such that \\( z^4 = a + bi \\), where \\( z = 1 + \\sqrt{3} i \\), we can follow these steps:\n    \n    1. **Calculate \\( z^2 \\)**: Square the complex number \\( z \\) to get \\( z^2 \\).\n    2. **Calculate \\( z^4 \\)**: Square \\( z^2 \\) to get \\( z^4 \\).\n    3. **Extract Real and Imaginary Parts**: Once you have \\( z^4 \\), separate the real part (which will be \\( a \\)) and the imaginary part (which will be \\( b \\)).\n    4. **Express the Answer**: Write the answer as an ordered pair \\( (a,b) \\).\n    \n    Let's break down these steps in a more detailed manner for the implementation:\n    \n    ### Step 1: Calculate \\( z^2 \\)\n    \n    Given \\( z = 1 + \\sqrt{3} i \\), use the formula for squaring a complex number:\n    \n    \\[ z^2 = (1 + \\sqrt{3} i)^2 = (1^2) + (2 \\cdot 1 \\cdot \\sqrt{3} i) + (\\sqrt{3} i)^2 \\]\n    \n    Simplify the expression:\n    \n    \\[ z^2 = 1 + 2\\sqrt{3} i - 3 = -2 + 2\\sqrt{3} i \\]\n    \n    ### Step 2: Calculate \\( z^4 \\)\n    \n    Now, square \\( z^2 \\) to find \\( z^4 \\):\n    \n    \\[ z^4 = (-2 + 2\\sqrt{3} i)^2 \\]\n    \\[ z^4 = (-2)^2 + (2 \\cdot -2 \\cdot 2\\sqrt{3} i) + (2\\sqrt{3} i)^2 \\]\n    \n    Simplify the expression:\n    \n    \\[ z^4 = 4 - 8\\sqrt{3} i - 12 \\]\n    \\[ z^4 = -8 - 8\\sqrt{3} i \\]\n    \n    ### Step 3: Extract Real and Imaginary Parts\n    \n    From the simplified expression of \\( z^4 \\), identify the real part (which is \\( a \\)) and the imaginary part (which is \\( b \\)):\n    \n    \\[ a = -8 \\]\n    \\[ b = -8\\sqrt{3} \\]\n    \n    ### Step 4: Express the Answer\n    \n    Combine the real part \\( a \\) and the imaginary part \\( b \\) into an ordered pair:\n    \n    \\[ (a,b) = (-8, -8\\sqrt{3}) \\]\n    \n    This is the final answer.\n    '''\n    # The explanation already details the step-by-step solution.\n    # We can directly return the answer as an ordered pair (a, b).\n    return (-8, -8 * 3**0.5)\n\n# To use the function and get the answer, we call the function:\nanswer = solution()\nanswer # This would return the answer as (-8, -8 * sqrt(3))",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n\n    To solve the problem of finding \\( a \\) and \\( b \\) such that \\( z^4 = a + bi \\), where \\( z = 1 + \\sqrt{3} i \\), we implement the steps:\n    '''\n\n    # Importing the sqrt function from the math module to calculate the square root of 3.\n    from math import sqrt\n\n    # Step 1: Define z as a complex number\n    z = complex(1, sqrt(3))\n\n    # Step 2: Calculate z^4\n    z_squared = z**2\n    z_fourth = z_squared**2\n\n    # Step 3: Extract Real and Imaginary Parts\n    a = z_fourth.real\n    b = z_fourth.imag\n\n    # Step 4: Express the Answer as an ordered pair (a,b)\n    return (a, b)\n\n# Call the function to get the solution\nsolution()",
+                    "def solution():\n    '''\n    Create a function solution that returns the answer of the following question: Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n    \n    Let's think step by step.\n    '''\n    # Given z = 1 + sqrt(3) * i\n    # We know z^2 = (1 + sqrt(3) * i)^2 = 1 - 3 + 2 * sqrt(3) * i = -2 + 2 * sqrt(3) * i\n    # Now, z^4 = (z^2)^2 = (-2 + 2 * sqrt(3) * i)^2\n    # z^4 = 4 - 4 * 2 * sqrt(3) * i + 12 * i^2\n    # z^4 = 4 - 8 * sqrt(3) * i - 12 (since i^2 = -1)\n    # z^4 = -8 - 8 * sqrt(3) * i\n    # So, a = -8 and b = -8 * sqrt(3)\n    \n    # Return the answer as an ordered pair (a, b)\n    return (-8, -8 * 3**0.5)\n\n# Let's call the function to get the answer\nanswer = solution()\nanswer"
+                ],
+                "pred_v_gt_decision": [
+                    [
+                        "(-8.0, -13.856406460551014)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8, -13.856406460551018)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8, -13.856406460551018)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8.0, -13.856406460551014)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8.0, -13.856406460551014)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8, -14)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8, -13.856406460551018)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8, -13.856406460551018)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8.0, -13.856406460551014)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ],
+                    [
+                        "(-8, -13.856406460551018)",
+                        "$\\left(-8, -8\\sqrt{3}\\right)$",
+                        "incorrect"
+                    ]
+                ]
+            }
+        },
+        "questions": [
+            "Problem:\nSubproblem 0: What is the net charge of arginine in a solution of $\\mathrm{pH} 1.0$? \nPlease format your answer as +n or -n.  \n",
+            "Problem:\nPreamble: For each Laplace Transform \\(Y(s)\\), find the function \\(y(t)\\):\nSubproblem 0: \n\\[Y(s)=\\boxed{\\frac{1}{(s+a)(s+b)}}\\]\n",
+            "Problem:\nPreamble: The following subproblems refer to the differential equation \n$\\ddot{x}+b \\dot{x}+x=0$.\nSubproblem 0: What is the characteristic polynomial $p(s)$ of \n$\\ddot{x}+b \\dot{x}+x=0$?\n",
+            "Problem:\nSubproblem 0: Let $z = 1 + \\sqrt{3} i$. Find $a, b$ that satisfy the equation \n$z^4 = a + bi$. Express your answer as the ordered pair $(a,b)$.     \n"
+        ],
+        "answers": [
+            "$2$",
+            "\\[\\frac{1}{b-a}\\left(e^{-a t}-e^{-b t}\\right)\\]",
+            "$s^{2}+b s+1$",
+            "$\\left(-8, -8\\sqrt{3}\\right)$"
+        ]
+    }
+}

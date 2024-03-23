@@ -136,6 +136,7 @@ def main():
         seed=None,
     )
     pal_kwargs = dict(
+        dataset_type = "tobefilled", 
         temperature=0.7, 
         backbone = "gpt4turbo", # "GPT4-1106", #"chatgpt0125",
         seed=None,
@@ -198,7 +199,7 @@ def main():
             result_dict[dstype]["questions"] = questions
             result_dict[dstype]["answers"] = answers
             kwargs = eval(f"{m}_kwargs")
-            if m == "cot":
+            if m in "cot pal":
                 kwargs.update({"dataset_type": dstype})
             for i, q, a in zip(range(len(questions)), questions, answers):
                 result_dict[dstype][m][i] = correct_incorrect_query_results(

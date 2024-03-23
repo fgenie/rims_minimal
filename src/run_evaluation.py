@@ -73,14 +73,15 @@ def each_corrects(df, eval_type:Literal["gsm", "math", "ocw"], submission_col_al
     return cot_corrects, pal_corrects, p2c_corrects
 
 def overlaps_corrects(cot, pal, p2c, return_flags:bool=False):
+    cot, pal, p2c = map(lambda x: x.fillna(False), [cot, pal, p2c] )
     res = {
         "cot": cot,
         "pal": pal,
         "p2c": p2c,
-        "cotpal": (cot & pal), 
-        "palp2c": (pal & p2c), 
-        "p2ccot": (p2c & cot),
         "all": (cot & pal & p2c),
+        "cotpal-p2c": (cot & pal) & (~(cot & pal & p2c)), 
+        "palp2c-cot": (pal & p2c) & (~(cot & pal & p2c)), 
+        "p2ccot-pal": (p2c & cot) & (~(cot & pal & p2c)),
         "cot_only" : cot & (~pal) & (~p2c),
         "pal_only" : pal & (~cot) & (~p2c),
         "p2c_only" : p2c & (~cot) & (~pal),
@@ -89,7 +90,7 @@ def overlaps_corrects(cot, pal, p2c, return_flags:bool=False):
         res = {k: v.sum() for k, v in res.items()}
     return res 
 
-def main():
+def main(skip_maineval:bool=True):
     base_rims_jslfs = OrderedDict({
         "gsm": (
             "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/gsm_0613long/chatgpt0613long_model_selection3_gsm.jsonl",
@@ -109,8 +110,13 @@ def main():
         # "svamp":,
     })
     str2df = lambda txt: pd.DataFrame(jsl.open(txt))
-    bases = {k:(v[2](str2df(v[0])), (str2df(v[0]))) for k,v in base_rims_jslfs.items()}
-    rims = {k:(v[2](str2df(v[1])), (str2df(v[1]))) for k,v in base_rims_jslfs.items()}
+    bases = {k: (None, str2df(v[0])) if skip_maineval else \
+                (v[2](str2df(v[0])), (str2df(v[0]))) \
+                    for k,v in base_rims_jslfs.items()}
+    
+    rims = {k: (None, str2df(v[1])) if skip_maineval else \
+                (v[2](str2df(v[1])), (str2df(v[1]))) \
+                    for k,v in base_rims_jslfs.items()}
 
     # major results (concordant answer effect by eval f update not applied here but...)
     print("# major results (*assuming majority vote results stays still (which is hardly true because evaluation, parsing, and execution has modified) )")

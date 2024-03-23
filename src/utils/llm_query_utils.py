@@ -603,11 +603,11 @@ def query_rims_inference(
             "Evaluation: Correct",
         ]  # could be a list or a single string object. Defaults: None
     
-    # inspect prompt ready
-    dbgf = prompt_f.replace(".txt", ".jsonl")
-    if not Path(dbgf).exists():
-        Path(dbgf).parent.mkdir(parents=True, exist_ok=True) 
-        jsl.open(dbgf, "w").write_all(messages + [{"prompt_f": prompt_f}])
+    # # inspect prompt ready
+    # dbgf = prompt_f.replace(".txt", ".jsonl")
+    # if not Path(dbgf).exists():
+    #     Path(dbgf).parent.mkdir(parents=True, exist_ok=True) 
+    #     jsl.open(dbgf, "w").write_all(messages + [{"prompt_f": prompt_f}])
     
     # do query!
     response = client.chat.completions.create(# api_key=key,
@@ -1158,6 +1158,7 @@ def _execute(code, code_return: str):
     from sympy import Symbol
     from sympy import isprime as is_prime
     from sympy import symbols
+    # pip installed olympiad, and marker to avoid frequent errors of math solving 
 
     try:
         locals_ = locals()

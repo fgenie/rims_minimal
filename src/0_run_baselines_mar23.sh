@@ -28,15 +28,15 @@ cd $EXEPATH
 #                 --err_idxs_f outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl.error_idxs \
 
 
-# python run_inference.py baseline_inference \
-#                 --backbone chatgpt0613long \
-#                 --gsm_jslf ../dataset/MATH/MATH-full_pt1.jsonl \
-#                 --dataset_type math
+python run_inference.py baseline_inference \
+                --backbone chatgpt0613long \
+                --gsm_jslf ../dataset/MATH/MATH-full_pt1.jsonl \
+                --dataset_type math
 
-# python run_inference.py baseline_inference \
-#                 --backbone chatgpt0613long \
-#                 --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
-#                 --dataset_type math
+python run_inference.py baseline_inference \
+                --backbone chatgpt0613long \
+                --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
+                --dataset_type math
 
 python run_inference.py baseline_inference \
                 --backbone chatgpt0613long \

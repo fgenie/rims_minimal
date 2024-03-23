@@ -278,7 +278,7 @@ ocw_select:
           
           return "s^2 + b*s + 1"
 
-      Which of the above three choices can correctly answer the math problem?
+      Which of the above three choices can correctly answer the problem?
     - |
       Problem:
       Subproblem 0: Let $z = 1 + \sqrt{3} i$. Find $a, b$ that satisfy the equation 
@@ -331,7 +331,7 @@ ocw_select:
           # Return the result as an ordered pair
           return (a, b)
       
-      Which of the above three choices can correctly answer the math problem?
+      Which of the above three choices can correctly answer the problem?
   assistant:
     - (C) can correctly answer the problem. Although (C) did not explicitly solved the DE with python but it reached the correct equation while (A) and (C) results in wrong equation differs from the correct one, "s^2 + b*s + 1".
     - (B) can correctly answer the problem. Because (A) failed to calculate correctly and results in wrong $a$, and the solution (C) invokes programming error.
@@ -340,7 +340,7 @@ ocw_select:
 
 
 math_select:
-  system: You are a helpful assistant that can identify the correct solution to the problem.
+  system: You are a helpful assistant that can identify the correct solution to the math problem.
   user_tmp: |
     {QUESTION}
     

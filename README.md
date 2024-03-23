@@ -47,7 +47,7 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
 ```
 
 ## to check
- - [ ] self-consistency condition of baseline, T>0 experiment
+
 
 ## reset experiment prompts 
 - [x] tests
@@ -73,15 +73,24 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] OCW 
     - [x] MATH
     - [x] renew `get_prompt()` 
-- [ ] RIMS prompts: dataset-specific
-    - [ ] OCW
-    - [ ] MATH
-- [ ] apply `@utils.cost_tracking.CountTokens` <!--only for synchronous run for now...-->
+- [x] RIMS prompts: dataset-specific
+    - [x] OCW
+    - [x] MATH
+    - [x] ablations
+- [ ] ~~apply `@utils.cost_tracking.CountTokens` <!--only for synchronous run for now...-->~~
     - incompatible with multiprocessing because of pickling error (client) --> async compatible possible, but later.
     - [x] 1 more output for `token_info` dict
         - query_f's : _query, query_cot, query_selection, query_rims_inference 
     - [x] CountTokens need to crunch the `token_info`
 - [ ] dbg (`run_inference.py`)
-    - [ ] python run_inference.py baseline_inference
+    - [x] python run_inference.py baseline_inference
     - [ ] python run_inference.py rims_inference 
-        
+- [ ] run (T=0, greedy decoding)
+    - [ ] result gathering in one file (jsonlines)
+    - [ ] math, ocw, gsm (chatgptlong 0613)
+        - base, rims, ablations
+        - base-old vs base
+        - individual method diff / intersection 
+        - individual method performance
+- [ ] experiments further
+     - [ ] self-consistency condition of baseline, T>0 experiment

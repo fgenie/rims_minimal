@@ -3,7 +3,6 @@
 
 # dataset_type: enum = ocw, gsm, svamp, math
 # backbone: enum = chatgpt0613long, gpt4turbo
-# gsm_jslf: must contain {dataset_type} in the name (e.g. for ocw, jsonl must include literal 'ocw')
 
 set -x
 

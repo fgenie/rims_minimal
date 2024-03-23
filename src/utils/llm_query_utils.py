@@ -6,7 +6,7 @@ from typing import Any, Literal, Union, List, Dict
 from collections import Counter
 import yaml
 
-
+import jsonlines as jsl
 import func_timeout
 from openai import OpenAI, AzureOpenAI
 from sympy.parsing.latex import parse_latex
@@ -29,11 +29,11 @@ client = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
     api_version="2024-03-01-preview",
-    timeout=120,
+    timeout=80,
     max_retries=3,
 )
 
-# # when to use gpt4turbo as a backbone
+# # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
 # client = AzureOpenAI(
 #     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
 #     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
@@ -90,7 +90,6 @@ def query_cot(
     Returns:
         completions: a list containing the CoT solution
     """
-    assert dataset_type, f"query_cot needs {dataset_type=}"
 
     query_message = get_cot_prompt(question, 
                                    backbone=backbone,
@@ -296,7 +295,7 @@ def query_pal(question: str,
 def query_selection(
     question: str,
     backbone: str,
-    dataset_type: Literal["gsm", "svamp", "ocw", "math"]=None,
+    dataset_type: Literal["gsm", "ocw", "math"]=None,
     cot_solution: str = "",
     pal_solution: str = "",
     p2c_plan_code_solution: str = "", # former, this was actually List[str] and get_select_prompt() did pop()'d p2c solution out of list... which is super ugly and confusing 
@@ -304,8 +303,6 @@ def query_selection(
     max_tokens: int = 400,
     n:int = 1,
 ):
-    if dataset_type not in "gsm ocw math svamp":
-        raise ValueError(f"query_selection(): {dataset_type=} is not supported")
     
     def postprocess_selection(selection_str: str) -> str:
         ptn = r"\([A-C]\)"
@@ -331,6 +328,10 @@ def query_selection(
     selection_message = get_select_prompt2(
         question, cot_pal_p2c_solution_d, dataset_type=dataset_type,
     )
+    # dbgf=THIS_PARENT.parent/f"selection_debug_{dataset_type}.jsonl"
+    # if not Path(dbgf).exists(): 
+    #     jsl.open(dbgf, "w").write_all(selection_message)
+
     response = client.chat.completions.create(model=model_name,
         max_tokens=max_tokens,
         seed=777,  # added on dec 21
@@ -354,55 +355,54 @@ def query_rims_inference(
     backbone: str,
     temperature: float = 0.0,
     n: int = 1,
-    max_tokens: int = 1024,
-    continue_writing_gpt_messages: list = None,  # list of messages to invoke continue writing down the rims prompt format.
+    max_tokens: int = 1024+300, # (rims prompts w/o question is < 2300 tokens with 3 blurbs + system)
+    # continue_writing_gpt_messages: list = None, 
     stop_tok=None,
-    # for_eval_or_extend: bool = False, # used for indiv eval but not used for now.
-) -> tuple:
-    #   modif_prompt:bool=True) -> tuple:
+    ) -> tuple:
+
     model_name = backbone2model(backbone)
 
-    def convert_to_turns(prompt:str, q:str='') -> list:
-        assert q, f"question should be given {q=}"
-        chunks = prompt.split("\n"*4)
-        __origsys, *blurbs, qoi = chunks
+    # def convert_to_turns(prompt:str, q:str='') -> list:
+    #     assert q, f"question should be given {q=}"
+    #     chunks = prompt.split("\n"*4)
+    #     __origsys, *blurbs, qoi = chunks
 
-        def _blurb2usr_asst(blurbstr:str)->list:
-            idx = blurbstr.find("`Method`") # find from the left
-            user = blurbstr[:idx].strip()
-            asst = blurbstr[idx:].strip()
-            usr_asst_messages = [
-                {"role": "user", "content": user},
-                {"role": "assistant", "content": asst}
-            ]
-            return usr_asst_messages
+    #     def _blurb2usr_asst(blurbstr:str)->list:
+    #         idx = blurbstr.find("`Method`") # find from the left
+    #         user = blurbstr[:idx].strip()
+    #         asst = blurbstr[idx:].strip()
+    #         usr_asst_messages = [
+    #             {"role": "user", "content": user},
+    #             {"role": "assistant", "content": asst}
+    #         ]
+    #         return usr_asst_messages
         
-        def _qoi2questiononly(blurbstr:str)->list:
-            idx = blurbstr.rfind("`Question`") # find from the left
-            others = blurbstr[:idx].strip()
-            q = blurbstr[idx:].strip()
-            return others, q 
-        #SYS4TURN is actually, a recombination of part of instruction and original system message part
-        SYS4TURN = \
-        """You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
+    #     def _qoi2questiononly(blurbstr:str)->list:
+    #         idx = blurbstr.rfind("`Question`") # find from the left
+    #         others = blurbstr[:idx].strip()
+    #         q = blurbstr[idx:].strip()
+    #         return others, q 
+    #     #SYS4TURN is actually, a recombination of part of instruction and original system message part
+    #     SYS4TURN = \
+    #     """You are now solving math word problems. You brilliantly detects the errors in the wrong solution and find `Workaround Method` to correct the solution. The methods you are taking are as follows. Each has its strength and weakness:
 
-    - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
-    - Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
-    - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
+    # - Chain of Thought (cot): Solving problem with writing steps of reasoning in a natural language. Might help correct understanding of the problem but this could be weaker in precise computation.
+    # - Program-aided Language Modeling (pal): Using python language to reason and obtain an accurate answer to the given question, but this could be weaker in understanding the problem.
+    # - Plan-and-then-Code (p2c): When a question seems requiring amount of steps to reach the answer, write plans first for what to compute and write a python code to it for solving the problem. However if planning goes wrong, the code will also be wrong. If any steps of planning provided before programming, then it will be considered as Plan-and-then-Code.
 
-    Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Workaround Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt."""
+    # Try the question with the choice of your `Method`, and evaluate the `Answer`. If your `Attempt` is considered wrong, identify the `Mistakes` and reason to take `Workaround Method` by writing `Hint for a better Method choice`. Based on it, make a correct reattempt."""
             
         
 
 
-        blurbs = [_blurb2usr_asst(b.strip()) for b in blurbs]
-        ___, qoi = _qoi2questiononly(qoi.replace("[QUESTION]", q))
-        messages = [
-            {"role": "system", "content": SYS4TURN},
-            *chain(*blurbs),
-            {"role": "user", "content": qoi}
-        ]
-        return messages
+    #     blurbs = [_blurb2usr_asst(b.strip()) for b in blurbs]
+    #     ___, qoi = _qoi2questiononly(qoi.replace("[QUESTION]", q))
+    #     messages = [
+    #         {"role": "system", "content": SYS4TURN},
+    #         *chain(*blurbs),
+    #         {"role": "user", "content": qoi}
+    #     ]
+    #     return messages
     
     def parse_raw_modif(rawqueryout: str) -> dict:
         """
@@ -584,11 +584,15 @@ def query_rims_inference(
     prompt = prompt_tmp.sub("QUESTION", question)  # data['question'])
     assert isinstance(prompt, str)
     messages = [{"role": "user", "content": prompt}]
-    if continue_writing_gpt_messages is not None:
-        assert isinstance(
-            continue_writing_gpt_messages, list
-        ), f"continue_writing_gpt_messages should be a list of messages to openai chat create {continue_writing_gpt_messages=}"
-        messages.extend(continue_writing_gpt_messages)
+    
+    # if turn_based:
+    #     messages = convert_to_turns(prompt, question)
+    
+    # if continue_writing_gpt_messages is not None:
+    #     assert isinstance(
+    #         continue_writing_gpt_messages, list
+    #     ), f"continue_writing_gpt_messages should be a list of messages to openai chat create {continue_writing_gpt_messages=}"
+    #     messages.extend(continue_writing_gpt_messages)
 
 
     if stop_tok is None:  # decode until it faces correct answer
@@ -599,6 +603,10 @@ def query_rims_inference(
         ]  # could be a list or a single string object. Defaults: None
     
     # do query!
+    dbgf=THIS_PARENT.parent/f"rims_debug_{prompt_f}.jsonl"
+    if not Path(dbgf).exists():
+        messages.append({"prompt_f":prompt_f}) 
+        jsl.open(dbgf, "w").write_all(messages)
     response = client.chat.completions.create(# api_key=key,
         seed=777,
         model=model_name,
@@ -614,14 +622,14 @@ def query_rims_inference(
     # postprocess string out
     if n == 1:
         raw_query_out = response.choices[0].message.content # str
-        if continue_writing_gpt_messages is not None:
-            msgs_except_inst = continue_writing_gpt_messages[:-1]
-            if (
-                msgs_except_inst
-            ):  # left outputs to prepend (for the ease of postprocessing (...? maybe?) )
-                given_as_msgs_str = "\n".join([m["content"] for m in msgs_except_inst])
-                raw_query_out = given_as_msgs_str + "\n" + raw_query_out
-                raw_query_out = raw_query_out.strip()
+        # if continue_writing_gpt_messages is not None:
+        #     msgs_except_inst = continue_writing_gpt_messages[:-1]
+        #     if (
+        #         msgs_except_inst
+        #     ):  # left outputs to prepend (for the ease of postprocessing (...? maybe?) )
+        #         given_as_msgs_str = "\n".join([m["content"] for m in msgs_except_inst])
+        #         raw_query_out = given_as_msgs_str + "\n" + raw_query_out
+        #         raw_query_out = raw_query_out.strip()
         parsed_dict = parse_raw_modif(raw_query_out)
         try:
             eval_friendly_d = process_rims_out_dict(parsed_dict)
@@ -638,15 +646,15 @@ def query_rims_inference(
             response.choices[i].message.content
             for i in range(n)
         ]  # str
-        if continue_writing_gpt_messages is not None:
-            msgs_except_inst = continue_writing_gpt_messages[:-1]
-            if (
-                msgs_except_inst
-            ):  # left outputs to prepend (for the ease of postprocessing (...? maybe?) )
-                given_as_msgs_str = "\n".join([m["content"] for m in msgs_except_inst])
-                raw_query_outs = [
-                    (given_as_msgs_str + "\n" + rqo).strip() for rqo in raw_query_outs
-                ]
+        # if continue_writing_gpt_messages is not None:
+        #     msgs_except_inst = continue_writing_gpt_messages[:-1]
+        #     if (
+        #         msgs_except_inst
+        #     ):  # left outputs to prepend (for the ease of postprocessing (...? maybe?) )
+        #         given_as_msgs_str = "\n".join([m["content"] for m in msgs_except_inst])
+        #         raw_query_outs = [
+        #             (given_as_msgs_str + "\n" + rqo).strip() for rqo in raw_query_outs
+        #         ]
         parsed_dicts = [
             parse_raw_modif(raw_query_out) for raw_query_out in raw_query_outs
         ]
@@ -672,7 +680,7 @@ def get_select_prompt2(
     ds_prom_d:Dict[str,Any] = prompt_d[select_prompt_key] 
     
     # process with the question/solutions of interest to result in gpt_messages     
-    system:str = ds_prom_d["system_msg"]
+    system:str = ds_prom_d["system"]
     fewshots_user = ds_prom_d["user"]
     fewshots_assistant = ds_prom_d["assistant"]
 
@@ -680,6 +688,10 @@ def get_select_prompt2(
     q = question  # data['question']
     to_replace_keys = "{COT_SOLUTION} {PAL_SOLUTION} {P2C_SOLUTION}"
     user_tmp:str = ds_prom_d["user_tmp"]
+    
+    # 1. fill the quesiton
+    user_tmp = user_tmp.replace("{QUESTION}", q) 
+    # 2. fill the solutions
     for to_replace, to_be in zip(to_replace_keys.split(), cot_pal_p2c_sln_d.values()):
         user_tmp = user_tmp.replace(to_replace, to_be)
     user_attempt = user_tmp 
@@ -704,9 +716,10 @@ def get_select_prompt(
     question: str, cot_pal_p2c_sln_d: dict, backbone: str = "chatgpt"
 ):
     """
-    DEPRECATED and not used (marked on mar18)
+    DEPRECATED and not used (marked on mar18) --> use get_select_prompt2() instead
     This function is used to generate the selection prompt.
     """
+    raise ValueError("get_select_prompt() is deprecated. Use get_select_prompt2() instead.")
     if len(cot_pal_p2c_sln_d) == 3:
         if backbone.startswith("gpt4") : #or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_SELECT_SYSTEM3

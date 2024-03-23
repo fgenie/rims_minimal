@@ -186,7 +186,7 @@ ocw_pal:
 
     
 math_cot:
-  system: "You are a helpful assistant that can solve math problems by using Python code."
+  system: "You are a helpful assistant that can solve problems step by step."
   user_tmp: |
     {QUESTION}
   user:

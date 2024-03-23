@@ -554,13 +554,7 @@ def baseline_inference(
             row = out
         records_done = records
     else:
-        # chunks = split_records_into_chunks(records, chunksize=30)
-        # records_done = []
-        # for i, ch in enumerate(chunks, 1):
-        #     print(f"doing: {i} / {len(chunks)} chunks\n")
-        #     ch_done = pqdm(ch, _func, n_jobs=4)
-        #     records_done.extend(ch_done)
-        records_done = pqdm(records, _func, n_jobs=4)
+        records_done = pqdm(records, _func, n_jobs=5)
     
     with jsl.open(outpath, "w") as writer, \
             open(f"{outpath}.errors", "w") as writer_err, \
@@ -580,18 +574,6 @@ def baseline_inference(
                 print(f"{outpath}.error_idx")
 
         return
-    
-    # do summary: currently incompatible with python multiprocessings (need to modify pickling mechanism (copyreg?) or engine (joblib loky?))
-    # query_cot.print_summary()
-    # query_pal.print_summary()
-    # _query.print_summary()
-    # query_rims_inference.print_summary()
-    # model_name = backbone2model(backbone)
-    
-    # query_cot.tokens2usd(model = model_name)
-    # query_pal.tokens2usd(model = model_name)
-    # _query.tokens2usd(model = model_name)
-    # query_rims_inference.tokens2usd(model = model_name)
 
 if __name__ == "__main__":
     Fire()

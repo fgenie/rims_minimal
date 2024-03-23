@@ -16,7 +16,7 @@ Please format your answer as +n or -n.
 `Method`: Plan-and-then-Code (p2c)
 `Attempt 1`: 
 def solution():
-    # pKa values for arginine (incorrect values)
+    # pKa values for arginine 
     pKa_carboxyl = 3.0
     pKa_amino = 8.0
     pKa_guanidinium = 11.0
@@ -24,42 +24,20 @@ def solution():
     # pH value for the solution
     pH = 1.0
 
-    # Determine the charge state of each group at pH 1.0 (incorrect logic)
+    # Determine the charge state of each group at pH 1.0 
     charge_carboxyl = 1 if pH > pKa_carboxyl else 0
     charge_amino = -1 if pH > pKa_amino else 0
     charge_guanidinium = -1 if pH > pKa_guanidinium else 0
 
-    # Calculate the net charge (incorrect calculation)
+    # Calculate the net charge 
     net_charge = charge_carboxyl - charge_amino - charge_guanidinium
 
-    # Format the net charge (correct formatting)
+    # Format the net charge 
     formatted_charge = f"+{net_charge}" if net_charge >= 0 else f"{net_charge}"
     return formatted_charge
 `Answer 1`: +0
 `Evaluation`: Wrong
 `Workaround Method`: Chain of Thought (cot)
-`Attempt 2`: 
-Arginine is an amino acid with three groups that can be protonated and contribute to its net charge, depending on the solution's pH:
-
-1. The carboxyl group (-COOH), which typically has a pKa around 2.17.
-2. The amino group (-NH3+), with a pKa around 9.04.
-3. The side chain (guanidinium group, -C(NH2)2+), which has a pKa of approximately 12.48.
-
-At a pH of 1.0, all three groups are in their protonated forms due to the low pH value being well below their respective pKa values. The carboxyl group would be COOH, the amino group would be NH3+, and the side chain would be protonated as well. The net charge of arginine in this situation is the sum of the charges of these groups:
-
-- The carboxyl group (-COOH) is neutral at this pH.
-- The amino group (-NH3+) carries a charge of +1.
-- The guanidinium group (-C(NH2)2+) carries a charge of +1.
-
-Net charge = 0 (from -COOH) +1 (from -NH3+) +1 (from -C(NH2)2+)
-
-Net charge = +2
-
-Thus, the net charge of arginine in a solution of pH 1.0 is +2.
-
-Final answer: The net charge of arginine at pH 1.0 is +2.
-`Answer 2`: $2$
-`Evaluation`: Correc`Workaround Method`: Chain of Thought (cot)
 `Attempt 2`: 
 Arginine is an amino acid with three groups that can be protonated and contribute to its net charge, depending on the solution's pH:
 
@@ -153,12 +131,11 @@ def solution():
     t, b, s = symbols('t b s')
     x = Function('x')(t)
     
-    # Define the differential equation incorrectly
+    # Define the differential equation 
     diffeq = Eq(diff(x, t, t) - b * diff(x, t) - x, 0)  # Faulty: Used subtraction instead of addition
     
     # Find the characteristic equation by replacing d^2x/dt^2 with s^2, dx/dt with s, and x with 1
     
-    # This is also done incorrectly due to the incorrect differential equation
     char_eq = diffeq.subs({diff(x, t, t): s**2, diff(x, t): s, x: 1}).lhs
     
     return sp.latex(char_eq)

@@ -44,7 +44,7 @@ def solution():
     Simplify further:
     -12a = 2b  =>  a = -6b  (4)
 
-    Now we have an incorrect relation for a in terms of b. The ratio a/b is then:
+    Now we have an relation for a in terms of b. The ratio a/b is then:
     a/b = (-6b) / b
     Simplify by canceling out b:
     a/b = -6

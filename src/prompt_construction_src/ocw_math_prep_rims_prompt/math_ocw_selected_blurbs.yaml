@@ -15,7 +15,7 @@ ocw:
       `Method`: Plan-and-then-Code (p2c)
       `Attempt 1`: 
       def solution():
-          # pKa values for arginine (incorrect values)
+          # pKa values for arginine 
           pKa_carboxyl = 3.0
           pKa_amino = 8.0
           pKa_guanidinium = 11.0
@@ -23,20 +23,21 @@ ocw:
           # pH value for the solution
           pH = 1.0
 
-          # Determine the charge state of each group at pH 1.0 (incorrect logic)
+          # Determine the charge state of each group at pH 1.0 
           charge_carboxyl = 1 if pH > pKa_carboxyl else 0
           charge_amino = -1 if pH > pKa_amino else 0
           charge_guanidinium = -1 if pH > pKa_guanidinium else 0
 
-          # Calculate the net charge (incorrect calculation)
+          # Calculate the net charge 
           net_charge = charge_carboxyl - charge_amino - charge_guanidinium
 
-          # Format the net charge (correct formatting)
+          # Format the net charge 
           formatted_charge = f"+{net_charge}" if net_charge >= 0 else f"{net_charge}"
           return formatted_charge
       `Answer 1`: +0
       `Evaluation`: Wrong
       `Mistakes`: The attempt above wrongly calculates the net charge and also uses wrong charges for functional groups. Carboxyl group will not have a positive charge; protonation of the carboxyl group actually neutralizes its charge. Additionally, the guanidinium group already has a positive charge at neutral pH, and this charge does not change at pH 1.0. The amino group does carry a positive charge at low pH.
+      `Hint for a better Method choice`: Using a `Chain of Thought (cot)` would help to correct the understanding and reasoning about the charges of functional groups in pH conditions.
       `Workaround Method`: Chain of Thought (cot)
       `Attempt 2`: 
       Arginine is an amino acid with three groups that can be protonated and contribute to its net charge, depending on the solution's pH:
@@ -177,12 +178,11 @@ ocw:
           t, b, s = symbols('t b s')
           x = Function('x')(t)
           
-          # Define the differential equation incorrectly
+          # Define the differential equation 
           diffeq = Eq(diff(x, t, t) - b * diff(x, t) - x, 0)  # Faulty: Used subtraction instead of addition
           
           # Find the characteristic equation by replacing d^2x/dt^2 with s^2, dx/dt with s, and x with 1
           
-          # This is also done incorrectly due to the incorrect differential equation
           char_eq = diffeq.subs({diff(x, t, t): s**2, diff(x, t): s, x: 1}).lhs
           
           return sp.latex(char_eq)
@@ -279,11 +279,11 @@ math:
           det_A = 2
           det_B = 12
           
-          # Step 2: Incorrectly calculate the determinant of the product of matrices A and B
+          # Step 2: Calculate the determinant of the product of matrices A and B
           # Mistake: Assuming det(AB) = det(A) + det(B)
           det_product = det_A + det_B
           
-          # Step 3: Return the incorrect result
+          # Step 3: Return the result
           return det_product
       `Answer 1`: 14
       `Evaluation`: Wrong
@@ -334,7 +334,7 @@ math:
           Simplify further:
           -12a = 2b  =>  a = -6b  (4)
 
-          Now we have an incorrect relation for a in terms of b. The ratio a/b is then:
+          Now we have an relation for a in terms of b. The ratio a/b is then:
           a/b = (-6b) / b
           Simplify by canceling out b:
           a/b = -6

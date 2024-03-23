@@ -30,7 +30,7 @@ client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
     api_version="2024-03-01-preview",
     timeout=80,
-    max_retries=3,
+    max_retries=10,
 )
 
 # # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
@@ -559,9 +559,10 @@ def query_rims_inference(
         if not len(bad_solution) == len(bad_ans) == len(bad_method):
             print(f"{bad_solution=}", f"{bad_ans=}", f"{bad_method=}")
             print(f"{good_solution=}", f"{good_ans=}", f"{good_method=}")
-            raise ValueError(
-                f"{bad_solution=} possibly repetition generated (chatgpt, temp 0)"
-            )  # the row will be skipped (raised when generation has Attempt 1 after Attempt 1 or similar behaviors)
+            print(f"{bad_solution=} possibly repetition generated (chatgpt, temp 0)")
+            # raise ValueError(
+            #     f"{bad_solution=} possibly repetition generated (chatgpt, temp 0)"
+            # )  # the row will be skipped (raised when generation has Attempt 1 after Attempt 1 or similar behaviors)
 
         eval_friendly_d = dict(
             good_solution=good_solution,
@@ -602,11 +603,13 @@ def query_rims_inference(
             "Evaluation: Correct",
         ]  # could be a list or a single string object. Defaults: None
     
-    # do query!
-    dbgf=THIS_PARENT.parent/f"rims_debug_{prompt_f}.jsonl"
+    # inspect prompt ready
+    dbgf = prompt_f.replace(".txt", ".jsonl")
     if not Path(dbgf).exists():
-        messages.append({"prompt_f":prompt_f}) 
-        jsl.open(dbgf, "w").write_all(messages)
+        Path(dbgf).parent.mkdir(parents=True, exist_ok=True) 
+        jsl.open(dbgf, "w").write_all(messages + [{"prompt_f": prompt_f}])
+    
+    # do query!
     response = client.chat.completions.create(# api_key=key,
         seed=777,
         model=model_name,
@@ -633,11 +636,12 @@ def query_rims_inference(
         parsed_dict = parse_raw_modif(raw_query_out)
         try:
             eval_friendly_d = process_rims_out_dict(parsed_dict)
-        except:
+        except Exception as e:
+            print(str(e))
             print(f"{raw_query_out=}")
             print(f"{parsed_dict=}")
-            print()
-            raise ValueError("failed processing rims output")
+            print(f"llm_query_utils.query_rims_inference(): failed processing rims output")
+            # raise ValueError("llm_query_utils.query_rims_inference(): failed processing rims output")
 
         return eval_friendly_d, parsed_dict, raw_query_out, messages, response#completion_usage
 
@@ -1330,16 +1334,24 @@ def extract_num_turbo(solution: str):
     see the prompt at `src/utils/math_prompt.py`
     This is for GSM prompt (from Automatic Model Selection Reasoning https://arxiv.org/pdf/2305.14333.pdf)
     """
-    ans = solution.strip().split("\n")[-1].replace("So the answer is ", "")
-    prd = _find_the_last_numbers(ans)
-    if prd:
-        prd = prd[-1]
-    else:
-        prd = None
     try:
-        prd = float(prd.replace(",", "").rstrip(".")) if prd else prd
-    except:
-        prd = None
+        ans = solution.strip().split("\n")[-1].replace("So the answer is ", "")
+        prd = _find_the_last_numbers(ans)
+
+        if prd:
+            prd = prd[-1]
+        else:
+            prd = None
+        try:
+            prd = float(prd.replace(",", "").rstrip(".")) if prd else prd
+        except:
+            prd = None
+
+    except Exception as e:
+        print(e)
+        print("extract_num_turbo")
+        return None
+    
     return prd
 
 

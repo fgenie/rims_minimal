@@ -17,15 +17,15 @@
             "program": "${file}",
             "cwd": "${fileDirname}",
             "args": ["baseline_inference", 
-                        // "--gsm_jslf", "../dataset/dbg_others.jsonl",
+                        "--gsm_jslf", "../dataset/dbg_others.jsonl",
                         // "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/outputs/dbg_others_dt.gsm/model_selection_prompts/03_23_13_22_29_error.jsonl",
-                        // "--dataset_type", "gsm",
+                        "--dataset_type", "gsm",
                         // "--dataset_type", "math",
-                        // "--dbg",
+                        "--dbg",
                         // "--gsm_jslf", "../dataset/dbg_ocw.jsonl",
                         // "--dataset_type", "ocw",
                         // "--start_idx", "1300",
-                        "--backbone", "back", "--gsm_jslf", "kwy", "--dataset_type", "ksd"
+                        // "--backbone", "back", "--gsm_jslf", "kwy", "--dataset_type", "ksd"
                     ],
                     // python run_inference.py  baseline_inference \
                     // --backbone chatgpt0613long \
@@ -37,7 +37,7 @@
             "justMyCode": true
         },
         {
-            "name": "rims dbg (math)",
+            "name": "rims dbg",
            
             "env": {
                 "PYTEST_ADDOPTS": "--numprocesses=auto"
@@ -52,13 +52,24 @@
             "program": "${file}",
             "cwd": "${fileDirname}",
             "args": ["rims_inference", 
-            "--prompt_f", "prompt_construction_src/prep_rims_prompts/gsm_prompts/3_reflectonce_cot2p2c.pal2cot.pal2p2c.txt_rm_ans", 
-            "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/seonil_scripts/0_RESULTS_v1/math_full/math_full_leftover_1106.jsonl",
-            "--dataset_type", "math",
-            "--backbone", "chatgpt", 
-            "--outdir", "seonil_scripts/dbg", 
-            "--dbg", 
-            // "--turn_based",
+            // "--gsm_jslf", "outputs/dbg_others_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_13_22_29.jsonl",
+            // "--dataset_type", "gsm",
+            // "--prompt_f", "prompt_construction_src/newer_prompts_3/rims_gsm_best.txt",
+            // "--dbg",
+            
+            // "--gsm_jslf", "outputs/dbg_others_dt.math/chatgpt0613long/model_selection_prompts/dbg_03_23_13_14_48.jsonl",
+            //     "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt",
+            //     "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt",
+            //     "--dataset_type", "math",
+            // "--dbg",
+
+            
+            "--gsm_jslf", "outputs/dbg_ocw_dt.ocw/chatgpt0613long/model_selection_prompts/03_23_13_52_23.jsonl",
+                "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt"
+                // "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt"
+                "--dataset_type", "ocw",
+            "--dbg",
+
             ],
             "console": "integratedTerminal",
             "justMyCode": true

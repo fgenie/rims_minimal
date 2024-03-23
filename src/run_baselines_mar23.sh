@@ -21,6 +21,12 @@ python run_inference.py  baseline_inference \
                 --gsm_jslf ../dataset/gsm8K_test.jsonl \
                 --dataset_type gsm
 
+python run_inference.py  baseline_inference \
+                --backbone chatgpt0613long \
+                --gsm_jslf ../dataset/gsm8K_test.jsonl \
+                --err_idxs_f outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl.error_idxs \
+                --dataset_type gsm --dbg
+
 
 python run_inference.py basline_inference \
                 --backbone chatgpt0613long \

@@ -80,7 +80,10 @@ def overlaps_corrects(cot, pal, p2c, return_flags:bool=False):
         "cotpal": (cot & pal), 
         "palp2c": (pal & p2c), 
         "p2ccot": (p2c & cot),
-        "all": (cot & pal & p2c)
+        "all": (cot & pal & p2c),
+        "cot_only" : cot & (~pal) & (~p2c),
+        "pal_only" : pal & (~cot) & (~p2c),
+        "p2c_only" : p2c & (~cot) & (~pal),
     }
     if not return_flags:
         res = {k: v.sum() for k, v in res.items()}

@@ -191,69 +191,69 @@ def rims_complete_row(
     prompt_f: str,
     # turn_based: bool,
 ):
-    # try:
-    if dataset_type == "ocw":
-        question = row["problem"]
-    else:
-        question = row["question"]
+    try:
+        if dataset_type == "ocw":
+            question = row["problem"]
+        else:
+            question = row["question"]
 
-    # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
-    ansmap, solmap, _plan = indiv_inference(
-        row,
-        num_methods=3,
-        temperature=temperature,
-        n=n,
-        backbone=backbone,
-        seed=seed,
-        dataset_type=dataset_type,
-    )
-    row["ansmap"] = ansmap
-    row["solmap"] = solmap
-    row["plan"] = _plan
-
-    # is there majority answer? in ansmap?
-    majority_ans = get_concordant_answer(
-        list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-    )
-
-    # do rims
-    if majority_ans is None:  # problems are not done properly.
-        # here it had eval indiv_methods
-        (
-            eval_friendly_d,
-            __,
-            raw_query_out,
-            query_msg,
-            ___,
-        ) = query_rims_inference(
-            question,
-            prompt_f,
-            backbone=backbone,
+        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+        ansmap, solmap, _plan = indiv_inference(
+            row,
+            num_methods=3,
             temperature=temperature,
-            # turn_based=turn_based,
+            n=n,
+            backbone=backbone,
+            seed=seed,
+            dataset_type=dataset_type,
+        )
+        row["ansmap"] = ansmap
+        row["solmap"] = solmap
+        row["plan"] = _plan
+
+        # is there majority answer? in ansmap?
+        majority_ans = get_concordant_answer(
+            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
         )
 
-        eval_friendly_d.update(
-            {"raw_query_out": raw_query_out, "query_msg": query_msg}
-        )
-        row[
-            "selection_or_rims"
-        ] = eval_friendly_d  # this contains all we need depicted above
-        row["majority_ans"] = eval_friendly_d["good_ans"]
-    else:
-        row["selection_or_rims"] = {"majority_vote": True}
-        row["majority_ans"] = majority_ans
-    row["prompt_file"] = str(prompt_f)
-    # if turn_based:
-    #     row["prompt_file"] += "_turn_based"
-    row["inference_mode"] = "rims"
-    # except Exception as e:
-    #     print(e)
-    #     print(f"error occured at {row['index']}")
-    #     row["selection_or_rims"] = {"error": True, "exception": str(e)}
-    #     row["majority_ans"] = None
-    #     row["prompt_file"] = str(prompt_f)
-    #     row["inference_mode"] = "rims"
+        # do rims
+        if majority_ans is None:  # problems are not done properly.
+            # here it had eval indiv_methods
+            (
+                eval_friendly_d,
+                __,
+                raw_query_out,
+                query_msg,
+                ___,
+            ) = query_rims_inference(
+                question,
+                prompt_f,
+                backbone=backbone,
+                temperature=temperature,
+                # turn_based=turn_based,
+            )
+
+            eval_friendly_d.update(
+                {"raw_query_out": raw_query_out, "query_msg": query_msg}
+            )
+            row[
+                "selection_or_rims"
+            ] = eval_friendly_d  # this contains all we need depicted above
+            row["majority_ans"] = eval_friendly_d["good_ans"]
+        else:
+            row["selection_or_rims"] = {"majority_vote": True}
+            row["majority_ans"] = majority_ans
+        row["prompt_file"] = str(prompt_f)
+        # if turn_based:
+        #     row["prompt_file"] += "_turn_based"
+        row["inference_mode"] = "rims"
+    except Exception as e:
+        print(e)
+        print(f"error occured at {row['index']}")
+        row["selection_or_rims"] = {"error": True, "exception": str(e)}
+        row["majority_ans"] = None
+        row["prompt_file"] = str(prompt_f)
+        row["inference_mode"] = "rims"
     return row
 
 
@@ -288,15 +288,15 @@ def rims_inference(
     # baseline `outdir` was like below
     # outdir = Path("outputs") / f"{Path(gsm_jslf).stem}_dt.{dataset_type}" / backbone / Path(prompt_f).stem
     # rims `outdir` below shares backbone
-    outdir = Path(gsm_jslf).parent.parent/Path(prompt_f).stem
+    outdir = Path(gsm_jslf).parent.parent/Path(prompt_f).name
     
     # sanity check for the directory hierarchy
     assert Path(gsm_jslf).parent.parent.name == backbone, \
         f"inferred backbone differs with the current:\n \
             inferred: {Path(gsm_jslf).parent.parent=} != current: {backbone=}"
-    assert Path(gsm_jslf).parent.parent.parent.name.endswith(dataset_type), \
-        f"inferred dataset_type differs with the current:\n \
-            inferred: {Path(gsm_jslf).parent.parent.parent.name=} != current: {dataset_type=}"
+    # assert Path(gsm_jslf).parent.parent.parent.name.endswith(dataset_type), \
+    #     f"inferred dataset_type differs with the current:\n \
+    #         inferred: {Path(gsm_jslf).parent.parent.parent.name=} != current: {dataset_type=}"
 
     if not outdir.exists():
         outdir.mkdir(parents=True)
@@ -362,7 +362,7 @@ def rims_inference(
             row = _func(row)  # updates rows in records_cleansed
         records_done = records_cleansed
     else:
-        records_done = pqdm(records, _func, n_jobs=4) # to avoid BrokenPipe, keep n_jobs<=4 (tested on Mac M1)
+        records_done = pqdm(records_cleansed, _func, n_jobs=4) # to avoid BrokenPipe, keep n_jobs<=4 (tested on Mac M1)
 
 
     # nonconflict and processed conflict set of records remerged w/o index change

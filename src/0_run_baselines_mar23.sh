@@ -33,10 +33,10 @@ cd $EXEPATH
 #                 --gsm_jslf ../dataset/MATH/MATH-full_pt1.jsonl \
 #                 --dataset_type math
 
-python run_inference.py baseline_inference \
-                --backbone chatgpt0613long \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
-                --dataset_type math
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt0613long \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
+#                 --dataset_type math
 
 python run_inference.py baseline_inference \
                 --backbone chatgpt0613long \

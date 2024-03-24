@@ -9,6 +9,7 @@ src/result.txt
 #  local only
 __pycache__/
 seonil_scripts/
+.DS_Store
 # .vscode/
 # launch.json
 

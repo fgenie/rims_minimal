@@ -1269,8 +1269,7 @@ def safe_execute_turbo(code_string: str):
     return ans
 
 
-
-def _find_the_last_numbers(txt: str) -> Union[str, List]:
+def _find_the_last_numbers(txt: str) -> str:
     # Regex pattern to match numbers with optional commas as thousand separators
     # and optional scientific notation
     pattern = r"[+\-]?(?:\d{1,3}(?:,\d{3})*|\d+)(?:\.\d+)?(?:[eE][+\-]?\d+)?"
@@ -1280,7 +1279,7 @@ def _find_the_last_numbers(txt: str) -> Union[str, List]:
         # Replace commas to handle the number correctly as a standard numeric format
         return matches[-1].replace(',', '')
     else:
-        return []
+        return None
 
 def _find_the_last_latex_expression(txt:str)->Union[str,List]:
     latex_pattern = r'(?:\\\[|\\\(|\$).+?(?:\\\]|\\\)|\$)' #r'\\(?:\[|\().*?\\(?:\]|\))'
@@ -1335,23 +1334,16 @@ def extract_num_turbo(solution: str):
     see the prompt at `src/utils/math_prompt.py`
     This is for GSM prompt (from Automatic Model Selection Reasoning https://arxiv.org/pdf/2305.14333.pdf)
     """
+    # try:
+    ans: str = solution.strip().split("\n")[-1].replace("So the answer is ", "")
+    prd: Union[str, None] = _find_the_last_numbers(ans) 
+
     try:
-        ans = solution.strip().split("\n")[-1].replace("So the answer is ", "")
-        prd = _find_the_last_numbers(ans)
-
-        if prd:
-            prd = prd[-1]
-        else:
-            prd = None
-        try:
-            prd = float(prd.replace(",", "").rstrip(".")) if prd else prd
-        except:
-            prd = None
-
+        prd = float(prd.replace(",", "").rstrip(".")) if prd else prd
     except Exception as e:
+        prd = None
         print(e)
         print("extract_num_turbo")
-        return None
     
     return prd
 

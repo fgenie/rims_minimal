@@ -16,7 +16,8 @@ def eval_gsm_svamp(df,
                    return_flag:bool=False, 
                    submission_col_already_exists:bool=False):
     if not submission_col_already_exists:
-        df["submission"] = df.majority_ans.astype("str")
+        df["submission"] = df.majority_ans
+    df.submission = df.submission.astype("str")
     equiv_flag = df.progress_apply(
         lambda row: gsm_check_answer(row.submission, row.answer), 
         axis=1
@@ -30,7 +31,8 @@ def eval_math(df,
               return_flag:bool=False, 
               submission_col_already_exists:bool=False):
     if not submission_col_already_exists:
-        df["submission"] = df.majority_ans.astype("str")
+        df["submission"] = df.majority_ans
+    df.submission = df.submission.astype("str")
     equiv_flag = df.progress_apply(
         lambda row: math_check_answer(row.submission, row.answer), axis=1)
     if return_flag:
@@ -42,7 +44,8 @@ def eval_ocw(df,
              return_flag:bool=False, 
              submission_col_already_exists:bool=False):
     if not submission_col_already_exists:
-        df["submission"] = df.majority_ans.astype("str")
+        df["submission"] = df.majority_ans
+    df.submission = df.submission.astype("str")
     equiv_flag = df.progress_apply(
         lambda row: ocw_check_answer(
             row["submission"],

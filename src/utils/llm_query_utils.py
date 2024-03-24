@@ -1334,11 +1334,9 @@ def extract_num_turbo(solution: str):
     see the prompt at `src/utils/math_prompt.py`
     This is for GSM prompt (from Automatic Model Selection Reasoning https://arxiv.org/pdf/2305.14333.pdf)
     """
-    # try:
-    ans: str = solution.strip().split("\n")[-1].replace("So the answer is ", "")
-    prd: Union[str, None] = _find_the_last_numbers(ans) 
-
     try:
+        ans: str = solution.strip().split("\n")[-1].replace("So the answer is ", "")
+        prd: Union[str, None] = _find_the_last_numbers(ans) 
         prd = float(prd.replace(",", "").rstrip(".")) if prd else prd
     except Exception as e:
         prd = None

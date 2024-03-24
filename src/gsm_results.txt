@@ -1,0 +1,60 @@
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/chatgpt0613long/rims_gsm_best.txt/03_24_02_59_41.jsonl
+dataset = gsm (1319 rows)
+overall_acc:	1097 / 1319 (83.2%)
+success_rate:	202  /  355 (56.9%)
+1319 (total) = 
+	355 (seleciton) 
+	+ 964 (maj-votes) 
+	+ 3 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/chatgpt0613long/rims_gsm_best_newer.txt/03_23_23_48_40.jsonl
+dataset = gsm (1319 rows)
+overall_acc:	1096 / 1319 (83.1%)
+success_rate:	201  /  355 (56.6%)
+1319 (total) = 
+	355 (seleciton) 
+	+ 964 (maj-votes) 
+	+ 2 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/chatgpt0613long/rims_gsm_best_newer-hint.txt/03_24_00_00_50.jsonl
+dataset = gsm (1319 rows)
+overall_acc:	1084 / 1319 (82.2%)
+success_rate:	189  /  355 (53.2%)
+1319 (total) = 
+	355 (seleciton) 
+	+ 964 (maj-votes) 
+	+ 2 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/chatgpt0613long/rims_gsm_best_newer-hint-mistakes.txt/03_24_00_11_40.jsonl
+dataset = gsm (1319 rows)
+overall_acc:	1088 / 1319 (82.5%)
+success_rate:	193  /  355 (54.4%)
+1319 (total) = 
+	355 (seleciton) 
+	+ 964 (maj-votes) 
+	+ 2 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/chatgpt0613long/rims_gsm_best_newer-hint-mistakes-attempt1.txt/03_24_00_20_51.jsonl
+dataset = gsm (1319 rows)
+overall_acc:	1031 / 1319 (78.2%)
+success_rate:	136  /  355 (38.3%)
+1319 (total) = 
+	355 (seleciton) 
+	+ 964 (maj-votes) 
+	+ 2 (fails: counted as incorrect)
+=====================================
+
+

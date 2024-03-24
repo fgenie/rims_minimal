@@ -1,0 +1,36 @@
+=======individual performance=======
+file      = outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl
+dataset   = gsm
+cot:	188  / 1319 (14.3%)
+
+
+file      = outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl
+dataset   = gsm
+pal:	1057 / 1319 (80.1%)
+
+
+file      = outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl
+dataset   = gsm
+p2c:	942  / 1319 (71.4%)
+
+
+=====================================
+
+
+========distinctive behaviors========
+{'all': 140, 'cotpal-p2c': 22, 'palp2c-cot': 720, 'p2ccot-pal': 15, 'cot_only': 11, 'pal_only': 175, 'p2c_only': 67}
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl
+dataset = gsm (1319 rows)
+overall_acc:	909  / 1319 (68.9%)
+success_rate:	17   /  358 (4.7%)
+1319 (total) = 
+	358 (seleciton) 
+	+ 961 (maj-votes) 
+	+ 5 (fails: counted as incorrect)
+=====================================
+
+

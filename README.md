@@ -82,9 +82,13 @@ python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_ri
     - [x] 1 more output for `token_info` dict
         - query_f's : _query, query_cot, query_selection, query_rims_inference 
     - [x] CountTokens need to crunch the `token_info`
-- [ ] dbg (`run_inference.py`)
+- [x] dbg (`run_inference.py`)
     - [x] python run_inference.py baseline_inference
-    - [ ] python run_inference.py rims_inference 
+    - [x] python run_inference.py rims_inference
+        - ~~inspect output: did it correctly process only CONFLICT ones?~~
+        - ~~inspect prompts.jsonl: is this same as the prompt file?~~
+        - ~~do they have [QUESTION] or they differ as expected?~~
+        - ~~after dbg, try - except wrap the rims_complete_row ~~
 - [ ] run (T=0, greedy decoding)
     - [ ] result gathering in one file (jsonlines)
     - [ ] math, ocw, gsm (chatgptlong 0613)

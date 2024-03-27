@@ -1,8 +1,8 @@
-tenacity
 openai==1.11.0
 func_timeout
-regex
 sympy
+olympiad
+marker
 pqdm
 antlr4-python3-runtime==4.11
 jsonlines

@@ -19,11 +19,11 @@ def solution():
     det_A = 2
     det_B = 12
     
-    # Step 2: Incorrectly calculate the determinant of the product of matrices A and B
+    # Step 2: Calculate the determinant of the product of matrices A and B
     # Mistake: Assuming det(AB) = det(A) + det(B)
     det_product = det_A + det_B
     
-    # Step 3: Return the incorrect result
+    # Step 3: Return the result
     return det_product
 `Answer 1`: 14
 `Evaluation`: Wrong

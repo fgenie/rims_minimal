@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import partial
 from typing import Any, Literal
+from concurrent.futures.process import BrokenProcessPool
 
 import jsonlines as jsl
 import pandas as pd
@@ -94,7 +95,8 @@ def indiv_inference(
         missing_methods = "cot pal p2c".split()
         ansmap = dict()
         solmap = dict()
-
+    
+    # check cot already exists or do query
     if "cot" in missing_methods:
         cot_lst, _msgs, _ = query_cot(
             question, dataset_type=dataset_type,
@@ -112,7 +114,11 @@ def indiv_inference(
             raise ValueError(f"unsupported dataset_type: {dataset_type}")
         solmap["cot"] = cot_sol
         ansmap["cot"] = cot_ans
-
+    else:
+        cot_ans = ansmap["cot"]
+        cot_sol = solmap["cot"] 
+    
+    # check pal already exists or do query
     if "pal" in missing_methods:
         pal_lst, __msgs, _ = query_pal(
             question, temperature=temperature, n=n, backbone=backbone, seed=seed, dataset_type=dataset_type
@@ -124,9 +130,13 @@ def indiv_inference(
         pal_ans = safe_execute_turbo(pal_sol)
         solmap["pal"] = pal_sol
         ansmap["pal"] = pal_ans
+    else:
+        pal_ans = ansmap["pal"]
+        pal_sol = solmap["pal"]
 
-    plan = None # init
+    plan = None # for num_methods ==2, plan: null
     if num_methods == 3:
+        # check p2c already exists or do query
         if "p2c" in missing_methods:
             
             # try:
@@ -154,7 +164,10 @@ def indiv_inference(
 
             ansmap["p2c"] = p2c_ans
             solmap["p2c"] = p2c_solution
-
+        else:
+            p2c_ans = ansmap["p2c"]
+            p2c_solution = solmap["p2c"]
+            plan = row["plan"]
     # heuristic for MATH/OCW problematic answer by PAL/P2C (never-endingly long execution result)            
     # OCW max answer length = 210; MATH max answer length = 81
     if len(str(pal_ans)) > 400: # over 400 --> truncate and string return
@@ -247,12 +260,11 @@ def rims_complete_row(
 
 def rims_inference(
     prompt_f: str = "prompt_construction_src/newer_prompts_3/rims_gsm_best.txt",
-    gsm_jslf: str = "../dataset/gsm8K_test.jsonl",
+    gsm_jslf: str = "", # already baseline-inferred jsonlines file only!
     dataset_type: Literal[
         "gsm", "ocw", "math"
     ] = "gsm",  # affects get_concordant_answer
     backbone: str = "chatgpt0613long", # see llm_query_utils.backbone2model
-    running_on_prev_result: bool = True,  # if False, running on the whole, undone, dataset
     # turn_based: bool = False, # if True, convert the prompt into turn-based format and proceeds with it. 
     
     # llm options
@@ -273,11 +285,20 @@ def rims_inference(
             "n>1 will serve as a self-consistency parameter, not implemented yet"
         )
 
-
-    # output directory for the inference results:
-    # outpath = outputs/{dataset_stem}/{prompt_stem}/{now}.jsonl
-    outdir = Path("outputs") / f"{Path(gsm_jslf).stem}_dt.{dataset_type}" / backbone / Path(prompt_f).stem
     
+    # baseline `outdir` was like below
+    # outdir = Path("outputs") / f"{Path(gsm_jslf).stem}_dt.{dataset_type}" / backbone / Path(prompt_f).stem
+    # rims `outdir` below shares backbone
+    outdir = Path(gsm_jslf).parent.parent/Path(prompt_f).name
+    
+    # sanity check for the directory hierarchy
+    assert Path(gsm_jslf).parent.parent.name == backbone, \
+        f"inferred backbone differs with the current:\n \
+            inferred: {Path(gsm_jslf).parent.parent=} != current: {backbone=}"
+    # assert Path(gsm_jslf).parent.parent.parent.name.endswith(dataset_type), \
+    #     f"inferred dataset_type differs with the current:\n \
+    #         inferred: {Path(gsm_jslf).parent.parent.parent.name=} != current: {dataset_type=}"
+
     if not outdir.exists():
         outdir.mkdir(parents=True)
     
@@ -309,23 +330,22 @@ def rims_inference(
 
     # data to dataframe
     df = pd.DataFrame(records)
-    # resolve index problem (dataframe and record both have index column now)
-    if "index" not in df.columns:
-        df["index"] = df.index
-    df = df.set_index("index", drop=False)
-    if running_on_prev_result:
-        # pick conflict only records to efficiently infer, keeping its order intact
-        nonconflict_mask = df.selection_or_rims.apply(
-            lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
-        )
-        to_process_df = df[~nonconflict_mask]
-        to_process_df.majority_ans = None  # clean up selection results from previous inference: to avoid contamination!
-        to_process_df = to_process_df.drop(columns=["selection_or_rims"])
-    else:
-        to_process_df = df
-        if "majority_ans" in df.columns:
-            to_process_df = df.drop(columns=["majority_ans"])
 
+    # resolve index problem (so that dataframe and record both have index column)
+    if "index" not in df.columns or (df["index"].isna().any()):
+        df["index"] = range(len(df))
+    df = df.set_index("index", drop=False) # df.index == df["index"] and "index" will appear in jsl
+
+    # pick conflict only records to efficiently infer, keeping its order intact
+    nonconflict_mask = df.selection_or_rims.apply(
+        lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
+    ) # if "majority_vote" field exists and is True, it's nonconflict
+    
+    to_process_df = df[~nonconflict_mask] # get conflicts only
+    to_process_df.majority_ans = None  # clean up selection results from previous inference: to avoid contamination!
+    to_process_df = to_process_df.drop(columns=["selection_or_rims"]) # clean up majority_ans
+
+    # cleaned up!
     records_cleansed = to_process_df.to_dict(orient="records")
 
     _func = partial(
@@ -336,7 +356,6 @@ def rims_inference(
         seed=seed,
         dataset_type=dataset_type,
         prompt_f=prompt_f,
-        # turn_based=turn_based,
     )
 
     if dbg:
@@ -344,22 +363,17 @@ def rims_inference(
             row = _func(row)  # updates rows in records_cleansed
         records_done = records_cleansed
     else:
-        # chunks = split_records_into_chunks(records_cleansed, chunksize=30)
-        # records_done = []
-        # for i, ch in enumerate(chunks, 1):
-        #     print(f"doing: {i} / {len(chunks)} chunks\n")
-        #     ch_done = pqdm(ch, _func, n_jobs=6)
-        #     records_done.extend(ch_done)
-        records_done = pqdm(records, _func, n_jobs=6)
+        records_done = pqdm(records_cleansed, _func, n_jobs=4) # to avoid BrokenPipe, keep n_jobs<=4 (tested on Mac M1)
+        # check records_done for it could contain failed jobs (BrokenPipe) --> dataframe construction will fail
+        records_done = [row for row in records_done if isinstance(row, dict) and not issubclass(type(row), Exception) ]
 
     # nonconflict and processed conflict set of records remerged w/o index change
-    if running_on_prev_result:
-        df_done = pd.DataFrame(records_done)
-        df_done = df_done.set_index(
-            "index", drop=False
-        )  # if pqdm messed up the order, this will fix it.
-        df.loc[df_done.index] = df_done # updating only selection-done rows in the original df
-        records_done = df.to_dict(orient="records")
+    df_done = pd.DataFrame(records_done)
+    df_done = df_done.set_index(
+        "index", drop=False
+    )  
+    df.loc[df_done.index] = df_done # updating only selection-done rows in the original df
+    records_done = df.to_dict(orient="records")
 
 
     with jsl.open(outpath, "w") as writer, \
@@ -389,72 +403,75 @@ def baseline_complete_row(
     dataset_type: Literal["gsm", "ocw", "math"],
     num_methods: int=3,
 ):
-    # try:
-    if dataset_type == "ocw":
-        question = row["problem"]
-    else:
-        question = row["question"]
-
-    # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
-    ansmap, solmap, _plan = indiv_inference(
-        row,
-        num_methods=3,
-        temperature=temperature,
-        n=n,
-        backbone=backbone,
-        seed=seed,
-        dataset_type = dataset_type,
-    )
-
-    row["ansmap"] = ansmap
-    row["solmap"] = solmap
-    row["plan"] = _plan
-
-    # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
-    majority_ans = get_concordant_answer(
-        list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-    )
-
-    # ensure solmap is Dict[str, str]
-    for k,v in solmap.items():
-        if not isinstance(v, str):
-            if isinstance(v[0],str):
-                solmap[k] = v[0]
-            else:
-                raise ValueError(f"sth's going wrong with {solmap=}")
-
-    if majority_ans is None:  # do selection
-        chosen_method, selection_str, _ = query_selection(
-            question,
-            backbone=backbone,
-            cot_solution=solmap["cot"],
-            pal_solution=solmap["pal"],
-            p2c_plan_code_solution=solmap["p2c"],
-            dataset_type=dataset_type,
-        )
-        if chosen_method is not None: 
-            row["selection_or_rims"] = {
-                "good_method": chosen_method,
-                "good_answer": ansmap[chosen_method],
-                "good_solution": solmap[chosen_method],
-                "selection_str": selection_str,
-                "dataset_type": dataset_type,
-            }
+    try:
+        if dataset_type == "ocw":
+            question = row["problem"]
         else:
-            row['selection_or_rims'] = {
-                "good_method": None,
-                "good_answer": None,
-                "good_solution": None,
-                "selection_str": selection_str,
-                "dataset_type": dataset_type,
-            }
-        row["majority_ans"] = row['selection_or_rims']['good_answer']
-    else:
-        row["selection_or_rims"] = {"majority_vote": True}
-        row["majority_ans"] = majority_ans
-    row["prompt_file"] = prompt_f
-    row["inference_mode"] = f"baseline {num_methods} methods"
+            question = row["question"]
 
+        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+        ansmap, solmap, _plan = indiv_inference(
+            row,
+            num_methods=3,
+            temperature=temperature,
+            n=n,
+            backbone=backbone,
+            seed=seed,
+            dataset_type = dataset_type,
+        )
+
+        row["ansmap"] = ansmap
+        row["solmap"] = solmap
+        row["plan"] = _plan
+
+        # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
+        majority_ans = get_concordant_answer(
+            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
+        )
+
+        # ensure solmap is Dict[str, str]
+        for k,v in solmap.items():
+            if not isinstance(v, str):
+                if isinstance(v[0],str):
+                    solmap[k] = v[0]
+                else:
+                    raise ValueError(f"sth's going wrong with {solmap=}")
+
+        if majority_ans is None:  # do selection
+            chosen_method, selection_str, _ = query_selection(
+                question,
+                backbone=backbone,
+                cot_solution=solmap["cot"],
+                pal_solution=solmap["pal"],
+                p2c_plan_code_solution=solmap["p2c"],
+                dataset_type=dataset_type,
+            )
+            if chosen_method is not None: 
+                row["selection_or_rims"] = {
+                    "good_method": chosen_method,
+                    "good_answer": ansmap[chosen_method],
+                    "good_solution": solmap[chosen_method],
+                    "selection_str": selection_str,
+                    "dataset_type": dataset_type,
+                }
+            else:
+                row['selection_or_rims'] = {
+                    "good_method": None,
+                    "good_answer": None,
+                    "good_solution": None,
+                    "selection_str": selection_str,
+                    "dataset_type": dataset_type,
+                }
+            row["majority_ans"] = row['selection_or_rims']['good_answer']
+        else:
+            row["selection_or_rims"] = {"majority_vote": True}
+            row["majority_ans"] = majority_ans
+        row["prompt_file"] = prompt_f
+        row["inference_mode"] = f"baseline {num_methods} methods"
+    except Exception as e:
+        print(e)
+        row["selection_or_rims"] = {"error": True, "exception": str(e)}
+        
     return row
 
 
@@ -539,13 +556,7 @@ def baseline_inference(
             row = out
         records_done = records
     else:
-        # chunks = split_records_into_chunks(records, chunksize=30)
-        # records_done = []
-        # for i, ch in enumerate(chunks, 1):
-        #     print(f"doing: {i} / {len(chunks)} chunks\n")
-        #     ch_done = pqdm(ch, _func, n_jobs=6)
-        #     records_done.extend(ch_done)
-        records_done = pqdm(records, _func, n_jobs=8)
+        records_done = pqdm(records, _func, n_jobs=5)
     
     with jsl.open(outpath, "w") as writer, \
             open(f"{outpath}.errors", "w") as writer_err, \
@@ -565,18 +576,6 @@ def baseline_inference(
                 print(f"{outpath}.error_idx")
 
         return
-    
-    # do summary: currently incompatible with python multiprocessings (need to modify pickling mechanism (copyreg?) or engine (joblib loky?))
-    # query_cot.print_summary()
-    # query_pal.print_summary()
-    # _query.print_summary()
-    # query_rims_inference.print_summary()
-    # model_name = backbone2model(backbone)
-    
-    # query_cot.tokens2usd(model = model_name)
-    # query_pal.tokens2usd(model = model_name)
-    # _query.tokens2usd(model = model_name)
-    # query_rims_inference.tokens2usd(model = model_name)
 
 if __name__ == "__main__":
     Fire()

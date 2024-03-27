@@ -1,0 +1,36 @@
+=======individual performance=======
+file      = outputs/ocw_course_dt.ocw/chatgpt0613long/model_selection_prompts/03_23_15_38_01.jsonl
+dataset   = ocw
+cot:	52   /  272 (19.1%)
+
+
+file      = outputs/ocw_course_dt.ocw/chatgpt0613long/model_selection_prompts/03_23_15_38_01.jsonl
+dataset   = ocw
+pal:	35   /  272 (12.9%)
+
+
+file      = outputs/ocw_course_dt.ocw/chatgpt0613long/model_selection_prompts/03_23_15_38_01.jsonl
+dataset   = ocw
+p2c:	44   /  272 (16.2%)
+
+
+=====================================
+
+
+========distinctive behaviors========
+{'all': 6, 'cotpal-p2c': 7, 'palp2c-cot': 10, 'p2ccot-pal': 11, 'cot_only': 28, 'pal_only': 12, 'p2c_only': 17}
+=====================================
+
+
+=======overall performance=======
+file    = outputs/ocw_course_dt.ocw/chatgpt0613long/model_selection_prompts/03_23_15_38_01.jsonl
+dataset = ocw (272 rows)
+overall_acc:	61   /  272 (22.4%)
+success_rate:	20   /  187 (10.7%)
+272 (total) = 
+	187 (seleciton) 
+	+ 85 (maj-votes) 
+	+ 0 (fails: counted as incorrect)
+=====================================
+
+

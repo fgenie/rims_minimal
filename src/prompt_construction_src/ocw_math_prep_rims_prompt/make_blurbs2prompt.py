@@ -118,7 +118,9 @@ def construct_prompt(
     return prompts_d
 
 
-def main():
+def main(
+        ocw_cotp2c: bool=False,
+):
     # predefined mappings of blurbs to use 
     columns = "p2c-cot pal-p2c pal-cot".split()
     prompt_mappings: Dict[List] = {
@@ -133,6 +135,11 @@ def main():
                 dict(zip(columns, [0,0,1])),
                 ]
     }
+    if ocw_cotp2c:
+        columns[-1] = "cot-p2c"
+        prompt_mappings["ocw"] = [dict(zip(columns, [0,0,0]))]
+        del prompt_mappings["math"]
+
 
     # load blurbs
     blurbs_d = yaml.full_load(open("math_ocw_selected_blurbs.yaml"))

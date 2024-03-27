@@ -53,8 +53,8 @@ def eval_gsm_svamp(df,
         return equiv_flag.sum() if len(df)>0 else 0
 
 if __name__ == "__main__":
-    gsm_file = "../../outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl"
-    ocw_file = "../../outputs/ocw_course_dt.ocw/chatgpt0613long/model_selection_prompts/03_23_15_38_01.jsonl"
+    gsm_file = "gsm_wrongly_parsed_cot.jsonl"
+    ocw_file = "ocw_to_inspect.jsonl"
 
     # gsm
     df = get_cot_ans_df(gsm_file)
@@ -88,5 +88,5 @@ if __name__ == "__main__":
     """
 
     df = get_cot_ans_df(ocw_file)
-    df.rename(columns={"bugparse": "parsed"})
+    df = df.rename(columns={"bugparse": "parsed"})
     df.to_json("ocw_ans.jsonl", orient='records', lines=True)

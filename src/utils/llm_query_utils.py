@@ -355,7 +355,7 @@ def query_rims_inference(
     backbone: str,
     temperature: float = 0.0,
     n: int = 1,
-    max_tokens: int = 1024+300, # (rims prompts w/o question is < 2300 tokens with 3 blurbs + system)
+    max_tokens: int = 1024+600, # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
     # continue_writing_gpt_messages: list = None, 
     stop_tok=None,
     ) -> tuple:

@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import partial
 from typing import Any, Literal
+from concurrent.futures.process import BrokenProcessPool
 
 import jsonlines as jsl
 import pandas as pd
@@ -363,7 +364,8 @@ def rims_inference(
         records_done = records_cleansed
     else:
         records_done = pqdm(records_cleansed, _func, n_jobs=4) # to avoid BrokenPipe, keep n_jobs<=4 (tested on Mac M1)
-
+        # check records_done for it could contain failed jobs (BrokenPipe) --> dataframe construction will fail
+        records_done = [row for row in records_done if isinstance(row, dict) and not issubclass(type(row), Exception) ]
 
     # nonconflict and processed conflict set of records remerged w/o index change
     df_done = pd.DataFrame(records_done)

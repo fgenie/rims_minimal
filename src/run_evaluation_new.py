@@ -4,6 +4,7 @@ import jsonlines as jsl
 import pandas as pd
 from fire import Fire
 import numpy as np
+from pathlib import Path
 
 from utils.math_util import math_check_answer, ocw_check_answer, gsm_check_answer   
 from tqdm import tqdm
@@ -81,11 +82,12 @@ def overlaps_corrects(cot, pal, p2c, return_flags:bool=False):
 
 
 def main(
-        eval_jslf: str = "outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl", 
-        eval_type: Literal["gsm", "math", "ocw", "svamp"] = "gsm", 
-        outf:str = "result.txt",
+        eval_jslf: str = "outputs/MATH-full_dt.math/chatgpt0613long/model_selection_prompts/merged.jsonl", 
+        eval_type: Literal["gsm", "math", "ocw", "svamp"] = "math", 
+        outf:str = "math_baseline.txt",
         eval_indiv_and_overlap: bool = False,       
         ):
+
     # load data
     df = pd.DataFrame(jsl.open(eval_jslf))
     
@@ -106,7 +108,7 @@ def main(
         each_corrects = dict()
         print("=======individual performance=======", file=f)
         for method in "cot pal p2c".split():
-            df["submission"] = df.ansmap.apply(lambda d: d[method])
+            df["submission"] = df.ansmap.apply(lambda d: d[method] if isinstance(d, dict) else None)
             corrects_mask_ = eval_f(df, return_flag=True, submission_col_already_exists=True)
             print(f"file      = {eval_jslf}", file=f)
             print(f"dataset   = {eval_type}", file=f)

@@ -17,10 +17,10 @@ cd $EXEPATH
 #                 --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
 #                 --dataset_type ocw
 
-# python run_inference.py  baseline_inference \
-#                 --backbone chatgpt0613long \
-#                 --gsm_jslf ../dataset/gsm8K_test.jsonl \
-#                 --dataset_type gsm
+python run_inference.py  baseline_inference \
+                --backbone chatgpt0613long \
+                --gsm_jslf ../dataset/gsm8K_test.jsonl \
+                --dataset_type gsm
 
 # python run_inference.py  baseline_inference \
 #                 --backbone chatgpt0613long \
@@ -28,37 +28,31 @@ cd $EXEPATH
 #                 --err_idxs_f outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl.error_idxs \
 
 
-python run_inference.py baseline_inference \
-                --backbone chatgpt0613long \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt1.jsonl \
-                --dataset_type math
-
-python run_inference.py baseline_inference \
-                --backbone chatgpt0613long \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
-                --dataset_type math
-
-python run_inference.py baseline_inference \
-                --backbone chatgpt0613long \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt3.jsonl \
-                --dataset_type math
-
-python run_inference.py baseline_inference \
-                --backbone chatgpt0613long \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt4.jsonl \
-                --dataset_type math
-
-python run_inference.py baseline_inference \
-                --backbone chatgpt0613long \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt5.jsonl \
-                --dataset_type math
-
-
-
-
-
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt0613long \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt1.jsonl \
+#                 --dataset_type math
 
 # python run_inference.py baseline_inference \
 #                 --backbone chatgpt0613long \
-#                 --gsm_jslf ../dataset/svamp.jsonl \
-#                 --dataset_type gsm
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
+#                 --dataset_type math
+
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt0613long \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt3.jsonl \
+#                 --dataset_type math
+
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt0613long \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt4.jsonl \
+#                 --dataset_type math
+
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt0613long \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt5.jsonl \
+#                 --dataset_type math
+
+
+
+

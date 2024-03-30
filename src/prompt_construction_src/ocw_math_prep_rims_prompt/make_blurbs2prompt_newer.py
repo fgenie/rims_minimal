@@ -21,8 +21,9 @@ from munch import munchify
 from fire import Fire
 
 from typing import Dict, List
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from pathlib import Path
+from itertools import permutations
 
 
 def ablate(
@@ -88,7 +89,7 @@ def ablate(
 
 def construct_prompt(
         template_d: Dict[str,str] = None, 
-        blurbs_d: Dict[str, List[str]] = None, 
+        blurbs_d: OrderedDict[str, List[str]] = None, 
         dirmap: dict = None, 
         blurb_order: List[str] = None
         ) -> str:
@@ -99,6 +100,7 @@ def construct_prompt(
     system = template_d.system
     # get the blurbs
     prompts_d = defaultdict(list)
+    assert blurb_order == list(dirmap.keys())
     for direction in blurb_order:
         current_dir_idx = dirmap[direction]
         current_blurb = blurbs_d[direction][current_dir_idx].strip()
@@ -118,31 +120,46 @@ def construct_prompt(
     return prompts_d
 
 
+def find_possible_dir2idxs_mappings(blurbs_d, already_done) -> Dict[str, List]:
+    """
+    Find the possible mappings of directions to indices
+    """
+    possible_prompt_mappings = dict()
+    for ds, directions in blurbs_d.items():
+        all_orders = list( permutations(directions, 3) )
+        all_idxs = list( permutations(range(3), 3) )
+        all_dir2idx_mapping = [OrderedDict(zip(order, idxs)) for order, idxs in zip(all_orders, all_idxs)]
+        filtered = [od for od in all_dir2idx_mapping if od not in already_done[ds] ]
+        possible_prompt_mappings[ds] = filtered
+    return possible_prompt_mappings
+
+
+
 def main(
-        ocw_cotp2c: bool=False,
 ):
     # predefined mappings of blurbs to use 
-    columns = "p2c-cot pal-p2c pal-cot".split()
-    prompt_mappings: Dict[List] = {
-        "ocw": [
-                # dict(zip(columns, [0,2,1]))
-                dict(zip(columns, [0,0,1])) 
-                ],
-        "math": [
-                # dict(zip(columns, [2,0,1])), 
-                # dict(zip(columns, [1,0,2])),
-                dict(zip(columns, [1,0,0])), 
-                dict(zip(columns, [0,0,1])),
-                ]
-    }
-    if ocw_cotp2c:
-        columns[-1] = "cot-p2c"
-        prompt_mappings["ocw"] = [dict(zip(columns, [0,0,0]))]
-        del prompt_mappings["math"]
 
     # load blurbs
-    blurbs_d = yaml.full_load(open("math_ocw_selected_blurbs.yaml"))
+    blurbs_d = yaml.full_load(open("math_ocw_selected_blurbs_mar29.yaml"))
     blurbs_d = munchify(blurbs_d)
+
+
+    already_cols = "p2c-cot pal-p2c pal-cot".split()
+    already_done: Dict[str, List] = {
+        "ocw": [
+                OrderedDict(zip(already_cols, [0,2,1]))
+                ],
+        "math": [
+                OrderedDict(zip(already_cols, [2,0,1])), 
+                OrderedDict(zip(already_cols, [1,0,2])),
+                ]
+    }
+
+    prompt_mappings = find_possible_dir2idxs_mappings(blurbs_d, already_done)
+
+
+
+    
 
     # load template
     template_d = yaml.full_load(open("make_blurbs2prompt.yaml"))
@@ -151,9 +168,15 @@ def main(
     # make the prompt
     for ds, dirmappings_list in prompt_mappings.items():
         for dirmap in dirmappings_list: 
-            prompt_d: Dict[str, str] = construct_prompt(template_d, blurbs_d[ds], dirmap, blurb_order = columns)    
+            order = list(dirmap.keys())
+            try:
+                prompt_d: Dict[str, str] = construct_prompt(template_d, blurbs_d[ds], dirmap, blurb_order=order)    
+            except Exception as e:
+                print(e)
+                print(f"Skipping \n{ds} \n{dirmap}")
+                continue
             for abl_setting, prompt_str in prompt_d.items():
-                outf = f"prompts/rims_{ds}_{'.'.join(columns)}_{abl_setting}.txt"
+                outf = f"prompts/rims_mar29_{ds}_{'.'.join(order)}_{abl_setting}.txt"
                 if not Path(outf).parent.exists():
                     Path(outf).parent.mkdir(parents=True)
                 if Path(outf).exists():

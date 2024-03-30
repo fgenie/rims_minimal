@@ -3,6 +3,7 @@ from typing import List, Literal
 from itertools import permutations
 import os
 from collections import defaultdict
+from pathlib import Path
 
 # from pqdm.processes import pqdm
 from tqdm import tqdm
@@ -137,38 +138,48 @@ async def prep_blurbs(
     return all_blurbs
 
 
-async def main():
+async def main(
+        aug_math:bool = True,
+):
     hint_template: dict = yaml.full_load(open("make_blurbs_template.yaml"))
-    fewshots: dict = yaml.full_load(open("make_blurbs_resources.yaml"))
-    # fewshots: dict = yaml.full_load(open("make_blurbs_resources_pal_p2c_aug.yaml"))
+    if aug_math:
+        fewshots: dict = yaml.full_load(open("make_blurbs_resources_pal_p2c_aug.yaml"))
+    else:
+        fewshots: dict = yaml.full_load(open("make_blurbs_resources.yaml"))
 
     # make it attribute-accessible
     hint_template = munchify(hint_template)
     fewshots = munchify(fewshots)
 
     # make the prompt
-    # datasets = ["math"]
-    datasets = ["ocw", "math"]
+    if aug_math:
+        datasets = ["math"]
+    else:
+        datasets = ["ocw", "math"]
     
-    # methods = "cot pal p2c".split()
-    # wrong2correct_directions = permutations(methods, 2)
-    wrong2correct_directions = [
+    methods = "cot pal p2c".split()
+    wrong2correct_directions = list( permutations(methods, 2) )
+    already_done = [
         "p2c-cot", 
         "pal-p2c",  
         "pal-cot", 
         "cot-p2c", 
     ]
+    
     awaitables = []
     keys = []
     pbar = tqdm(
         range(
             len(datasets)* \
-            len(wrong2correct_directions)* \
+            (len(wrong2correct_directions) - len(already_done))* \
             len(fewshots.math.questions) * 2
             )
     )
     for ds in datasets:
         for wrong_correct in wrong2correct_directions:
+            wrong_correct = "-".join(list(wrong_correct)) 
+            if wrong_correct in already_done:
+                continue
             w_method, c_method = wrong_correct.split("-")
             
             # make blurbs
@@ -176,8 +187,10 @@ async def main():
             awaitables.append(task)
             
             # annotate jobs
-            outf = f"blurbs_{ds}_{wrong_correct}.txt"
-            # outf = f"blurbs_{ds}_{wrong_correct}_aug.txt"
+            if aug_math:
+                outf = f"blurbs_{ds}_{wrong_correct}_aug.txt"
+            else:
+                outf = f"mar29/blurbs_{ds}_{wrong_correct}.txt"
             keys.append(outf)
             
     # start jobs
@@ -191,6 +204,8 @@ async def main():
 
     # write to txt
     for outf, completed in fname2tasks.items():
+        if not Path(outf).parent.exists():
+            Path(outf).parent.mkdir(parents=True)
         with open(outf, "w") as wf:
             sep = f"\n\n\n\n{'='*20}\n\n\n\n"
             for txt in completed:

@@ -82,81 +82,84 @@ def overlaps_corrects(cot, pal, p2c, return_flags:bool=False):
 
 
 def main(
-        eval_jslf: str = "outputs/MATH-full_dt.math/chatgpt0613long/model_selection_prompts/merged.jsonl", 
-        eval_type: Literal["gsm", "math", "ocw", "svamp"] = "math", 
-        outf:str = "math_baseline.txt",
+        ptn: str = "outputs/*/chatgpt1106/**/*.jsonl",
+        eval_type: Literal["gsm", "math", "ocw", "svamp"] = "gsm", 
+        outf:str = "testout.txt",
         eval_indiv_and_overlap: bool = False,       
         ):
 
-    # load data
-    df = pd.DataFrame(jsl.open(eval_jslf))
-    
-    # logfile open
-    f = open(outf, 'a')
-
-    eval_type2eval_f = {
-    "gsm": eval_gsm_svamp,
-    "math": eval_math,
-    "ocw": eval_ocw,
-    }
-
-    eval_f = eval_type2eval_f[eval_type]
-
-    # indiv performance
-    total = len(df)
-    if eval_indiv_and_overlap:
-        each_corrects = dict()
-        print("=======individual performance=======", file=f)
-        for method in "cot pal p2c".split():
-            df["submission"] = df.ansmap.apply(lambda d: d[method] if isinstance(d, dict) else None)
-            corrects_mask_ = eval_f(df, return_flag=True, submission_col_already_exists=True)
-            print(f"file      = {eval_jslf}", file=f)
-            print(f"dataset   = {eval_type}", file=f)
-            print(f"{method}:\t{corrects_mask_.sum():<5}/ {total:>4} ({corrects_mask_.sum()/total*100:.1f}%)", file=f)
-            print("\n", file=f)
-            each_corrects[method] = corrects_mask_
-        print("=====================================\n\n", file=f)
-
-        # overlaps
-        overlaps = overlaps_corrects(*each_corrects.values())
-        print("========distinctive behaviors========", file=f)
-        print(str(overlaps), file=f)
-
-        print("=====================================\n\n", file=f)
-
+    # get jsonl files
+    paths = list(Path().glob(ptn))
+    for jslf in paths:
+        # load data
+        df = pd.DataFrame(jsl.open(jslf))
         
-    # performance overall
-    # overall acc. / success rate base_rims / num(maj, (base or rims), failed)
-    print("=======overall performance=======", file=f)
-    fail_mask = df.selection_or_rims.apply(
-        lambda d: d["error"] if "error" in d.keys() else False
-    )  # api error
-    majority_vote_mask = df.selection_or_rims.apply(
-        lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
-    )
+        # logfile open
+        f = open(outf, 'a')
 
-    corrects_mask = eval_f(df, return_flag=True)
-    
-    # fillna first to avoid error 
-    fail_mask, majority_vote_mask, corrects_mask = map(
-        lambda x: x.fillna(False), [fail_mask, majority_vote_mask, corrects_mask]
-    ) 
+        eval_type2eval_f = {
+        "gsm": eval_gsm_svamp,
+        "math": eval_math,
+        "ocw": eval_ocw,
+        }
 
-    # overall acc.
-    total = len(df)
-    num_maj = majority_vote_mask.sum()    
-    num_fails = fail_mask.sum()
-    corrects = corrects_mask.sum(), total
-    successes = (corrects_mask & (~majority_vote_mask)).sum(),  total-num_maj
-    print(f"file    = {eval_jslf}", file=f)
-    print(f"dataset = {eval_type} ({total} rows)", file=f)
-    
-    print(f"overall_acc:\t{corrects[0]:<5}/ {total:>4} ({corrects[0]/total*100:.1f}%)", file=f)
-    print(f"success_rate:\t{successes[0]:<5}/ {successes[1]:>4} ({successes[0]/successes[1]*100:.1f}%)", file=f)
-    print(f"{total} (total) = \n\t{total-num_maj} (seleciton) \n\t+ {num_maj} (maj-votes) \n\t+ {num_fails} (fails: counted as incorrect)", file=f)
-    print("=====================================\n\n", file=f)
-    
-    f.close()
+        eval_f = eval_type2eval_f[eval_type]
+
+        # indiv performance
+        total = len(df)
+        if eval_indiv_and_overlap:
+            each_corrects = dict()
+            print("=======individual performance=======", file=f)
+            for method in "cot pal p2c".split():
+                df["submission"] = df.ansmap.apply(lambda d: d[method] if isinstance(d, dict) else None)
+                corrects_mask_ = eval_f(df, return_flag=True, submission_col_already_exists=True)
+                print(f"file      = {jslf}", file=f)
+                print(f"dataset   = {eval_type}", file=f)
+                print(f"{method}:\t{corrects_mask_.sum():<5}/ {total:>4} ({corrects_mask_.sum()/total*100:.1f}%)", file=f)
+                print("\n", file=f)
+                each_corrects[method] = corrects_mask_
+            print("=====================================\n\n", file=f)
+
+            # overlaps
+            overlaps = overlaps_corrects(*each_corrects.values())
+            print("========distinctive behaviors========", file=f)
+            print(str(overlaps), file=f)
+
+            print("=====================================\n\n", file=f)
+
+            
+        # performance overall
+        # overall acc. / success rate base_rims / num(maj, (base or rims), failed)
+        print("=======overall performance=======", file=f)
+        fail_mask = df.selection_or_rims.apply(
+            lambda d: d["error"] if "error" in d.keys() else False
+        )  # api error
+        majority_vote_mask = df.selection_or_rims.apply(
+            lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
+        )
+
+        corrects_mask = eval_f(df, return_flag=True)
+        
+        # fillna first to avoid error 
+        fail_mask, majority_vote_mask, corrects_mask = map(
+            lambda x: x.fillna(False), [fail_mask, majority_vote_mask, corrects_mask]
+        ) 
+
+        # overall acc.
+        total = len(df)
+        num_maj = majority_vote_mask.sum()    
+        num_fails = fail_mask.sum()
+        corrects = corrects_mask.sum(), total
+        successes = (corrects_mask & (~majority_vote_mask)).sum(),  total-num_maj
+        print(f"file    = {jslf}", file=f)
+        print(f"dataset = {eval_type} ({total} rows)", file=f)
+        
+        print(f"overall_acc:\t{corrects[0]:<5}/ {total:>4} ({corrects[0]/total*100:.1f}%)", file=f)
+        print(f"success_rate:\t{successes[0]:<5}/ {successes[1]:>4} ({successes[0]/successes[1]*100:.1f}%)", file=f)
+        print(f"{total} (total) = \n\t{total-num_maj} (seleciton) \n\t+ {num_maj} (maj-votes) \n\t+ {num_fails} (fails: counted as incorrect)", file=f)
+        print("=====================================\n\n", file=f)
+        
+        f.close()
 
 
 

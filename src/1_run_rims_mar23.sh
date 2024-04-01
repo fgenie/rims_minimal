@@ -19,7 +19,7 @@ MATH_INFERRED=outputs/MATH-full_dt.math/chatgpt0613long/model_selection_prompts/
 
 GSM_INFERRED1106=outputs/gsm8K_test_dt.gsm/chatgpt1106/model_selection_prompts/03_30_02_18_36.jsonl
 OCW_INFERRED1106=outputs/ocw_course_dt.ocw/chatgpt1106/model_selection_prompts/03_30_01_27_09.jsonl
-MATH_INFERRED1106=outputs/MATH-full_dt.math/chatgpt1106
+MATH_INFERRED1106=outputs/MATH-full_dt.math/chatgpt1106/model_selection_prompts/merged.jsonl
 
 # prompts: rims, -hint, -hint-mistakes, -hint-mistakes-attempt1
 GSM_RIMS_OLD=prompt_construction_src/newer_prompts_3/rims_gsm_best.txt
@@ -40,15 +40,15 @@ OCW_RIMS_H_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p
 OCW_RIMS_HM_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.cot-p2c_-hint-mistakes.txt
 OCW_RIMS_HMA_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.cot-p2c_-hint-mistakes-attempt1.txt
 
-# MATH_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt
-# MATH_RIMS_H=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint.txt
-# MATH_RIMS_HM=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes.txt
-# MATH_RIMS_HMA=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt
+MATH_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt
+MATH_RIMS_H=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint.txt
+MATH_RIMS_HM=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes.txt
+MATH_RIMS_HMA=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt
 
-# MATH_RIMS_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1
-# MATH_RIMS_H_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint.txt1
-# MATH_RIMS_HM_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes.txt1
-# MATH_RIMS_HMA_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt1
+MATH_RIMS_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1
+MATH_RIMS_H_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint.txt1
+MATH_RIMS_HM_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes.txt1
+MATH_RIMS_HMA_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt1
 
 
 # # do GSM
@@ -119,12 +119,47 @@ OCW_RIMS_HMA_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw
 # done
 
 
-# gsm
-for PROMPT in $GSM_RIMS_OLD $GSM_RIMS $GSM_RIMS_H $GSM_RIMS_HM $GSM_RIMS_HMA
+# # gsm
+# for PROMPT in $GSM_RIMS_OLD $GSM_RIMS $GSM_RIMS_H $GSM_RIMS_HM $GSM_RIMS_HMA
+# do
+#     python run_inference.py rims_inference \
+#         --gsm_jslf ${GSM_INFERRED1106} \
+#         --dataset_type gsm \
+#         --prompt_f ${PROMPT} \
+#         --backbone chatgpt1106
+# done
+
+
+
+
+
+
+
+# # gsm renewed prompts (p2c prepped by chatgpt to make it more looklike p2c)
+# GSM_renewed_0=prompt_construction_src/newer_prompts_3/renewed_gsm_prompts/rewrote.p2c_newer_best_p2c2cot.pal2p2c.pal2cot.txt
+# GSM_renewed_1=prompt_construction_src/newer_prompts_3/renewed_gsm_prompts/rewrote.p2c_cot2p2c.pal2cot.pal2p2c.txt
+# GSM_renewed_2=prompt_construction_src/newer_prompts_3/renewed_gsm_prompts/rewrote.p2c_pal2p2c.cot2p2c.cot2pal.txt
+# for PROMPT in $GSM_renewed_0 $GSM_renewed_1 $GSM_renewed_2
+# do 
+#     python run_inference.py rims_inference \
+#         --backbone chatgpt1106 \
+#         --gsm_jslf ${GSM_INFERRED1106} \
+#         --dataset_type gsm \
+#         --prompt_f ${PROMPT}
+# done
+# python run_evaluation_new.py --ptn "outputs/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm*/*jsonl" --eval_type gsm --outf gsm_results_renewed_012.txt
+
+
+
+# do math 
+# python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/model_selection_prompts/merged.jsonl" --eval_type math --outf math1106_baseline.txt --eval_indiv_and_overlap
+# for PROMPT in $MATH_RIMS $MATH_RIMS_H $MATH_RIMS_HM $MATH_RIMS_HMA 
+for PROMPT in $GSM_RIMS_OLD $MATH_RIMS_1 $MATH_RIMS_H_1 $MATH_RIMS_HM_1 $MATH_RIMS_HMA_1
 do
     python run_inference.py rims_inference \
-        --gsm_jslf ${GSM_INFERRED1106} \
-        --dataset_type gsm \
-        --prompt_f ${PROMPT} \
-        --backbone chatgpt1106
+        --backbone chatgpt1106 \
+        --gsm_jslf ${MATH_INFERRED1106} \
+        --dataset_type math \
+        --prompt_f ${PROMPT}
 done
+python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jsonl" --eval_type math --outf math1106_results.txt

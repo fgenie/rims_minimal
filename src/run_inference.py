@@ -363,7 +363,7 @@ def rims_inference(
             row = _func(row)  # updates rows in records_cleansed
         records_done = records_cleansed
     else:
-        records_done = pqdm(records_cleansed, _func, n_jobs=4) # to avoid BrokenPipe, keep n_jobs<=4 (tested on Mac M1)
+        records_done = pqdm(records_cleansed, _func, n_jobs=6) # to avoid BrokenPipe, keep n_jobs<=4 (tested on Mac M1)
         # check records_done for it could contain failed jobs (BrokenPipe) --> dataframe construction will fail
         records_done = [row for row in records_done if isinstance(row, dict) and not issubclass(type(row), Exception) ]
 
@@ -556,7 +556,7 @@ def baseline_inference(
             row = out
         records_done = records
     else:
-        records_done = pqdm(records, _func, n_jobs=5)
+        records_done = pqdm(records, _func, n_jobs=4)
     
     with jsl.open(outpath, "w") as writer, \
             open(f"{outpath}.errors", "w") as writer_err, \

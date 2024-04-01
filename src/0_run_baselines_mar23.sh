@@ -65,32 +65,38 @@ cd $EXEPATH
 
 
 
+
+
+
+
+
+
 # do with gpt-3.5-turbo-1106
-python run_inference.py  baseline_inference \
-                --backbone chatgpt1106 \
-                --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
-                --dataset_type ocw
+# python run_inference.py  baseline_inference \
+#                 --backbone chatgpt1106 \
+#                 --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
+#                 --dataset_type ocw
 
-python run_inference.py  baseline_inference \
-                --backbone chatgpt1106 \
-                --gsm_jslf ../dataset/gsm8K_test.jsonl \
-                --dataset_type gsm
+# python run_inference.py  baseline_inference \
+#                 --backbone chatgpt1106 \
+#                 --gsm_jslf ../dataset/gsm8K_test.jsonl \
+#                 --dataset_type gsm
 
 
-python run_inference.py baseline_inference \
-                --backbone chatgpt1106 \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt1.jsonl \
-                --dataset_type math
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt1106 \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt1.jsonl \
+#                 --dataset_type math
 
-python run_inference.py baseline_inference \
-                --backbone chatgpt1106 \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
-                --dataset_type math
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt1106 \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
+#                 --dataset_type math
 
-python run_inference.py baseline_inference \
-                --backbone chatgpt1106 \
-                --gsm_jslf ../dataset/MATH/MATH-full_pt3.jsonl \
-                --dataset_type math
+# python run_inference.py baseline_inference \
+#                 --backbone chatgpt1106 \
+#                 --gsm_jslf ../dataset/MATH/MATH-full_pt3.jsonl \
+#                 --dataset_type math
 
 python run_inference.py baseline_inference \
                 --backbone chatgpt1106 \

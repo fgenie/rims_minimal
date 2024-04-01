@@ -157,6 +157,8 @@ do
 done
 
 
+python run_evaluation_new.py --eval_jslf /Users/seonils/dev/rims_minimal/src/outputs/gsm8K_test_dt.gsm/chatgpt1106/rims_gsm_best_newer.txt/03_30_12_08_44.jsonl --eval_type gsm --outf outputs/gsm_results1106.txt
+
 # for RES in $OCW_OLD_RIMS_GSMPROMPT $OCW_RIMS $OCW_RIMS_H $OCW_RIMS_HM $OCW_RIMS_HMA
 # do
 #     python run_evaluation_new.py \

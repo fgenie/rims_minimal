@@ -13,88 +13,31 @@ pip install pre-commit
 pre-commit install
 ```
 
-## How to run
-see `greedy_experiment_example_script.sh` it provides one-pot experiment example.
-### 1 model-selection-resoning baseline
+## experiment scripts
+- `0_run_baseline_mar23.sh`
+- `1_run_rims_mar23.sh`
+
+### commands in brief
 ```bash
+# first, run simple-greeedy
 python run_inference.py  baseline_inference \
                 --backbone chatgpt0613long \
-                --outdir $BASELINE_RESULT_DIR \
                 --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
                 --dataset_type ocw
 
-```
-
-
-### 2 rims algorithm run the 1's result (it will skip the non-conflict examples!)
-```bash
+# 2nd, run rims on the result of simple-greedy
 python run_inference.py rims_inference \
-                            --prompt_f $V3PROMPT \
-                            --gsm_jslf $BASELINE_RESULT_DIR/chatgpt0613long_model_selection3_ocw.jsonl \
-                            --dataset_type ocw \
-                            --backbone chatgpt0613long \
-                            --outdir $RIMS_RESULT_DIR 
+    --backbone chatgpt1106 \
+    --gsm_jslf ${MATH_INFERRED} \
+    --dataset_type math \
+    --prompt_f ${PROMPT}
+
+# 3rd, evaluate the target directories with wildcard expression
+python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jsonl" --eval_type math --outf math1106_results.txt
 ```
 
-### 3 evaluate
-```bash
-mkdir -p $EVAL_DIR
-
-# evaluate each            
-python run_evaluation.py --eval_jslf $BASELINE_RESULT_DIR/chatgpt0613long_model_selection3_ocw.jsonl  --eval_type ocw > $EVAL_DIR/baseline.out
-python run_evaluation.py --eval_jslf $RIMS_RESULT_DIR/chatgpt0613long_rims_ocw.jsonl  --eval_type ocw > $EVAL_DIR/rims.out
-python run_evaluation.py --eval_jslf $ABL_RESULT_DIR/ablation/chatgpt0613long_rims_ocw.jsonl  --eval_type ocw > $EVAL_DIR/rims_abl.out
-```
-
-## to check
-
-
-## reset experiment prompts 
-- [x] tests
-    - azure, evaluation, parsing, fewshot harvesting, how these affects the older results...
-- [x] CoT parsing for OCW, MATH: isn't `extract_num_turbo()` too specific for GSM and SVAMP?
-    - [x] indeed! --> implemented `extract_ans_from_cot_MATHnOCW`   
-- [x] problem of latex/sympy evaluation
-    - [x] code execution: `try` `sp.latex(solution())` at the end (this do not affect gsm)
-    - [x] bunch of evaluation fixes and tests
-- [x] harvest wrong / correct sets and prepare the followings
-    - [x] if not applicable, create example with claude sonnet. 
-    - [x] fewshots_p2c_math_ocw.txt (WIP)
-- [x] p2c prompts: coding challenges
-    - [x] MBPP prompts in the paper
-- [x] cot prompts: dataset-specific
-    - [x] OCW 
-    - [x] MATH
-- [x] pal prompts: dataset-specific
-    - [x] OCW
-    - [x] MATH 
-- [x] selection prompts: dataset-specific
-    - [x] GSM, util
-    - [x] OCW 
-    - [x] MATH
-    - [x] renew `get_prompt()` 
-- [x] RIMS prompts: dataset-specific
-    - [x] OCW
-    - [x] MATH
-    - [x] ablations
-- [ ] ~~apply `@utils.cost_tracking.CountTokens` <!--only for synchronous run for now...-->~~
-    - incompatible with multiprocessing because of pickling error (client) --> async compatible possible, but later.
-    - [x] 1 more output for `token_info` dict
-        - query_f's : _query, query_cot, query_selection, query_rims_inference 
-    - [x] CountTokens need to crunch the `token_info`
-- [x] dbg (`run_inference.py`)
-    - [x] python run_inference.py baseline_inference
-    - [x] python run_inference.py rims_inference
-        - ~~inspect output: did it correctly process only CONFLICT ones?~~
-        - ~~inspect prompts.jsonl: is this same as the prompt file?~~
-        - ~~do they have [QUESTION] or they differ as expected?~~
-        - ~~after dbg, try - except wrap the rims_complete_row ~~
-- [ ] run (T=0, greedy decoding)
-    - [ ] result gathering in one file (jsonlines)
-    - [ ] math, ocw, gsm (chatgptlong 0613)
-        - base, rims, ablations
-        - base-old vs base
-        - individual method diff / intersection 
-        - individual method performance
+## reset experiment prompts
 - [ ] experiments further
      - [ ] self-consistency condition of baseline, T>0 experiment
+     - [ ] opensource llm (deepseek math, llama)
+     - [ ] gpt4

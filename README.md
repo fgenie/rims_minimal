@@ -1,13 +1,6 @@
-# rims_minimal
-이전 코드베이스가 엉망인 관계로 제공함 <br>
-시작점: https://github.com/fgenie/Model-Selection-Reasoning/tree/59debd8441e7cb4b7d733f256b20870073e36c08
-
-
-## What to do before run
-place `openai_key.txt` into `utils/`
+# RIMS (<u>R</u>eflective H<u>i</u>nt <u>M</u>odel <u>S</u>election)
 
 ## How to Contribute
-
 ```
 pip install pre-commit
 pre-commit install
@@ -21,7 +14,7 @@ pre-commit install
 ```bash
 # first, run simple-greeedy
 python run_inference.py  baseline_inference \
-                --backbone chatgpt0613long \
+                --backbone chatgpt1106 \
                 --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
                 --dataset_type ocw
 

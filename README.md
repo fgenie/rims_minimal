@@ -33,4 +33,4 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 - [ ] experiments further
      - [ ] self-consistency condition of baseline, T>0 experiment
      - [ ] opensource llm (deepseek math, llama)
-     - [ ] gpt4
+     - [x] gpt4

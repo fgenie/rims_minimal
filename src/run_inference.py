@@ -1,7 +1,7 @@
 from concurrent.futures.process import BrokenProcessPool
 from datetime import datetime
 from functools import partial
-from typing import Any, Literal
+from typing import Any, Callable, Dict, List, Literal
 
 import jsonlines as jsl
 import pandas as pd
@@ -57,11 +57,13 @@ row:
 def indiv_inference(
     row: dict = None,
     num_methods: int = 3,
-    temperature: float = 0.0,
+    cot_temperature: float = 0.0,
+    pal_temperature: float = 0.0,  # both will be used for p2c as well
     n: int = 1,
     seed: int = 777,
     backbone: str = "chatgpt0613long",
     dataset_type: Literal["gsm", "ocw", "math"] = "",
+    only_retrieve: bool = False,  # if true, when undone thing found, throws error
 ):
     """
     inference each method and return indiv results
@@ -73,10 +75,6 @@ def indiv_inference(
         ansmap : {cot: pal: p2c:} (solution executed)
     """
 
-    if n > 1:
-        raise NotImplementedError(
-            "n>1 will serve as a self-consistency parameter, not implemented yet"
-        )
     if dataset_type == "ocw":
         question = row["problem"]
     else:
@@ -97,12 +95,17 @@ def indiv_inference(
         ansmap = dict()
         solmap = dict()
 
+    if missing_methods:
+        if only_retrieve:
+            raise ValueError(
+                f"no existing results found while {only_retrieve=}\n\n{missing_methods=}\n{ansmap=}"
+            )
     # check cot already exists or do query
     if "cot" in missing_methods:
         cot_lst, _msgs, _ = query_cot(
             question,
             dataset_type=dataset_type,
-            temperature=temperature,
+            temperature=cot_temperature,
             n=n,
             backbone=backbone,
             seed=seed,
@@ -110,13 +113,18 @@ def indiv_inference(
         # dbgf=f"cot_debug_{dataset_type}.jsonl"
         # if not Path(dbgf).exists():
         #     jsl.open(dbgf, "w").write_all(_msgs)
-        cot_sol = cot_lst.pop()  # solution: str
-        if dataset_type in "gsm":
-            cot_ans = extract_num_turbo(cot_sol)
-        elif dataset_type in "ocw math":
-            cot_ans = extract_ans_from_cot_MATHnOCW(cot_sol)
-        else:
-            raise ValueError(f"unsupported dataset_type: {dataset_type}")
+        execute_f = (
+            extract_num_turbo
+            if dataset_type in "gsm svamp"
+            else extract_ans_from_cot_MATHnOCW
+        )
+        if n == 1:
+            cot_sol = cot_lst.pop()  # solution: str
+            cot_ans = execute_f(cot_sol)
+        else:  # n>1
+            cot_sol = cot_lst
+            cot_ans = [execute_f(cotsln) for cotsln in cot_lst]
+
         solmap["cot"] = cot_sol
         ansmap["cot"] = cot_ans
     else:
@@ -127,17 +135,19 @@ def indiv_inference(
     if "pal" in missing_methods:
         pal_lst, __msgs, _ = query_pal(
             question,
-            temperature=temperature,
+            temperature=pal_temperature,
             n=n,
             backbone=backbone,
             seed=seed,
             dataset_type=dataset_type,
         )
-        # dbgf=f"pal_debug_{dataset_type}.jsonl"
-        # if not Path(dbgf).exists():
-        #     jsl.open(dbgf, "w").write_all(__msgs)
-        pal_sol = pal_lst.pop()
-        pal_ans = safe_execute_turbo(pal_sol)
+        if n == 1:
+            pal_sol = pal_lst.pop()
+            pal_ans = safe_execute_turbo(pal_sol)
+        else:  # n>1
+            pal_sol = pal_lst
+            pal_ans = [safe_execute_turbo(palsln) for palsln in pal_lst]
+
         solmap["pal"] = pal_sol
         ansmap["pal"] = pal_ans
     else:
@@ -151,8 +161,8 @@ def indiv_inference(
             # try:
             code_lst, plan_lst, ___msgs = query_plancode(
                 question,
-                plan_temperature=temperature,
-                code_temperature=temperature,
+                plan_temperature=cot_temperature,
+                code_temperature=pal_temperature,
                 backbone=backbone,
                 n=n,
                 seed=seed,
@@ -161,15 +171,20 @@ def indiv_inference(
             # if not Path(dbgf).exists():
             #     msgs = ___msgs["planquery"]  + ___msgs["codequery"]
             #     jsl.open(f"p2c_debug_{dataset_type}.jsonl", "w").write_all(msgs)
-
-            plan = plan_lst.pop()
-            p2c_solution = code_lst  # plan is now generated inbetween the docstring
-            if code_lst:
-                code = code_lst[0]
-            if code is not None:
-                p2c_ans = safe_execute_turbo(code)
-            else:
-                p2c_ans = None
+            if n == 1:
+                plan = plan_lst.pop()
+                p2c_solution = code_lst  # plan is now generated inbetween the docstring
+                if code_lst:
+                    code = code_lst[0]
+                if code is not None:
+                    p2c_ans = safe_execute_turbo(code)
+                else:
+                    p2c_ans = None
+            else:  # n>1
+                plan = plan_lst
+                p2c_solution = code_lst
+                code = code_lst
+                p2c_ans = [safe_execute_turbo(c) for c in code_lst]
 
             ansmap["p2c"] = p2c_ans
             solmap["p2c"] = p2c_solution
@@ -179,13 +194,20 @@ def indiv_inference(
             plan = row["plan"]
     # heuristic for MATH/OCW problematic answer by PAL/P2C (never-endingly long execution result)
     # OCW max answer length = 210; MATH max answer length = 81
-    if len(str(pal_ans)) > 400:  # over 400 --> truncate and string return
-        print(f"truncating PAL result to 400 chars ({len(pal_ans)=})")
-        pal_ans = pal_ans[:400]
+    if n == 1:
+        if len(str(pal_ans)) > 400:  # over 400 --> truncate and string return
+            print(f"truncating PAL result to 400 chars ({len(pal_ans)=})")
+            pal_ans = pal_ans[:400]
+            ansmap["pal"] = pal_ans
+        if len(str(p2c_ans)) > 400:  # over 400 --> truncate and string return
+            print(f"truncating PAL result to 400 chars ({len(pal_ans)=})")
+            p2c_ans = str(p2c_ans)[:400]
+            ansmap["p2c"] = p2c_ans
+    else:  # n>1
+        pal_ans = [pa[:400] if len(str(pa)) > 400 else pa for pa in ansmap["pal"]]
+        p2c_ans = [pa[:400] if len(str(pa)) > 400 else pa for pa in ansmap["p2c"]]
+
         ansmap["pal"] = pal_ans
-    if len(str(p2c_ans)) > 400:  # over 400 --> truncate and string return
-        print(f"truncating PAL result to 400 chars ({len(pal_ans)=})")
-        p2c_ans = str(p2c_ans)[:400]
         ansmap["p2c"] = p2c_ans
 
     return ansmap, solmap, plan  # updated ones
@@ -193,12 +215,12 @@ def indiv_inference(
 
 def rims_complete_row(
     row: dict,
-    temperature: float,
-    n: int,
     backbone: str,
     seed: int,
     dataset_type: Literal["gsm", "ocw", "math"],
     prompt_f: str,
+    n: int = 1,
+    temperature: float = 0.7,  # applied only when n>1
     # turn_based: bool,
 ):
     try:
@@ -207,30 +229,92 @@ def rims_complete_row(
         else:
             question = row["question"]
 
-        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+        # Here, it is expected to read already inferred result, not inferencing the new. (for rims)
         ansmap, solmap, _plan = indiv_inference(
             row,
             num_methods=3,
-            temperature=temperature,
+            cot_temperature=0.5 if n > 1 else 0.0,
+            pal_temperature=0.8 if n > 1 else 0.0,
             n=n,
             backbone=backbone,
             seed=seed,
             dataset_type=dataset_type,
+            only_retrieve=True,
         )
         row["ansmap"] = ansmap
         row["solmap"] = solmap
         row["plan"] = _plan
 
-        # is there majority answer? in ansmap?
-        majority_ans = get_concordant_answer(
-            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-        )
+        if n == 1:
+            # is there majority answer? in ansmap?
+            majority_ans = get_concordant_answer(
+                list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
+            )
 
-        # do rims
-        if majority_ans is None:  # problems are not done properly.
-            # here it had eval indiv_methods
+            # do rims
+            if majority_ans is None:  # problems are not done properly.
+                # here it had eval indiv_methods
+                (
+                    eval_friendly_d,
+                    __,
+                    raw_query_out,
+                    query_msg,
+                    ___,
+                ) = query_rims_inference(
+                    question,
+                    prompt_f,
+                    backbone=backbone,
+                    temperature=temperature,
+                    n=n,
+                )
+
+                eval_friendly_d.update(
+                    {"raw_query_out": raw_query_out, "query_msg": query_msg}
+                )
+                row[
+                    "selection_or_rims"
+                ] = eval_friendly_d  # this contains all we need depicted above
+                row["majority_ans"] = eval_friendly_d["good_ans"]
+
+                # # below is for, when only run maj*1+rims*n (abandonned option)
+                # if n == 1:
+                #     eval_friendly_d.update(
+                #         {"raw_query_out": raw_query_out, "query_msg": query_msg}
+                #     )
+                #     row[
+                #         "selection_or_rims"
+                #     ] = eval_friendly_d  # this contains all we need depicted above
+                #     row["majority_ans"] = eval_friendly_d["good_ans"]
+                # else:  # n > 1
+                #     if not eval_friendly_d > 0:
+                #         raise ValueError(f"len(eval_friendly_d)<1 while {n=}")
+                #     eval_friendly_d = aggregate_eval_friendly_ds_to_a_dict(
+                #         eval_friendly_d, raw_query_out, query_msg
+                #     )
+                #     row["selection_or_rims"] = eval_friendly_d
+                #     row["majority_ans"] = get_concordant_answer_n(
+                #         eval_friendly_d["good_ans"], dataset_type=dataset_type
+                #     )
+            else:
+                row["selection_or_rims"] = {"majority_vote": True}
+                row["majority_ans"] = majority_ans
+            row["prompt_file"] = str(prompt_f)
+            row["inference_mode"] = "rims"
+        else:  # n > 1
+            # check if simple_greedy / indiv_inference done correctly
+            if row["error"]:
+                raise ValueError(f"skip the row (simple greedy n>1 failed on this row")
+            # clean up for possible contamination
+            del row["candid_answers"]
+
+            # use already done's
+            majvote_ans = row["majvote_ans"]
+
+            # count None's in majvote_ans, and do rims for them. n == count(None)
+            to_rims_idx = [i for i, ans in enumerate(majvote_ans) if ans is None]
+            n_adj = len(to_rims_idx)
             (
-                eval_friendly_d,
+                eval_friendly_d,  # List[Dict]
                 __,
                 raw_query_out,
                 query_msg,
@@ -240,41 +324,40 @@ def rims_complete_row(
                 prompt_f,
                 backbone=backbone,
                 temperature=temperature,
-                n=n,
+                n=n_adj,
+            )
+            # get answers and solutions from eval_frinedly_d: List[Dict]
+            raise NotImplementedError("consider n_adj==1")
+            if n_adj == 1:
+                raise NotImplemented
+            else:
+                eval_friendly_d_ = aggregate_eval_friendly_ds_to_a_dict(eval_friendly_d)
+
+            row["temperatures"].update(
+                {"rims_temperature": temperature, "n": n, "n_adj": n_adj}
             )
 
-            if n == 1:
-                eval_friendly_d.update(
-                    {"raw_query_out": raw_query_out, "query_msg": query_msg}
-                )
-                row[
-                    "selection_or_rims"
-                ] = eval_friendly_d  # this contains all we need depicted above
-                row["majority_ans"] = eval_friendly_d["good_ans"]
-            else:  # n > 1
-                if not eval_friendly_d > 0:
-                    raise ValueError(f"len(eval_friendly_d)<1 while {n=}")
-                eval_friendly_d = aggregate_eval_friendly_ds_to_a_dict(
-                    eval_friendly_d, raw_query_out, query_msg
-                )
-                row["selection_or_rims"] = eval_friendly_d
-                row["majority_ans"] = get_concordant_answer_n(
-                    eval_friendly_d["good_ans"], dataset_type=dataset_type
-                )
-        else:
-            row["selection_or_rims"] = {"majority_vote": True}
-            row["majority_ans"] = majority_ans
-        row["prompt_file"] = str(prompt_f)
-        # if turn_based:
-        #     row["prompt_file"] += "_turn_based"
-        row["inference_mode"] = "rims"
     except Exception as e:
         print(e)
-        print(f"error occured at {row['index']}")
-        row["selection_or_rims"] = {"error": True, "exception": str(e)}
-        row["majority_ans"] = None
-        row["prompt_file"] = str(prompt_f)
-        row["inference_mode"] = "rims"
+        if n == 1:
+            print(f"error occured at {row['index']}")
+            row["selection_or_rims"] = {"error": True, "exception": str(e)}
+            row["majority_ans"] = None
+            row["prompt_file"] = str(prompt_f)
+            row["inference_mode"] = "rims"
+        else:  # n>1
+            row["error"] = True
+            row["error_msg"] = str(e)
+            row["running_at"] = "rims_complete_row"
+
+            row["majority_ans"] = None
+            row["idx2chosen_method"] = None
+            row["majvote_ans"] = None
+            row["candid_answers"] = None
+            row["inference_mode"] = "rims"
+            row["dataset_type"] = dataset_type
+            row["prompt_file"] = prompt_f
+            row["temperatures"].update({"rims_temperature": temperature, "n": n})
     return row
 
 
@@ -285,7 +368,6 @@ def rims_inference(
         "gsm", "ocw", "math"
     ] = "gsm",  # affects get_concordant_answer
     backbone: str = "chatgpt0613long",  # see llm_query_utils.backbone2model
-    # turn_based: bool = False, # if True, convert the prompt into turn-based format and proceeds with it.
     # llm options
     temperature: float = 0.0,
     n: int = 1,  # later for self-consistency
@@ -297,6 +379,7 @@ def rims_inference(
 ):
     assert prompt_f, f"need to specify {prompt_f=}"
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
+    assert dataset_type in "gsm ocw math svamp".split(), f"invalid {dataset_type=}"
 
     if n > 1:
         raise NotImplementedError(
@@ -421,7 +504,6 @@ def rims_inference(
 
 def baseline_complete_row(
     row: dict,
-    temperature: float,
     n: int,
     backbone: str,
     seed: int,
@@ -439,7 +521,8 @@ def baseline_complete_row(
         ansmap, solmap, _plan = indiv_inference(
             row,
             num_methods=3,
-            temperature=temperature,
+            cot_temperature=0.5 if n > 1 else 0.0,
+            pal_temperature=0.8 if n > 1 else 0.0,
             n=n,
             backbone=backbone,
             seed=seed,
@@ -449,54 +532,127 @@ def baseline_complete_row(
         row["ansmap"] = ansmap
         row["solmap"] = solmap
         row["plan"] = _plan
-
-        # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
-        majority_ans = get_concordant_answer(
-            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-        )
-
-        # ensure solmap is Dict[str, str]
-        for k, v in solmap.items():
-            if not isinstance(v, str):
-                if isinstance(v[0], str):
-                    solmap[k] = v[0]
-                else:
-                    raise ValueError(f"sth's going wrong with {solmap=}")
-
-        if majority_ans is None:  # do selection
-            chosen_method, selection_str, _ = query_selection(
-                question,
-                backbone=backbone,
-                cot_solution=solmap["cot"],
-                pal_solution=solmap["pal"],
-                p2c_plan_code_solution=solmap["p2c"],
-                dataset_type=dataset_type,
+        if n == 1:
+            # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
+            majority_ans = get_concordant_answer(
+                list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
             )
-            if chosen_method is not None:
-                row["selection_or_rims"] = {
-                    "good_method": chosen_method,
-                    "good_answer": ansmap[chosen_method],
-                    "good_solution": solmap[chosen_method],
-                    "selection_str": selection_str,
-                    "dataset_type": dataset_type,
-                }
+
+            # ensure solmap is Dict[str, str]
+            for k, v in solmap.items():
+                if not isinstance(v, str):
+                    if isinstance(v[0], str):
+                        solmap[k] = v[0]
+                    else:
+                        raise ValueError(f"sth's going wrong with {solmap=}")
+
+            if majority_ans is None:  # do selection
+                chosen_method, selection_str, _ = query_selection(
+                    question,
+                    backbone=backbone,
+                    cot_solution=solmap["cot"],
+                    pal_solution=solmap["pal"],
+                    p2c_plan_code_solution=solmap["p2c"],
+                    dataset_type=dataset_type,
+                )
+                if chosen_method is not None:
+                    row["selection_or_rims"] = {
+                        "good_method": chosen_method,
+                        "good_answer": ansmap[chosen_method],
+                        "good_solution": solmap[chosen_method],
+                        "selection_str": selection_str,
+                        "dataset_type": dataset_type,
+                    }
+                else:
+                    row["selection_or_rims"] = {
+                        "good_method": None,
+                        "good_answer": None,
+                        "good_solution": None,
+                        "selection_str": selection_str,
+                        "dataset_type": dataset_type,
+                    }
+                row["majority_ans"] = row["selection_or_rims"]["good_answer"]
             else:
-                row["selection_or_rims"] = {
-                    "good_method": None,
-                    "good_answer": None,
-                    "good_solution": None,
-                    "selection_str": selection_str,
-                    "dataset_type": dataset_type,
-                }
-            row["majority_ans"] = row["selection_or_rims"]["good_answer"]
-        else:
-            row["selection_or_rims"] = {"majority_vote": True}
+                row["selection_or_rims"] = {"majority_vote": True}
+                row["majority_ans"] = majority_ans
+            row["prompt_file"] = prompt_f
+            row["inference_mode"] = f"baseline {num_methods} methods"
+        else:  # n > 1:
+            # ansmap, solmap, plan = List[str] * 3
+            ans_triples = zip(*ansmap.values())
+            sln_triples = zip(*solmap.values())
+            majvote_ans: List = [
+                get_concordant_answer(list(triple), dataset_type=dataset_type)
+                for triple in ans_triples
+            ]
+
+            selection: Callable = partial(
+                query_selection, question, backbone=backbone, dataset_type=dataset_type
+            )
+            # query selection
+            to_select_idx: List = [
+                i for i, maj_ans in enumerate(majvote_ans) if maj_ans is None
+            ]
+            idx2chosen_method: Dict = {
+                idx: selection(sln_triple)[0]
+                for idx, sln_triple in zip(to_select_idx, sln_triples)
+            }
+            idx2chosen_ans: Dict = {
+                idx: ansmap[chosen_method][idx]
+                if chosen_method in "cot pal p2c"
+                else None
+                for idx, chosen_method in idx2chosen_method.items()
+            }
+            candid_answers: List = [
+                majvote if majvote is not None else idx2chosen_ans[idx]
+                for idx, majvote in enumerate(majvote_ans)
+            ]
+            majority_ans = get_concordant_answer_n(
+                candid_answers, dataset_type=dataset_type
+            )
+
+            # update row: need to consider later it will be reused for rims inferencing.
+            row["error"] = False
+            row["error_msg"] = ""
+            row["runnning_at"] = "baseline_complete_row"
+
             row["majority_ans"] = majority_ans
-        row["prompt_file"] = prompt_f
-        row["inference_mode"] = f"baseline {num_methods} methods"
+            row["idx2chosen_method"] = idx2chosen_method
+            row["majvote_ans"] = majvote_ans
+            row["candid_answers"] = candid_answers  # for debug use
+            row["inference_mode"] = [
+                "majority_vote" if majvote_ans is not None else "selection"
+                for majvote_ans in majvote_ans
+            ]
+            row["dataset_type"] = dataset_type
+            row["prompt_file"] = prompt_f
+            row["temperatures"] = {
+                "cot_temperature": 0.5,
+                "pal_temperature": 0.8,
+                "n": n,
+            }
+
     except Exception as e:
         print(e)
-        row["selection_or_rims"] = {"error": True, "exception": str(e)}
+        if n == 1:
+            row["selection_or_rims"] = {"error": True, "exception": str(e)}
+        else:  # n>1:
+            row["error"] = True
+            row["error_msg"] = str(e)
+            row["running_at"] = "baseline_complete_row"
+
+            row["majority_ans"] = None
+            row["idx2chosen_method"] = None
+            row["majvote_ans"] = None
+            row["candid_answers"] = None
+            row["inference_mode"] = "selection"
+            row["dataset_type"] = dataset_type
+            row["prompt_file"] = prompt_f
+            row["temperatures"] = {
+                "cot_temperature": 0.5,
+                "pal_temperature": 0.8,
+                "n": n,
+            }
 
     return row
 
@@ -511,7 +667,6 @@ def baseline_inference(
     start_idx: int = 0,
     err_idxs_f: str = "",  # only when start_idx == 0
     # llm options
-    temperature: float = 0.0,
     n: int = 1,  # later for self-consistency
     backbone: str = "chatgpt0613long",
     seed: int = 777,
@@ -519,17 +674,14 @@ def baseline_inference(
     dbg: bool = False,
 ):
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
+    assert dataset_type in "gsm ocw math svamp".split(), f"invalid {dataset_type=}"
+
     if (
         prompt_f
         != "prompt_construction_src/newer_prompts_3/model_selection_prompts.yaml"
     ):
         raise ValueError(
             f"llm_query_utils.get_select_prompt2() reads prompt_construction_src/newer_prompts_3/model_selection_prompts.yaml, not the {prompt_f=} provided!"
-        )
-
-    if n > 1:
-        raise NotImplementedError(
-            "n>1 will serve as a self-consistency parameter, not implemented yet"
         )
 
     # load_gsm_dataset to infer on
@@ -572,7 +724,6 @@ def baseline_inference(
 
     _func = partial(
         baseline_complete_row,
-        temperature=temperature,
         n=n,
         backbone=backbone,
         seed=seed,

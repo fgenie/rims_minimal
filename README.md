@@ -30,7 +30,10 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 ```
 
 ## reset experiment prompts
-- [ ] experiments further
-     - [ ] self-consistency condition of baseline, T>0 experiment
-     - [ ] opensource llm (deepseek math, llama)
-     - [x] gpt4
+- [ ] implement n>1 case
+  - [x] baseline_complete_row
+  - [x] indiv_inference
+  - [ ] rims_complete_row
+  - [ ] run_evaluation_new_n
+  - [ ] ?conversion to async for performance? (hopefully not)
+- [ ] opensource LLM re do all

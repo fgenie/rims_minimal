@@ -21,22 +21,22 @@ THIS_PARENT = Path(__file__).parent.resolve()
 # Construct the path to the openai_key.txt file
 
 
-# client = AzureOpenAI(
-#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-#     api_version="2024-03-01-preview",
-#     timeout=120,
-#     max_retries=10,
-# )
-
-# when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
 client = AzureOpenAI(
-    azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
-    api_version="2023-07-01-preview",
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    api_version="2024-03-01-preview",
     timeout=120,
-    max_retries=4,
+    max_retries=10,
 )
+
+# # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
+# client = AzureOpenAI(
+#     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
+#     api_version="2023-07-01-preview",
+#     timeout=120,
+#     max_retries=4,
+# )
 
 
 def exception_handler(func):
@@ -112,12 +112,8 @@ def query_cot(
         # timeout=120,
         # max_retry=3,
     )
-    # completion_usage = resp.usage
 
-    if n == 1:
-        completions = [resp.choices[0].message.content]
-    else:
-        completions = [resp.choices[i].message.content for i in range(n)]
+    completions = [choice.message.content for choice in resp.choices]
     return completions, query_message, resp
 
 
@@ -137,31 +133,35 @@ def _query(  # key,
     """
     atomic query func for query_plancode
     """
-    resp = client.chat.completions.create(
-        model=model_name,
-        max_tokens=max_tokens,
-        stop=stop,
-        messages=messages,
-        temperature=temperature,
-        top_p=top_p,
-        n=n,
-        seed=seed,
-        # timeout=120,
-    )
-    # completion_usage = resp.usage
-    if n == 1:
-        content = resp.choices[0].message.content  # str
-        if mode == "plan":
-            plan = postprocess_plan(content)  # it will complain when failing
-            return plan, resp  # completion_usage
-        elif mode == "code":
-            code = postprocess_code(content)
-            return code, resp  # completion_usage
-    else:  # n>1
-        contents = [ch.message.content for ch in resp.choices]
-        postprocess = postprocess_plan if mode == "plan" else postprocess_code
-        res_strs = [postprocess(c) for c in contents]
-        return res_strs, resp  # completion_usage
+    try:
+        resp = client.chat.completions.create(
+            model=model_name,
+            max_tokens=max_tokens,
+            stop=stop,
+            messages=messages,
+            temperature=temperature,
+            top_p=top_p,
+            n=n,
+            seed=seed,
+            # timeout=120,
+        )
+        # completion_usage = resp.usage
+        if n == 1:
+            content = resp.choices[0].message.content  # str
+            if mode == "plan":
+                plan = postprocess_plan(content)  # it will complain when failing
+                return plan, resp  # completion_usage
+            elif mode == "code":
+                code = postprocess_code(content)
+                return code, resp  # completion_usage
+        else:  # n>1
+            contents = [ch.message.content for ch in resp.choices]
+            postprocess = postprocess_plan if mode == "plan" else postprocess_code
+            res_strs = [postprocess(c) for c in contents]
+            return res_strs, resp  # completion_usage
+    except Exception as e:
+        print(e)
+        return None, str(e)
 
 
 # p2c: querying plan and code separately inside
@@ -209,34 +209,73 @@ def query_plancode(
         seed=seed,
     )
 
-    if plan:
-        code_query_msg = get_plan2code_prompt(question, plan=plan, k_fewshot=k_fewshot)
-        # print(code_query_msg)
-        code, _ = _query(
-            model_name=model_name,
-            max_tokens=1024,
-            stop="Question: ",
-            messages=code_query_msg,
-            temperature=code_temperature,
-            top_p=1.0,
-            n=n,
-            mode="code",
-            seed=seed,
-        )  # ,
-        if not code:
-            return (
-                [None],
-                [plan],
-                {"codequery": code_query_msg, "planquery": plan_query_msg},
+    if n == 1:
+        if plan:
+            code_query_msg = get_plan2code_prompt(
+                question, plan=plan, k_fewshot=k_fewshot
             )
+            # print(code_query_msg)
+            code, _ = _query(
+                model_name=model_name,
+                max_tokens=1024,
+                stop="Question: ",
+                messages=code_query_msg,
+                temperature=code_temperature,
+                top_p=1.0,
+                n=n,
+                mode="code",
+                seed=seed,
+            )  # ,
+            if not code:
+                return (
+                    [None],
+                    [plan],
+                    {"codequery": code_query_msg, "planquery": plan_query_msg},
+                )
+            else:
+                return (
+                    [code],  # if n == 1 else code,
+                    [plan],
+                    {"codequery": code_query_msg, "planquery": plan_query_msg},
+                )
         else:
-            return (
-                [code] if n == 1 else code,
-                [plan],
-                {"codequery": code_query_msg, "planquery": plan_query_msg},
-            )
-    else:
-        return None, None, {"codequery": None, "planquery": plan_query_msg}
+            return None, None, {"codequery": None, "planquery": plan_query_msg}
+    else:  # n>1
+        if plan:
+            plans = plan
+            code_query_msgs = [
+                get_plan2code_prompt(question, plan=p, k_fewshot=k_fewshot)
+                for p in plans
+            ]
+            codes = [
+                _query(
+                    model_name=model_name,
+                    max_tokens=1024,
+                    stop="Question: ",
+                    messages=cqm,
+                    temperature=code_temperature,
+                    top_p=1.0,
+                    n=1,
+                    mode="code",
+                    seed=seed,
+                )[0]
+                for cqm in code_query_msgs
+            ]
+
+            if not codes:
+                return (
+                    [None] * n,
+                    plans,
+                    {"codequery": code_query_msgs, "planquery": plan_query_msg},
+                )
+            else:
+                return (
+                    codes,
+                    plans,
+                    {"codequery": code_query_msgs, "planquery": plan_query_msg},
+                )
+        else:
+            return None, None, {"codequery": None, "planquery": plan_query_msg}
 
 
 # @CountTokens
@@ -281,15 +320,8 @@ def query_pal(
         n=n,
         # timeout=120,
     )
-    # completion_usage = resp.usage
 
-    if n == 1:
-        completions.extend(
-            [choice.message.content for choice in resp.choices]
-        )  # wtf this code...
-        completions = completions[:1]
-    else:  # this line might not be compatible with self-consistency setting in the original code
-        completions = [resp.choices[i].message.content for i in range(n)]
+    completions = [choice.message.content for choice in resp.choices]
     return completions, query_message, resp
 
 
@@ -301,10 +333,15 @@ def query_selection(
     cot_solution: str = "",
     pal_solution: str = "",
     p2c_plan_code_solution: str = "",  # former, this was actually List[str] and get_select_prompt() did pop()'d p2c solution out of list... which is super ugly and confusing
-    temperature: float = 0.0,
     max_tokens: int = 400,
-    n: int = 1,
+    temperature: float = 0.0,  # will not be modified
+    n: int = 1,  # will not be used
 ):
+    if n != 1:
+        raise ValueError("query_selection(): n need to be 1")
+    if temperature != 0.0:
+        raise ValueError("query_selection(): temperature need to be 0.0")
+
     def postprocess_selection(selection_str: str) -> str:
         ptn = r"\([A-C]\)"
         matches = re.findall(ptn, selection_str)

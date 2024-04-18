@@ -1,7 +1,7 @@
 import math
 import os
 import re
-from collections import Counter
+from collections import Counter  # , defaultdict
 from itertools import combinations
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Union
@@ -34,6 +34,14 @@ client = AzureOpenAI(
 #     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
 #     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
 #     api_version="2023-07-01-preview",
+#     timeout=120,
+#     max_retries=4,
+# )
+
+# # vllm/openai server that serves chatmodel
+# client = OpenAI(
+#     base_url = " api endpoint maybe localhost with some port "
+#     api_key = " no need ",
 #     timeout=120,
 #     max_retries=4,
 # )
@@ -109,8 +117,6 @@ def query_cot(
         top_p=1.0,
         seed=seed,
         n=n,
-        # timeout=120,
-        # max_retry=3,
     )
 
     completions = [choice.message.content for choice in resp.choices]
@@ -187,6 +193,7 @@ def query_plancode(
     # specify model
     model_name = backbone2model(backbone)
 
+    k_fewshot = 8  # default init 8, for openLLM cases
     if backbone.startswith("gpt4"):
         # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
         k_fewshot = 5
@@ -204,7 +211,7 @@ def query_plancode(
         messages=plan_query_msg,
         temperature=plan_temperature,
         top_p=1.0,
-        n=1,
+        n=n,
         mode="plan",
         seed=seed,
     )
@@ -260,7 +267,7 @@ def query_plancode(
                     seed=seed,
                 )[0]
                 for cqm in code_query_msgs
-            ]
+            ]  # it is O(n) times slow... OMG...
 
             if not codes:
                 return (
@@ -318,7 +325,6 @@ def query_pal(
         top_p=1.0,
         seed=seed,
         n=n,
-        # timeout=120,
     )
 
     completions = [choice.message.content for choice in resp.choices]
@@ -368,9 +374,6 @@ def query_selection(
         cot_pal_p2c_solution_d,
         dataset_type=dataset_type,
     )
-    # dbgf=THIS_PARENT.parent/f"selection_debug_{dataset_type}.jsonl"
-    # if not Path(dbgf).exists():
-    #     jsl.open(dbgf, "w").write_all(selection_message)
 
     response = client.chat.completions.create(
         model=model_name,
@@ -381,7 +384,6 @@ def query_selection(
         temperature=temperature,
         top_p=1.0,
         n=n,
-        # timeout=60,
     )
     # completion_usage = response.usage
     select_str = response.choices[0].message.content
@@ -484,8 +486,11 @@ def query_rims_inference(
         ) in (
             parse_dd.keys()
         ):  # found erratic parsings of the rims code solutions (``` at the end not removed properly)
-            if k.startswith("Attempt ") and parse_dd[k].strip().endswith("```"):
-                parse_dd[k] = parse_dd[k].strip().rstrip("```").strip()
+            if k.startswith("Attempt "):
+                if parse_dd[k].strip().endswith("```"):
+                    parse_dd[k] = parse_dd[k].strip().rstrip("```").strip()
+                if parse_dd[k].startswith("python\n"):
+                    parse_dd[k] = parse_dd[k].replace("python\n", "").strip()
 
         return parse_dd
 
@@ -656,7 +661,6 @@ def query_rims_inference(
         messages=messages,
         temperature=temperature,
         n=n,
-        # timeout=120,
     )
     # completion_usage = response.usage
 
@@ -692,7 +696,7 @@ def query_rims_inference(
         )  # completion_usage
 
     else:  # guess this part is for self-consistency setting of RIMS prompting... should we explore here?
-        raw_query_outs = [response.choices[i].message.content for i in range(n)]  # str
+        raw_query_outs = [choice.message.content for choice in response.choices]  # str
         # if continue_writing_gpt_messages is not None:
         #     msgs_except_inst = continue_writing_gpt_messages[:-1]
         #     if (
@@ -1256,8 +1260,15 @@ def _execute(code, code_return: str):
 
     # pip installed olympiad, and marker to avoid frequent errors of math solving
 
+    def _mock_input(prompt=""):
+        """
+        to ignore input() to be attempting user in the code
+        """
+        return ""
+
     try:
         locals_ = locals()
+        locals_["input"] = _mock_input
         if (
             "import matplotlib" in code
             or "import matplotlib.pyplot" in code
@@ -1276,7 +1287,9 @@ def _execute(code, code_return: str):
         elif funcname:  # if any function name appears
             new_code = "import math\n" + code + f"\nresult = {funcname}()"
             loc = {}
-            exec(new_code, locals(), loc)  # this will also use locals()
+            locals__ = locals()
+            locals__["input"] = _mock_input
+            exec(new_code, locals__, loc)  # this will also use locals()
 
             ans = loc["result"]
         else:
@@ -1285,7 +1298,7 @@ def _execute(code, code_return: str):
                 + "import datetime\n"
                 + "\n".join([xx[4:] for xx in code.strip().split("\n")[1:-1]])
             )
-            exec(executed_code, {}, locals())
+            exec(executed_code, {"input": _mock_input}, locals())
             locals_ = locals()
             ans = locals_.get(code_return, None)
 
@@ -1486,22 +1499,27 @@ def bucket_count_ocw_math_ans(answers: List[str], dataset_type: Literal["ocw", "
     """
     used for `get_concordant_answer_n`
     """
-    answers_counts = dict.fromkeys(answers)
-    eq_f = (
-        math_util.math_check_answer
-        if dataset_type == "math"
-        else math_util.ocw_check_answer
-    )
-    for a1, a2 in combinations(answers, 2):
-        if eq_f(a1, a2):
-            answers_counts[a1] += 1
-            answers_counts[a2] += 1
-    return Counter(answers_counts)
+    answers_counts = Counter(answers)
+    if len(answers_counts) == 1:
+        pass
+    else:
+        eq_f = (
+            math_util.math_check_answer
+            if dataset_type == "math"
+            else math_util.ocw_check_answer
+        )
+        for a1, a2 in combinations(answers_counts.keys(), 2):
+            if eq_f(a1, a2):
+                sumcount = answers_counts[a1] + answers_counts[a2]
+                answers_counts[a1] = sumcount
+                answers_counts[a2] = sumcount
+
+    return answers_counts
 
 
 def get_concordant_answer_n(
     answers: List, dataset_type: Literal["gsm", "svamp", "ocw", "math"] = "gsm"
-) -> Union[float, str, None]:
+) -> Union[float, str, List, None]:
     """
     n>3 version of the get_concordant_answer
     """
@@ -1543,8 +1561,8 @@ def get_concordant_answer_n(
             # if there is a bucket with more than 1 number, return the bucket
             majority_, count_ = bucket_counts.most_common(1)[-1]
             maj2_, count2_ = bucket_counts.most_common(2)[-1]
-            if count_ == count2_:
-                majorities = [majority_, maj2_]
+
+            majorities = [majority_, maj2_] if count_ == count2_ else [majority_]
             if count_ > 1:
                 return majorities
             else:
@@ -1695,5 +1713,6 @@ def backbone2model(backbone: str) -> str:
         # model_name = "gpt-3.5-turbo-16k-0613"
         model_name = "laba-gpt-35-turbo-16k-0613"
     else:
-        raise ValueError(f"backbone: {backbone} is not supported")
+        model_name = backbone  # openLLM setting
+        # raise ValueError(f"backbone: {backbone} is not supported")
     return model_name

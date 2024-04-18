@@ -4,41 +4,29 @@
     // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
     "version": "0.2.0",
     "configurations": [
-        // python run_inference.py  baseline_inference \
-        // --backbone chatgpt \
-        // --outdir seonil_scripts/sj_result_fix/new \
-        // --gsm_jslf /Users/seonils/dev/rims_minimal/dataset/MATH/MATH-prealgebra.jsonl \
-        // --dataset_type math \ 
-        // --start_idx 841 --dbg
         {
             "name": "baseline dbg",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "cwd": "${fileDirname}",
-            "args": ["baseline_inference", 
-                        "--gsm_jslf", "../dataset/dbg_others.jsonl",
-                        // "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/outputs/dbg_others_dt.gsm/model_selection_prompts/03_23_13_22_29_error.jsonl",
+            "args": ["baseline_inference",
+                        "--start_idx", "1310",
+                        "--gsm_jslf", "../dataset/gsm8K_test.jsonl",
                         "--dataset_type", "gsm",
-                        // "--dataset_type", "math",
-                        // "--dbg",
-                        // "--gsm_jslf", "../dataset/dbg_ocw.jsonl",
+                        // "--gsm_jslf", "../dataset/ocw/ocw_course.jsonl",
                         // "--dataset_type", "ocw",
-                        // "--start_idx", "1300",
-                        // "--backbone", "back", "--gsm_jslf", "kwy", "--dataset_type", "ksd"
+                        // "--dbg",
+                        "--n", "5",
+                        "--backbone", "chatgpt1106",
+                        "--n_jobs", "8",
                     ],
-                    // python run_inference.py  baseline_inference \
-                    // --backbone chatgpt0613long \
-                    // --outdir seonil_scripts/0_RESULTS_v1/math_full_0613long/pt2 \
-                    // --gsm_jslf ../dataset/MATH/MATH-full_pt2.jsonl \
-                    // --dataset_type math \
-                    // --err_idxs_f seonil_scripts/0_RESULTS_v1/math_full_0613long/pt2/chatgpt0613long_model_selection3_math.jsonl.error_idxs
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
             "name": "rims dbg",
-           
+
             "env": {
                 "PYTEST_ADDOPTS": "--numprocesses=auto"
             },
@@ -46,30 +34,22 @@
             "subProcessParentEnvMapping": {
                 "PYTEST_ADDOPTS": "${env:PYTEST_ADDOPTS}"
             }, // multiprocessing
-           
+
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "cwd": "${fileDirname}",
-            "args": ["rims_inference", 
-            "--gsm_jslf", "outputs/gsm8K_test_dt.gsm/chatgpt0613long/model_selection_prompts/03_23_14_35_13.jsonl",
-            "--dataset_type", "gsm",
-            "--prompt_f", "prompt_construction_src/newer_prompts_3/rims_gsm_best.txt",
-            "--dbg",
-            
-            // "--gsm_jslf", "outputs/dbg_others_dt.math/chatgpt0613long/model_selection_prompts/dbg_03_23_13_14_48.jsonl",
-            //     "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt",
-            //     "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt",
-            //     "--dataset_type", "math",
-            // "--dbg",
-
-            
-            // "--gsm_jslf", "outputs/dbg_ocw_dt.ocw/chatgpt0613long/model_selection_prompts/03_23_13_52_23.jsonl",
-            //     "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt"
-            //     "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.pal-cot_-hint-mistakes-attempt1.txt"
-            //     "--dataset_type", "ocw",
-            // "--dbg",
-
+            "args": ["rims_inference",
+                "--dbg",
+                "--backbone", "chatgpt1106",
+                "--gsm_jslf", "outputs/gsm8K_test_dt.gsm/chatgpt1106/model_selection_prompts/dbg_n5.jsonl",
+                "--prompt_f", "prompt_construction_src/newer_prompts_3/renewed_gsm_prompts/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt",
+                    // "--gsm_jslf", "outputs/ocw_course_dt.ocw/chatgpt1106/model_selection_prompts/dbg_n10.jsonl",
+                    // "--dataset_type", "ocw",
+                    // "--prompt_f", "prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt",
+                "--dataset_type", "gsm",
+                "--temperature", "0.7"
+                "--n", "5",
             ],
             "console": "integratedTerminal",
             "justMyCode": true
@@ -81,7 +61,7 @@
             "program": "${file}",
             "cwd": "${fileDirname}",
             "args": [
-                "--eval_jslf", "outputs/ocw_course_dt.ocw/chatgpt0613long/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/03_27_01_00_31.jsonl", 
+                "--eval_jslf", "outputs/ocw_course_dt.ocw/chatgpt0613long/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/03_27_01_00_31.jsonl",
                 "--eval_type", "ocw",
                 "--outf results.txt"
         ],
@@ -96,18 +76,18 @@
             "cwd": "${fileDirname}",
             "args": [
                 // "baseline_inference",
-            // "--backbone", "chatgpt", 
-            // "--outdir", "seonil_scripts/sj_result_fix/dbg", 
+            // "--backbone", "chatgpt",
+            // "--outdir", "seonil_scripts/sj_result_fix/dbg",
             // "--gsm_jslf", "/Users/seonils/dev/rims_minimal/src/seonil_scripts/sj_result_fix/prev/gpt4_MATH-prealgebra_01_21_21_04_model_selection3_startidx0.jsonl",
-            // "--dataset_type", "math", 
-            // "--reuse_selection_if_exist", 
+            // "--dataset_type", "math",
+            // "--reuse_selection_if_exist",
             // "--re_execute_sln",
             // "--start_idx", "2",
             // "--dbg",
             ],
             "console": "integratedTerminal",
             "justMyCode": true,
-        },    
+        },
         {
             "version": "0.2.0",
             "configurations": [

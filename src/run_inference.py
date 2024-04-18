@@ -304,8 +304,6 @@ def rims_complete_row(
             # check if simple_greedy / indiv_inference done correctly
             if row["error"]:
                 raise ValueError(f"skip the row (simple greedy n>1 failed on this row")
-            # clean up for possible contamination
-            del row["candid_answers"]
 
             # use already done's
             majvote_ans = row["majvote_ans"]
@@ -313,6 +311,7 @@ def rims_complete_row(
             # count None's in majvote_ans, and do rims for them. n == count(None)
             to_rims_idx = [i for i, ans in enumerate(majvote_ans) if ans is None]
             n_adj = len(to_rims_idx)
+
             (
                 eval_friendly_d,  # List[Dict]
                 __,
@@ -327,15 +326,47 @@ def rims_complete_row(
                 n=n_adj,
             )
             # get answers and solutions from eval_frinedly_d: List[Dict]
-            raise NotImplementedError("consider n_adj==1")
             if n_adj == 1:
-                raise NotImplemented
-            else:
-                eval_friendly_d_ = aggregate_eval_friendly_ds_to_a_dict(eval_friendly_d)
+                eval_friendly_d = [eval_friendly_d]  # wrap
+                raw_query_out = [raw_query_out]
+                query_msg = query_msg
 
+            eval_friendly_d_: Dict = aggregate_eval_friendly_ds_to_a_dict(
+                eval_friendly_d, raw_query_out, query_msg
+            )
+            idx2chosen_method: Dict = {
+                idx: eval_friendly_d_["good_method"][i]
+                for i, idx in enumerate(to_rims_idx)
+            }
+
+            candid_answers = majvote_ans.copy()
+            for i, idx in enumerate(to_rims_idx):
+                candid_answers[idx] = eval_friendly_d_["good_ans"][i]
+            majority_ans = get_concordant_answer_n(
+                candid_answers, dataset_type=dataset_type
+            )
+
+            # update row
+            row["error"] = False
+            row["error_msg"] = ""
+            row["running_at"] = "rims_complete_row"
+
+            row["majority_ans"] = majority_ans
+            row["idx2chosen_method"] = idx2chosen_method
+            # row["majvote_ans"] = majvote_ans # not changed
+            row["candid_answers"] = candid_answers
+            row["inference_mode"] = [
+                "majority_vote" if majvote_ans is not None else "rims"
+                for majvote_ans in majvote_ans
+            ]
+            row[
+                "dataset_type"
+            ] = dataset_type  # for logging use... overwrite the dataset_type
+            row["prompt_file"] = str(prompt_f)
             row["temperatures"].update(
                 {"rims_temperature": temperature, "n": n, "n_adj": n_adj}
             )
+            row["eval_friendly_d_"] = eval_friendly_d_
 
     except Exception as e:
         print(e)
@@ -376,15 +407,11 @@ def rims_inference(
     err_idxs_f: str = "",
     # dev option
     dbg: bool = False,
+    n_jobs: int = 6,
 ):
     assert prompt_f, f"need to specify {prompt_f=}"
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
     assert dataset_type in "gsm ocw math svamp".split(), f"invalid {dataset_type=}"
-
-    if n > 1:
-        raise NotImplementedError(
-            "n>1 will serve as a self-consistency parameter, not implemented yet"
-        )
 
     # baseline `outdir` was like below
     # outdir = Path("outputs") / f"{Path(gsm_jslf).stem}_dt.{dataset_type}" / backbone / Path(prompt_f).stem
@@ -404,7 +431,12 @@ def rims_inference(
         outdir.mkdir(parents=True)
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
-    outpath = outdir / f"{'dbg_' if dbg else ''}{dt_string}.jsonl"
+    if n == 1:
+        outpath = outdir / f"{'dbg_' if dbg else ''}{'' if dbg else dt_string}.jsonl"
+    else:  # n > 0
+        outpath = (
+            outdir / f"{'dbg_' if dbg else ''}n{n}_{'' if dbg else dt_string}.jsonl"
+        )
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
@@ -440,16 +472,27 @@ def rims_inference(
     )  # df.index == df["index"] and "index" will appear in jsl
 
     # pick conflict only records to efficiently infer, keeping its order intact
-    nonconflict_mask = df.selection_or_rims.apply(
-        lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
-    )  # if "majority_vote" field exists and is True, it's nonconflict
+    if n == 1:
+        nonconflict_mask = df.selection_or_rims.apply(
+            lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
+        )  # if "majority_vote" field exists and is True, it's nonconflict
+    else:  # n > 1
+        nonerr_mask = ~(df.error)
+        df = df[nonerr_mask]  # exclude error rows
+        nonconflict_mask = df.majvote_ans.apply(
+            lambda lst: lst.count(None) == 0
+        )  # check if any non-majority answers
 
     to_process_df = df[~nonconflict_mask]  # get conflicts only
     to_process_df.majority_ans = None  # clean up selection results from previous inference: to avoid contamination!
-    to_process_df = to_process_df.drop(
-        columns=["selection_or_rims"]
-    )  # clean up majority_ans
-
+    if n == 1:
+        to_process_df = to_process_df.drop(
+            columns=["selection_or_rims"]
+        )  # clean up majority_ans
+    else:
+        to_process_df = to_process_df.drop(
+            columns=["candid_answers", "majority_ans"],
+        )
     # cleaned up!
     records_cleansed = to_process_df.to_dict(orient="records")
 
@@ -469,8 +512,9 @@ def rims_inference(
         records_done = records_cleansed
     else:
         records_done = pqdm(
-            records_cleansed, _func, n_jobs=6
-        )  # to avoid BrokenPipe, keep n_jobs<=4 (tested on Mac M1)
+            records_cleansed, _func, n_jobs=n_jobs
+        )  # to avoid BrokenPipe, keep n_jobs<=6 when n == 1
+
         # check records_done for it could contain failed jobs (BrokenPipe) --> dataframe construction will fail
         records_done = [
             row
@@ -498,6 +542,7 @@ def rims_inference(
                 writer_err.write(str(e) + "\n")
                 print(e)
                 print(f"{outpath}.errors")
+    print(f"DONE: \n\t{outpath}")
 
     return
 
@@ -579,23 +624,33 @@ def baseline_complete_row(
             row["inference_mode"] = f"baseline {num_methods} methods"
         else:  # n > 1:
             # ansmap, solmap, plan = List[str] * 3
-            ans_triples = zip(*ansmap.values())
-            sln_triples = zip(*solmap.values())
+            ans_triples = list(zip(*ansmap.values()))
+            sln_triples = list(zip(*solmap.values()))
+            kwargs_keys_selection = (
+                "cot_solution pal_solution p2c_plan_code_solution".split()
+            )
+            selection_kwargs_d_lst: List[Dict] = [
+                dict(zip(kwargs_keys_selection, triple)) for triple in sln_triples
+            ]
+
             majvote_ans: List = [
                 get_concordant_answer(list(triple), dataset_type=dataset_type)
                 for triple in ans_triples
             ]
 
             selection: Callable = partial(
-                query_selection, question, backbone=backbone, dataset_type=dataset_type
+                query_selection, question, backbone, dataset_type=dataset_type
             )
-            # query selection
+            # query simple greedy selection
             to_select_idx: List = [
                 i for i, maj_ans in enumerate(majvote_ans) if maj_ans is None
             ]
+
             idx2chosen_method: Dict = {
-                idx: selection(sln_triple)[0]
-                for idx, sln_triple in zip(to_select_idx, sln_triples)
+                idx: selection(**selection_kwargs_d)[0]
+                for idx, selection_kwargs_d in zip(
+                    to_select_idx, selection_kwargs_d_lst
+                )
             }
             idx2chosen_ans: Dict = {
                 idx: ansmap[chosen_method][idx]
@@ -621,7 +676,9 @@ def baseline_complete_row(
             row["majvote_ans"] = majvote_ans
             row["candid_answers"] = candid_answers  # for debug use
             row["inference_mode"] = [
-                "majority_vote" if majvote_ans is not None else "selection"
+                "majority_vote"
+                if majvote_ans is not None
+                else "model-selection-baseline"
                 for majvote_ans in majvote_ans
             ]
             row["dataset_type"] = dataset_type
@@ -645,7 +702,7 @@ def baseline_complete_row(
             row["idx2chosen_method"] = None
             row["majvote_ans"] = None
             row["candid_answers"] = None
-            row["inference_mode"] = "selection"
+            row["inference_mode"] = None
             row["dataset_type"] = dataset_type
             row["prompt_file"] = prompt_f
             row["temperatures"] = {
@@ -672,6 +729,7 @@ def baseline_inference(
     seed: int = 777,
     # dev option
     dbg: bool = False,
+    n_jobs: int = 4,
 ):
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
     assert dataset_type in "gsm ocw math svamp".split(), f"invalid {dataset_type=}"
@@ -700,7 +758,12 @@ def baseline_inference(
         outdir.mkdir(parents=True)
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
-    outpath = outdir / f"{'dbg_' if dbg else ''}{dt_string}.jsonl"
+    if n == 1:
+        outpath = outdir / f"{'dbg_' if dbg else ''}{'' if dbg else dt_string}.jsonl"
+    else:
+        outpath = (
+            outdir / f"{'dbg_' if dbg else ''}n{n}_{'' if dbg else dt_string}.jsonl"
+        )
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:
@@ -735,14 +798,15 @@ def baseline_inference(
     print(f"writing to \n\t{outpath}\n\n\n\n")
 
     if dbg:
+        records = records[:10]  # len 10
         for row in tqdm(records):
             out = _func(row)
             row = out
         records_done = records
     else:
         records_done = pqdm(
-            records, _func, n_jobs=4
-        )  # to avoid BrokenPipe, keep n_jobs<=4 for baseline
+            records, _func, n_jobs=n_jobs
+        )  # to avoid BrokenPipe, keep n_jobs<=4 for baseline when n==1
 
     with jsl.open(outpath, "w") as writer, open(
         f"{outpath}.errors", "w"
@@ -761,7 +825,8 @@ def baseline_inference(
                 print(f"{outpath}.errors")
                 print(f"{outpath}.error_idx")
 
-        return
+    print(f"DONE: \n\t{outpath}")
+    return
 
 
 if __name__ == "__main__":

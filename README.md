@@ -35,13 +35,13 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
   - [x] baseline_complete_row
   - [x] indiv_inference
   - [x] rims_complete_row
-    - [ ] 왜 raw output만 output파일에 안남는 것일까??
+    - [ ] 왜 raw output만 output파일에 안남는 것일까?? 자고 깨서 보면 보일듯
   - [x] dbg
   - [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
   - [ ] `run_evaluation_new_n.py`: will eval the results
-- [ ] ?conversion to async for performance? -- required, but not for chatgpt
+- [ ] ?conversion to async for performance? -- required, might not be necessary for chatgpt...
   - ~4x speedup expected... for SC=15
-  - chatgpt + SC 15 + math (5000 rows) --> 36 hours
+  - chatgpt + SC 15 + math (5000 rows) / 36 hours expected..
     - gpt4turbo? :dead:
 
 ### SJ

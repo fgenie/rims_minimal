@@ -35,6 +35,7 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
   - [x] baseline_complete_row
   - [x] indiv_inference
   - [x] rims_complete_row
+    - [ ] 왜 raw output만 output파일에 안남는 것일까??
   - [x] dbg
   - [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
   - [ ] `run_evaluation_new_n.py`: will eval the results

@@ -33,7 +33,7 @@ for MODEL in $OPEN $LLM $YOU $WANT; do
 
     python run_inference.py baseline_inference \
                     --backbone $MODEL \
-                    --gsm_jslf ../dataset/ocw/ocw_courses.jsonl \
+                    --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
                     --dataset_type ocw
 
     python run_inference.py baseline_inference \

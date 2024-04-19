@@ -211,78 +211,77 @@ def query_plancode(
         messages=plan_query_msg,
         temperature=plan_temperature,
         top_p=1.0,
-        n=n,
+        # n=n,
+        n=1,  # plan*1 + code*n (bad for p2c acc but perf. consideration)
         mode="plan",
         seed=seed,
     )
 
-    if n == 1:
-        if plan:
-            code_query_msg = get_plan2code_prompt(
-                question, plan=plan, k_fewshot=k_fewshot
+    # if n == 1:
+    if plan:
+        code_query_msg = get_plan2code_prompt(question, plan=plan, k_fewshot=k_fewshot)
+        # print(code_query_msg)
+        code, _ = _query(
+            model_name=model_name,
+            max_tokens=1024,
+            stop="Question: ",
+            messages=code_query_msg,
+            temperature=code_temperature,
+            top_p=1.0,
+            n=n,
+            mode="code",
+            seed=seed,
+        )  # ,
+        if not code:
+            return (
+                [None],
+                [plan],
+                {"codequery": code_query_msg, "planquery": plan_query_msg},
             )
-            # print(code_query_msg)
-            code, _ = _query(
-                model_name=model_name,
-                max_tokens=1024,
-                stop="Question: ",
-                messages=code_query_msg,
-                temperature=code_temperature,
-                top_p=1.0,
-                n=n,
-                mode="code",
-                seed=seed,
-            )  # ,
-            if not code:
-                return (
-                    [None],
-                    [plan],
-                    {"codequery": code_query_msg, "planquery": plan_query_msg},
-                )
-            else:
-                return (
-                    [code],  # if n == 1 else code,
-                    [plan],
-                    {"codequery": code_query_msg, "planquery": plan_query_msg},
-                )
         else:
-            return None, None, {"codequery": None, "planquery": plan_query_msg}
-    else:  # n>1
-        if plan:
-            plans = plan
-            code_query_msgs = [
-                get_plan2code_prompt(question, plan=p, k_fewshot=k_fewshot)
-                for p in plans
-            ]
-            codes = [
-                _query(
-                    model_name=model_name,
-                    max_tokens=1024,
-                    stop="Question: ",
-                    messages=cqm,
-                    temperature=code_temperature,
-                    top_p=1.0,
-                    n=1,
-                    mode="code",
-                    seed=seed,
-                )[0]
-                for cqm in code_query_msgs
-            ]  # it is O(n) times slow... OMG...
+            return (
+                [code] if n == 1 else code,  # n>0 --> List[str]
+                [plan],
+                {"codequery": code_query_msg, "planquery": plan_query_msg},
+            )
+    else:
+        return None, None, {"codequery": None, "planquery": plan_query_msg}
+    # else:  # n>1
+    #     if plan:
+    #         plans = plan
+    #         code_query_msgs = [
+    #             get_plan2code_prompt(question, plan=p, k_fewshot=k_fewshot)
+    #             for p in plans
+    #         ]
+    #         codes = [
+    #             _query(
+    #                 model_name=model_name,
+    #                 max_tokens=1024,
+    #                 stop="Question: ",
+    #                 messages=cqm,
+    #                 temperature=code_temperature,
+    #                 top_p=1.0,
+    #                 n=n,
+    #                 mode="code",
+    #                 seed=seed,
+    #             )[0]
+    #             for cqm in code_query_msgs
+    #         ]  # it is O(n) times slow... OMG...
 
-            if not codes:
-                return (
-                    [None] * n,
-                    plans,
-                    {"codequery": code_query_msgs, "planquery": plan_query_msg},
-                )
-            else:
-                return (
-                    codes,
-                    plans,
-                    {"codequery": code_query_msgs, "planquery": plan_query_msg},
-                )
-        else:
-            return None, None, {"codequery": None, "planquery": plan_query_msg}
+    #         if not codes:
+    #             return (
+    #                 [None] * n,
+    #                 plans,
+    #                 {"codequery": code_query_msgs, "planquery": plan_query_msg},
+    #             )
+    #         else:
+    #             return (
+    #                 codes,
+    #                 plans,
+    #                 {"codequery": code_query_msgs, "planquery": plan_query_msg},
+    #             )
+    #     else:
+    #         return None, None, {"codequery": None, "planquery": plan_query_msg}
 
 
 # @CountTokens

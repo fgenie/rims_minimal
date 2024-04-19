@@ -102,12 +102,6 @@ def indiv_inference(
             )
     # check cot already exists or do query
     if "cot" in missing_methods:
-        cot_max_tokens_d = {
-            "gsm": 400,
-            "ocw": 850,
-            "math": 950,
-        }
-
         cot_lst, _msgs, _ = query_cot(
             question,
             dataset_type=dataset_type,
@@ -115,7 +109,6 @@ def indiv_inference(
             n=n,
             backbone=backbone,
             seed=seed,
-            max_tokens=cot_max_tokens_d[dataset_type],
         )
         # dbgf=f"cot_debug_{dataset_type}.jsonl"
         # if not Path(dbgf).exists():
@@ -140,11 +133,6 @@ def indiv_inference(
 
     # check pal already exists or do query
     if "pal" in missing_methods:
-        pal_max_tokens_d = {
-            "gsm": 350,
-            "ocw": 500,
-            "math": 400,
-        }
         pal_lst, __msgs, _ = query_pal(
             question,
             temperature=pal_temperature,
@@ -152,7 +140,6 @@ def indiv_inference(
             backbone=backbone,
             seed=seed,
             dataset_type=dataset_type,
-            max_tokens=pal_max_tokens_d[dataset_type],
         )
         if n == 1:
             pal_sol = pal_lst.pop()
@@ -179,7 +166,6 @@ def indiv_inference(
                 backbone=backbone,
                 n=n,
                 seed=seed,
-                dataset_type=dataset_type,  # for max_token
             )
             # dbgf=f"p2c_debug_{dataset_type}.jsonl"
             # if not Path(dbgf).exists():
@@ -290,6 +276,25 @@ def rims_complete_row(
                 ] = eval_friendly_d  # this contains all we need depicted above
                 row["majority_ans"] = eval_friendly_d["good_ans"]
 
+                # # below is for, when only run maj*1+rims*n (abandonned option)
+                # if n == 1:
+                #     eval_friendly_d.update(
+                #         {"raw_query_out": raw_query_out, "query_msg": query_msg}
+                #     )
+                #     row[
+                #         "selection_or_rims"
+                #     ] = eval_friendly_d  # this contains all we need depicted above
+                #     row["majority_ans"] = eval_friendly_d["good_ans"]
+                # else:  # n > 1
+                #     if not eval_friendly_d > 0:
+                #         raise ValueError(f"len(eval_friendly_d)<1 while {n=}")
+                #     eval_friendly_d = aggregate_eval_friendly_ds_to_a_dict(
+                #         eval_friendly_d, raw_query_out, query_msg
+                #     )
+                #     row["selection_or_rims"] = eval_friendly_d
+                #     row["majority_ans"] = get_concordant_answer_n(
+                #         eval_friendly_d["good_ans"], dataset_type=dataset_type
+                #     )
             else:
                 row["selection_or_rims"] = {"majority_vote": True}
                 row["majority_ans"] = majority_ans
@@ -427,9 +432,11 @@ def rims_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}rims.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}{'' if dbg else dt_string}.jsonl"
     else:  # n > 0
-        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_rims.jsonl"
+        outpath = (
+            outdir / f"{'dbg_' if dbg else ''}n{n}_{'' if dbg else dt_string}.jsonl"
+        )
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
@@ -518,7 +525,6 @@ def rims_inference(
     # nonconflict and processed conflict set of records remerged w/o index change
     df_done = pd.DataFrame(records_done)
     df_done = df_done.set_index("index", drop=False)
-    df["eval_friendly_d_"] = None
     df.loc[
         df_done.index
     ] = df_done  # updating only selection-done rows in the original df
@@ -753,9 +759,11 @@ def baseline_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}baseline.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}{'' if dbg else dt_string}.jsonl"
     else:
-        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
+        outpath = (
+            outdir / f"{'dbg_' if dbg else ''}n{n}_{'' if dbg else dt_string}.jsonl"
+        )
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

@@ -44,9 +44,9 @@ done
 
 
 ## rims run
-BASELINE_RESULT_JSL_GSM=
-BASELINE_RESULT_JSL_OCW=
-BASELINE_RESULT_JSL_MATH=
+BASELINE_RESULT_JSL_GSM=somepath/thatprints/afterbaselinerun/or/see/code/baseline.jsonl
+BASELINE_RESULT_JSL_OCW=somepath/thatprints/afterbaselinerun/or/see/code/baseline.jsonl
+BASELINE_RESULT_JSL_MATH=somepath/thatprints/afterbaselinerun/or/see/code/baseline.jsonl
 ### gsm
 for MODEL in $OPEN $LLM $YOU $WANT; do
     for GSMPROMPT in $GSM_RIMS_RW $GSM_RIMS_RW_1 $GSM_RIMS_RW_2; do
@@ -99,7 +99,7 @@ for MODEL in $OPEN $LLM $YOU $WANT; do
 done
 
 
-PREV_RESULT_JSL=
+PREV_RESULT_JSL=somepath/thatprints/afterbaselinerun/or/see/code/n15_baseline.jsonl
 
 for MODEL in $OPEN $LLM $YOU $WANT; do
     python run_inference.py rims_inference \

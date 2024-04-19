@@ -25,7 +25,7 @@ client = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
     api_version="2024-03-01-preview",
-    timeout=60,
+    timeout=120,
     max_retries=10,
 )
 
@@ -86,7 +86,7 @@ def query_cot(
     backbone: str = "chatgpt",
     n: int = 1,
     seed: int = 777,
-    max_tokens: int = 1024,
+    max_tokens: int = 950,
 ):
     """
     This function is used to query OpenAI for CoT solutions.
@@ -178,7 +178,8 @@ def query_plancode(
     backbone: str = "chatgpt1106",  # "gpt-3.5-turbo-16k-0613",
     n=1,
     seed: int = 777,
-    max_tokens: int = 1024,
+    dataset_type: str = "gsm",  # ocw math
+    # max_tokens: int = 1024,
 ):
     """
     PAL variant:
@@ -204,9 +205,21 @@ def query_plancode(
     # generate plan (retry included)
     plan_query_msg = get_plan_prompt(question, k_fewshot=k_fewshot)
     # print(plan_query_msg)
+
+    plan_max_tokens_d = {
+        "gsm": 400,
+        "ocw": 400,
+        "math": 400,
+    }
+    code_max_tokens_d = {
+        "gsm": 530,
+        "ocw": 850,
+        "math": 700,
+    }
+
     plan, _ = _query(
         model_name=model_name,
-        max_tokens=max_tokens,
+        max_tokens=plan_max_tokens_d[dataset_type],
         stop="Question: ",
         messages=plan_query_msg,
         temperature=plan_temperature,
@@ -223,7 +236,7 @@ def query_plancode(
         # print(code_query_msg)
         code, _ = _query(
             model_name=model_name,
-            max_tokens=1024,
+            max_tokens=code_max_tokens_d[dataset_type],
             stop="Question: ",
             messages=code_query_msg,
             temperature=code_temperature,
@@ -292,6 +305,7 @@ def query_pal(
     n=1,
     seed=777,
     dataset_type: Literal["gsm", "ocw", "math", "svamp"] = None,
+    max_tokens: int = 500,
 ):
     """
     This function is used to query OpenAI for PAL solutions.
@@ -317,7 +331,7 @@ def query_pal(
     completions = []
     resp = client.chat.completions.create(
         model=model_name,
-        max_tokens=1024,
+        max_tokens=max_tokens,
         stop="\n\n\n",
         messages=query_message,
         temperature=temperature,
@@ -338,7 +352,7 @@ def query_selection(
     cot_solution: str = "",
     pal_solution: str = "",
     p2c_plan_code_solution: str = "",  # former, this was actually List[str] and get_select_prompt() did pop()'d p2c solution out of list... which is super ugly and confusing
-    max_tokens: int = 400,
+    max_tokens: int = 150,
     temperature: float = 0.0,  # will not be modified
     n: int = 1,  # will not be used
 ):
@@ -398,8 +412,7 @@ def query_rims_inference(
     backbone: str,
     temperature: float = 0.0,
     n: int = 1,
-    max_tokens: int = 1024
-    + 600,  # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
+    max_tokens: int = 1450,  # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
     # continue_writing_gpt_messages: list = None,
     stop_tok=None,
 ) -> tuple:

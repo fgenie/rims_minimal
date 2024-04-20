@@ -55,15 +55,14 @@
             "justMyCode": true
         },
         {
-            "name": "eval dbg",
+            "name": "eval_n dbg",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "cwd": "${fileDirname}",
             "args": [
-                "--eval_jslf", "outputs/ocw_course_dt.ocw/chatgpt0613long/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/03_27_01_00_31.jsonl",
+                "--ptn", "outputs/ocw_course_dt.ocw/chatgpt1106/**/n5_baseline.jsonl",
                 "--eval_type", "ocw",
-                "--outf results.txt"
         ],
             "console": "integratedTerminal",
             "justMyCode": true

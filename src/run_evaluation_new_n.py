@@ -68,7 +68,6 @@ from utils.math_util import gsm_check_answer, math_check_answer, ocw_check_answe
 tqdm.pandas()
 
 
-# eval functions with exception handled (like len(df)==0)
 def eval_gsm_svamp(
     df, return_flag: bool = False, submission_col_already_exists: bool = False
 ):
@@ -76,8 +75,15 @@ def eval_gsm_svamp(
         df["submission"] = df.majority_ans
     df.submission = df.submission.astype("str")
     equiv_flag = df.progress_apply(
-        lambda row: gsm_check_answer(row.submission, row.answer), axis=1
+        lambda row: gsm_check_answer(row.submission, row.answer)
+        if not isinstance(row.submission, list)
+        else (  # this part is for n>1 scenario. math/ocw will return top-2 candids if they are joint 1st-place.
+            gsm_check_answer(row.submission[0], row.answer)
+            or gsm_check_answer(row.submission[1], row.answer)
+        ),
+        axis=1,
     )
+
     if return_flag:
         return equiv_flag
     else:
@@ -136,6 +142,9 @@ def main(
     for jslf in paths:
         # load data
         df = pd.DataFrame(jsl.open(jslf))
+        df = df.drop_duplicates(
+            subset=["problem" if eval_type == "ocw" else "question"]
+        )
 
         # logfile open
         f = open(outf, "a")
@@ -155,9 +164,8 @@ def main(
         # overall acc. / success rate base_rims / num(maj, (base or rims), failed)
         print("=======overall performance=======", file=f)
         fail_mask = df.error
-        majority_vote_mask = df.selection_or_rims.apply(
-            lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
-        )
+        df = df[~fail_mask]
+        majority_vote_mask = df.majvote_ans.apply(lambda lst: lst.count(None) == 0)
 
         corrects_mask = eval_f(df, return_flag=True)
 

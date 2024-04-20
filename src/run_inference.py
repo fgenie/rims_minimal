@@ -431,9 +431,9 @@ def rims_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}rims.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}rims_T{temperature}.jsonl"
     else:  # n > 0
-        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_rims.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_rims_T{temperature}.jsonl"
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]

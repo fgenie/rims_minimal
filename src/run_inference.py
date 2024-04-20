@@ -340,6 +340,10 @@ def rims_complete_row(
             majority_ans = get_concordant_answer_n(
                 candid_answers, dataset_type=dataset_type
             )
+            # try get no-None answer from candid_answers at least.
+            if majority_ans is None:
+                nonone_answers = [a for a in majvote_ans if a is not None]
+                majority_ans = nonone_answers[:1]
 
             # update row
             row["error"] = False
@@ -659,11 +663,15 @@ def baseline_complete_row(
             majority_ans = get_concordant_answer_n(
                 candid_answers, dataset_type=dataset_type
             )
+            # try get no-None answer from candid_answers at least.
+            if majority_ans is None:
+                nonone_answers = [a for a in majvote_ans if a is not None]
+                majority_ans = nonone_answers[:1]
 
             # update row: need to consider later it will be reused for rims inferencing.
             row["error"] = False
             row["error_msg"] = ""
-            row["runnning_at"] = "baseline_complete_row"
+            row["running_at"] = "baseline_complete_row"
 
             row["majority_ans"] = majority_ans
             row["idx2chosen_method"] = idx2chosen_method

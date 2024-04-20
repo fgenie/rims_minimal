@@ -52,3 +52,145 @@ rims
 # for math and ocw
 #   majority_ans: List (length 1 or 2)
 # if 2, check if any of those are correct (considers correct if any of them are correct)
+
+
+from pathlib import Path
+from typing import Literal
+
+import jsonlines as jsl
+import numpy as np
+import pandas as pd
+from fire import Fire
+from tqdm import tqdm
+
+from utils.math_util import gsm_check_answer, math_check_answer, ocw_check_answer
+
+tqdm.pandas()
+
+
+# eval functions with exception handled (like len(df)==0)
+def eval_gsm_svamp(
+    df, return_flag: bool = False, submission_col_already_exists: bool = False
+):
+    if not submission_col_already_exists:
+        df["submission"] = df.majority_ans
+    df.submission = df.submission.astype("str")
+    equiv_flag = df.progress_apply(
+        lambda row: gsm_check_answer(row.submission, row.answer), axis=1
+    )
+    if return_flag:
+        return equiv_flag
+    else:
+        return equiv_flag.sum() if len(df) > 0 else 0
+
+
+def eval_math(
+    df, return_flag: bool = False, submission_col_already_exists: bool = False
+):
+    if not submission_col_already_exists:
+        df["submission"] = df.majority_ans
+    df.submission = df.submission.astype("str")
+    equiv_flag = df.progress_apply(
+        lambda row: math_check_answer(row.submission, row.answer)
+        if not isinstance(row.submission, list)
+        else (  # this part is for n>1 scenario. math/ocw will return top-2 candids if they are joint 1st-place.
+            math_check_answer(row.submission[0], row.answer)
+            or math_check_answer(row.submission[1], row.answer)
+        ),
+        axis=1,
+    )
+    if return_flag:
+        return equiv_flag
+    else:
+        return equiv_flag.sum() if len(df) > 0 else 0
+
+
+def eval_ocw(
+    df, return_flag: bool = False, submission_col_already_exists: bool = False
+):
+    if not submission_col_already_exists:
+        df["submission"] = df.majority_ans
+    df.submission = df.submission.astype("str")
+    equiv_flag = df.progress_apply(
+        lambda row: ocw_check_answer(row.submission, row.answer)
+        if not isinstance(row.submission, list)
+        else (  # this part is for n>1 scenario. math/ocw will return top-2 candids if they are joint 1st-place.
+            ocw_check_answer(row.submission[0], row.answer)
+            or ocw_check_answer(row.submission[1], row.answer)
+        ),
+        axis=1,
+    )
+    if return_flag:
+        return equiv_flag if len(df) > 0 else 0
+    else:
+        return equiv_flag.sum() if len(df) > 0 else 0
+
+
+def main(
+    ptn: str = "outputs/ocw_course_dt.ocw/gpt4turbo/*/*jsonl",
+    eval_type: Literal["gsm", "math", "ocw", "svamp"] = "ocw",
+    outf: str = "testout.txt",
+):
+    # get jsonl files
+    paths = list(Path().glob(ptn))
+    for jslf in paths:
+        # load data
+        df = pd.DataFrame(jsl.open(jslf))
+
+        # logfile open
+        f = open(outf, "a")
+
+        eval_type2eval_f = {
+            "gsm": eval_gsm_svamp,
+            "math": eval_math,
+            "ocw": eval_ocw,
+        }
+
+        eval_f = eval_type2eval_f[eval_type]
+
+        # indiv performance
+        total = len(df)
+
+        # performance overall
+        # overall acc. / success rate base_rims / num(maj, (base or rims), failed)
+        print("=======overall performance=======", file=f)
+        fail_mask = df.error
+        majority_vote_mask = df.selection_or_rims.apply(
+            lambda d: d["majority_vote"] if "majority_vote" in d.keys() else False
+        )
+
+        corrects_mask = eval_f(df, return_flag=True)
+
+        # fillna first to avoid error
+        fail_mask, majority_vote_mask, corrects_mask = map(
+            lambda x: x.fillna(False), [fail_mask, majority_vote_mask, corrects_mask]
+        )
+
+        # overall acc.
+        total = len(df)
+        num_maj = majority_vote_mask.sum()
+        num_fails = fail_mask.sum()
+        corrects = corrects_mask.sum(), total
+        successes = (corrects_mask & (~majority_vote_mask)).sum(), total - num_maj
+        print(f"file    = {jslf}", file=f)
+        print(f"dataset = {eval_type} ({total} rows)", file=f)
+
+        print(
+            f"overall_acc:\t{corrects[0]:<5}/ {total:>4} ({corrects[0]/total*100:.1f}%)",
+            file=f,
+        )
+        print(
+            f"success_rate:\t{successes[0]:<5}/ {successes[1]:>4} ({successes[0]/successes[1]*100:.1f}%)",
+            file=f,
+        )
+        print(
+            f"{total} (total) = \n\t{total-num_maj} (seleciton) \n\t+ {num_maj} (maj-votes) \n\t+ {num_fails} (fails: counted as incorrect)",
+            file=f,
+        )
+        print("=====================================\n\n", file=f)
+
+        f.close()
+
+
+if __name__ == "__main__":
+    Fire(main)

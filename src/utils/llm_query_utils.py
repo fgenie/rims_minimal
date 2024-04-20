@@ -1536,6 +1536,8 @@ def get_concordant_answer_n(
     n>3 version of the get_concordant_answer
     """
     answers_no_none = [a for a in answers if (a is not None and a != "None")]
+    if not answers_no_none:
+        return None
 
     if dataset_type in ["svamp", "gsm"]:
         # relatively, arithmetics has less need for tolerance comparison. So, we can use Counter first.

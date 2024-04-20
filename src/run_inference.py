@@ -668,7 +668,7 @@ def baseline_complete_row(
             # update row: need to consider later it will be reused for rims inferencing.
             row["error"] = False
             row["error_msg"] = ""
-            row["runnning_at"] = "baseline_complete_row"
+            row["running_at"] = "baseline_complete_row"
 
             row["majority_ans"] = majority_ans
             row["idx2chosen_method"] = idx2chosen_method

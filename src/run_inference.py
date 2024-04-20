@@ -432,11 +432,9 @@ def rims_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}{'' if dbg else dt_string}.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}rims.jsonl"
     else:  # n > 0
-        outpath = (
-            outdir / f"{'dbg_' if dbg else ''}n{n}_{'' if dbg else dt_string}.jsonl"
-        )
+        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_rims.jsonl"
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
@@ -525,6 +523,7 @@ def rims_inference(
     # nonconflict and processed conflict set of records remerged w/o index change
     df_done = pd.DataFrame(records_done)
     df_done = df_done.set_index("index", drop=False)
+    df["eval_friendly_d_"] = None
     df.loc[
         df_done.index
     ] = df_done  # updating only selection-done rows in the original df
@@ -759,11 +758,9 @@ def baseline_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}{'' if dbg else dt_string}.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}baseline.jsonl"
     else:
-        outpath = (
-            outdir / f"{'dbg_' if dbg else ''}n{n}_{'' if dbg else dt_string}.jsonl"
-        )
+        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

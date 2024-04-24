@@ -31,18 +31,10 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 
 ## TODO
 ### SI
-- [x] implement n>1 case
-  - [x] baseline_complete_row
-  - [x] indiv_inference
-  - [x] rims_complete_row
-    - [ ] 왜 raw output만 output파일에 안남는 것일까?? 자고 깨서 보면 보일듯
-  - [x] dbg
-  - [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
-  - [ ] `run_evaluation_new_n.py`: will eval the results
-- [ ] ?conversion to async for performance? -- required, might not be necessary for chatgpt...
-  - ~4x speedup expected... for SC=15
-  - chatgpt + SC 15 + math (5000 rows) / 36 hours expected..
-    - gpt4turbo? :dead:
+- [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
+- [ ] why several (~8) lines missing from OCW_RIMS@SC5 results ?
+
+
 
 ### SJ
 - [ ] opensource LLM

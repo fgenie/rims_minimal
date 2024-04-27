@@ -1,11 +1,14 @@
 from concurrent.futures.process import BrokenProcessPool
 from datetime import datetime
 from functools import partial
+from random import random
+from time import sleep
 from typing import Any, Callable, Dict, List, Literal
 
 import jsonlines as jsl
 import pandas as pd
 from fire import Fire
+from openai import _exceptions
 from pqdm.processes import pqdm
 from tqdm import tqdm
 
@@ -388,6 +391,8 @@ def rims_complete_row(
             row["dataset_type"] = dataset_type
             row["prompt_file"] = prompt_f
             row["temperatures"].update({"rims_temperature": temperature, "n": n})
+        if isinstance(e, _exceptions.RateLimitError):
+            sleep(random() * 30 + 30)
     return row
 
 

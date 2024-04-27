@@ -29,7 +29,7 @@ client = AzureOpenAI(
     max_retries=10,
 )
 
-# # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
+# # # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
 # client = AzureOpenAI(
 #     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
 #     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),

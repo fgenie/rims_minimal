@@ -20,11 +20,10 @@ python run_inference.py baseline_inference \
 	--backbone chatgpt1106 \
 	--gsm_jslf ../dataset/MATH/MATH-full.jsonl \
 	--dataset_type math \
-	--n 5 --n_jobs 5
+	--n 5 --n_jobs 6
 
 python run_inference.py baseline_inference \
         --backbone chatgpt1106 \
         --gsm_jslf ../dataset/MATH/MATH-full.jsonl \
         --dataset_type math \
-        --n 10 \
-        --n_jobs 3
+        --n 10 --n_jobs 4

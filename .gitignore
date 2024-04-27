@@ -5,7 +5,8 @@ openai_key.txt
 src/eval_each.sh
 src/result.txt
 src/testout.txt
-outputs_dgx/
+src/math_baseline_pt123_n15.out
+# outputs_dgx/
 
 #  local only
 __pycache__/

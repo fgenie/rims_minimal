@@ -31,8 +31,17 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 
 ## TODO
 ### SI
-- [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
+- [ ] fuck. let us just try to implement the run to be more efficient
 - [ ] why several (~8) lines missing from OCW_RIMS@SC5 results ?
+  - [ ] **revisit error handling of SC experiments**
+- [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
+- [ ] do leftovers
+  - error lines of baseline run
+  - missing lines of rims run
+- [ ] analyses
+  - [ ] SC+single method accuracy
+  - [ ] detailed analyses on what makes SC so helpful (expected domination of majvote but... what proportion did rims/simple did the job?)
+    - [ ] how many examples had highly un-agreed answers
 
 
 

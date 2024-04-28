@@ -52,7 +52,9 @@ done
 
 
 PTNRI=outputs_dgx/ocw_course_dt.ocw/chatgpt1106/**/n10_rims_T*.jsonl
-for PTN in $PTNRI; do
+PTNBL=outputs_dgx/ocw_course_dt.ocw/chatgpt1106/**/n10_baseline*.jsonl
+# for PTN in $PTNRI; do
+for PTN in $PTNBL; do
     python run_evaluation_new_n.py \
         --ptn $PTN \
         --eval_type ocw

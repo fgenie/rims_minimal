@@ -32,7 +32,7 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 ## TODO
 ### SI
 - [ ] fuck. let us just try to implement the run to be more efficient
-- [ ] why several (~8) lines missing from OCW_RIMS@SC5 results ?
+- [x] why several (~8) lines missing from OCW_RIMS@SC5 results ? --> api error of baseline + failure in rims
   - [ ] **revisit error handling of SC experiments**
 - [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
 - [ ] do leftovers

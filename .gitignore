@@ -6,7 +6,8 @@ src/eval_each.sh
 src/result.txt
 src/testout.txt
 src/math_baseline_pt123_n15.out
-# outputs_dgx/
+outputs_dgx/
+outputs_dgx_gpt4turbo/
 
 #  local only
 __pycache__/
@@ -22,3 +23,4 @@ src/prompt_construction_src/tests/*.jsonl
 src/prompt_construction_src/tests/*.json
 src/gather_results.md
 src/testout.md
+src/result_table.md

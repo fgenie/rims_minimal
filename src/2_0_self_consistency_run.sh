@@ -53,7 +53,6 @@ done
 
 PTNRI=outputs_dgx/ocw_course_dt.ocw/chatgpt1106/**/n10_rims_T*.jsonl
 PTNBL=outputs_dgx/ocw_course_dt.ocw/chatgpt1106/**/n10_baseline*.jsonl
-# for PTN in $PTNRI; do
 for PTN in $PTNBL; do
     python run_evaluation_new_n.py \
         --ptn $PTN \
@@ -91,4 +90,33 @@ for PTN in $PTNBL $PTNRI; do
     python run_evaluation_new_n.py \
         --ptn $PTN \
         --eval_type gsm
+done
+
+
+
+
+MATH_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt
+MATH_RIMS_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1
+MATH_BASELINE5_CHAT=outputs/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
+
+for T in 0.2 0.5; do
+    for PROMPT in $MATH_RIMS $MATH_RIMS1; do
+        python run_inference.py rims_inference \
+            --backbone chatgpt1106 \
+            --gsm_jslf $MATH_BASELINE5_CHAT \
+            --dataset_type math \
+            --temperature $T \
+            --prompt_f $PROMPT \
+            --n 5 \
+            --n_jobs 8
+    done
+done
+
+
+PTNRI=outputs/MATH-full_dt.math/chatgpt1106/**/n5_rims_T*.jsonl
+PTNBL=outputs/MATH-full_dt.math/chatgpt1106/**/n5_baseline*.jsonl
+for PTN in $PTNBL $PTNRI; do
+    python run_evaluation_new_n.py \
+        --ptn $PTN \
+        --eval_type math
 done

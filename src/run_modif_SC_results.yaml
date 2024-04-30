@@ -1,0 +1,12 @@
+to_merge:
+    gpt4turbo_ocw_SC15:
+        - sc5.jsonl
+        - sc10.jsonl
+
+    chatgpt1106_gsm_SC15: # saving name
+        - sc5.jsonl
+        - sc10.jsonl
+
+to_split:
+    - sc15.jsonl
+    - sc15_1.jsonl # will be renamed with SC5, SC10...

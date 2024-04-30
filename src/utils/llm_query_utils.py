@@ -21,22 +21,22 @@ THIS_PARENT = Path(__file__).parent.resolve()
 # Construct the path to the openai_key.txt file
 
 
-client = AzureOpenAI(
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version="2024-03-01-preview",
-    timeout=120,
-    max_retries=10,
-)
-
-# # # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
 # client = AzureOpenAI(
-#     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
-#     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
-#     api_version="2023-07-01-preview",
+#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+#     api_version="2024-03-01-preview",
 #     timeout=120,
-#     max_retries=4,
+#     max_retries=10,
 # )
+
+# # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
+client = AzureOpenAI(
+    azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
+    api_version="2023-07-01-preview",
+    timeout=120,
+    max_retries=4,
+)
 
 # # vllm/openai server that serves chatmodel
 # client = OpenAI(

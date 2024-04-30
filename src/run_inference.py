@@ -85,14 +85,18 @@ def indiv_inference(
 
     # check for already-done indiv methods
     if "ansmap" in row.keys() and "solmap" in row.keys():
-        if row["ansmap"] and row["solmap"]:
+        if isinstance(row["ansmap"], dict) and isinstance(row["solmap"], dict):
             ansmap = row["ansmap"]
             solmap = row["solmap"]
             missing_methods = []
             for method in ["cot", "pal", "p2c"]:
-                if method not in ansmap.keys():
+                if method not in ansmap.keys() or method not in solmap.keys():
                     if not ansmap[method]:
                         missing_methods.append(method)
+        else:
+            missing_methods = "cot pal p2c".split()
+            ansmap = dict()
+            solmap = dict()
     else:
         missing_methods = "cot pal p2c".split()
         ansmap = dict()
@@ -756,7 +760,7 @@ def baseline_inference(
     # outpath = outputs/{dataset_stem}/{prompt_stem}/{now}.jsonl
     outdir = (
         Path("outputs")
-        / f"{Path(gsm_jslf).stem}_dt.{dataset_type}"
+        / f"{Path(gsm_jslf).stem}_dt.{dataset_type}"  # err_n10_baseline_dt.{dataset_type} / backbone / Path(prompt_f).stem
         / backbone
         / Path(prompt_f).stem
     )
@@ -764,7 +768,7 @@ def baseline_inference(
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
-    dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
+    # dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
         outpath = outdir / f"{'dbg_' if dbg else ''}baseline.jsonl"
     else:

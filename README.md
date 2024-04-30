@@ -31,15 +31,27 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 
 ## TODO
 ### SI
-- [ ] fuck. let us just try to implement the run to be more efficient
+- [ ] `openlimit-->ratelimit`
 - [x] why several (~8) lines missing from OCW_RIMS@SC5 results ? --> api error of baseline + failure in rims
-  - [ ] **revisit error handling of SC experiments**
-- [ ] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
-- [ ] do leftovers
+  - [x] first baseline fails (api quota) --> removed in rims + failures
+- [x] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
+  - [x] merging
+  - [x] splitting
+  - [ ] yaml file
+  - [ ] dbg
+- 2_1_leftovers.sh
+  - [ ] chatgpt -math SC5
+  - [ ] gpt4turbo -math SC5 ~4k rows
+- 2_2_leftovers_rims_after_merge.sh
+  - [ ] chatgpt1106
+  - [ ] math gpt4turbo
+  - [x] others gpt4turbo
+- [x] do leftovers
   - error lines of baseline run
   - missing lines of rims run
 - [ ] analyses
   - [ ] SC+single method accuracy
+  - [ ] did_reflect distribution in SC15
   - [ ] detailed analyses on what makes SC so helpful (expected domination of majvote but... what proportion did rims/simple did the job?)
     - [ ] how many examples had highly un-agreed answers
 

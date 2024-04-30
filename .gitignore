@@ -7,6 +7,7 @@ src/result.txt
 src/testout.txt
 src/math_baseline_pt123_n15.out
 outputs_dgx/
+outputs_dgx_gpt4turbo/
 
 #  local only
 __pycache__/

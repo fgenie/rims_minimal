@@ -1,10 +1,11 @@
-import jsonlines as jsl
 from pprint import pprint
+
+import jsonlines as jsl
 
 records = list(jsl.open("MATH-full.jsonl"))
 
-# split records into 1000-length chunks
-chunks = [records[i:i+1000] for i in range(0, len(records), 1000)]
+# split records into 500-length chunks
+chunks = [records[i : i + 500] for i in range(0, len(records), 500)]
 
 # save with _pt1.jsonl suffix
 for i, chunk in enumerate(chunks):

@@ -90,19 +90,30 @@ def eval_gsm_svamp(
         return equiv_flag.sum() if len(df) > 0 else 0
 
 
+def list_apply_check(checkf, answer, submission):
+    if isinstance(submission, list):
+        return any([checkf(sub, answer) for sub in submission])
+    else:
+        return checkf(submission, answer)
+
+
 def eval_math(
     df, return_flag: bool = False, submission_col_already_exists: bool = False
 ):
     if not submission_col_already_exists:
         df["submission"] = df.majority_ans
-    df.submission = df.submission.astype("str")
+    # df.submission = df.submission.astype("str")
+    df.submission = df.submission.apply(
+        lambda x: [str(xx) for xx in x] if isinstance(x, list) else str(x)
+    )
     equiv_flag = df.progress_apply(
-        lambda row: math_check_answer(row.submission, row.answer)
-        if not isinstance(row.submission, list)
-        else (  # this part is for n>1 scenario. math/ocw will return top-2 candids if they are joint 1st-place.
-            math_check_answer(row.submission[0], row.answer)
-            or math_check_answer(row.submission[1], row.answer)
-        ),
+        lambda row: list_apply_check(math_check_answer, row.answer, row.submission),
+        # lambda row: math_check_answer(row.submission, row.answer)
+        # if not isinstance(row.submission, list)
+        # else (  # this part is for n>1 scenario. math/ocw will return top-2 candids if they are joint 1st-place.
+        #     math_check_answer(row.submission[0], row.answer)
+        #     or math_check_answer(row.submission[1], row.answer)
+        # ),
         axis=1,
     )
     if return_flag:
@@ -118,12 +129,13 @@ def eval_ocw(
         df["submission"] = df.majority_ans
     df.submission = df.submission.astype("str")
     equiv_flag = df.progress_apply(
-        lambda row: ocw_check_answer(row.submission, row.answer)
-        if not isinstance(row.submission, list)
-        else (  # this part is for n>1 scenario. math/ocw will return top-2 candids if they are joint 1st-place.
-            ocw_check_answer(row.submission[0], row.answer)
-            or ocw_check_answer(row.submission[1], row.answer)
-        ),
+        lambda row: list_apply_check(ocw_check_answer, row.answer, row.submission),
+        # lambda row: ocw_check_answer(row.submission, row.answer)
+        # if not isinstance(row.submission, list)
+        # else (  # this part is for n>1 scenario. math/ocw will return top-2 candids if they are joint 1st-place.
+        #     ocw_check_answer(row.submission[0], row.answer)
+        #     or ocw_check_answer(row.submission[1], row.answer)
+        # ),
         axis=1,
     )
     if return_flag:
@@ -156,8 +168,6 @@ def main(
         }
 
         eval_f = eval_type2eval_f[eval_type]
-
-        # indiv performance
         total = len(df)
 
         # performance overall

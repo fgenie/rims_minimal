@@ -83,12 +83,23 @@ inference_mode: list
 def merge_pieces(
     records1: List[Dict],
     records2: List[Dict],
-    dataset_type: Literal["gsm", "ocw", "math"],
+    # dataset_type: Literal["gsm", "ocw", "math"],
 ) -> List[Dict]:
     # check for length and match each row
+    keys_of_interest = ["majvote_ans", "candid_answers", "inference_mode", "plan"]
+    keys_d_of_interest = ["solmap", "ansmap"]
+
     df1, df2 = map(pd.DataFrame, [records1, records2])
-    df1.drop_duplicates(subset=["question"], inplace=True)
-    df2.drop_duplicates(subset=["question"], inplace=True)
+    question_key = "question" if "question" in df1.columns else "problem"
+    df1.drop_duplicates(subset=[question_key], inplace=True)
+    df2.drop_duplicates(subset=[question_key], inplace=True)
+    df1.rename(columns={"runnning_at": "running_at"}, inplace=True)
+    df2.rename(columns={"runnning_at": "running_at"}, inplace=True)
+    df1 = df1.dropna(subset=keys_of_interest + keys_d_of_interest)
+    df2 = df2.dropna(subset=keys_of_interest + keys_d_of_interest)
+
+    records1 = df1.to_dict(orient="records")
+    records2 = df2.to_dict(orient="records")
 
     if len(df1) != len(df2):  # disparity exists
         if len(df1) < len(df2):
@@ -100,15 +111,16 @@ def merge_pieces(
 
         # filter longer with shorter
         delta = len(longer) - len(shorter)
-        longer = longer[longer.question.isin(shorter.question)]
+        longer = longer[longer[question_key].isin(shorter[question_key])]
+        shorter = shorter[shorter[question_key].isin(longer[question_key])]
         print(delta, "rows dropped")
 
         records1 = longer.to_dict(orient="records")
         records2 = shorter.to_dict(orient="records")
 
     # sort those
-    records1 = sorted(records1, key=lambda row: row["question"])
-    records2 = sorted(records2, key=lambda row: row["question"])
+    records1 = sorted(records1, key=lambda row: row[question_key])
+    records2 = sorted(records2, key=lambda row: row[question_key])
 
     def _merge_dict(dict1, dict2):
         assert dict1.keys() == dict2.keys(), "key disparity"
@@ -121,20 +133,25 @@ def merge_pieces(
     keys_of_interest = ["majvote_ans", "candid_answers", "inference_mode", "plan"]
     for row1, row2 in zip(records1, records2):
         # check disparity
+        assert row1[question_key] == row2[question_key], "question disparity"
         assert row1["dataset_type"] == row2["dataset_type"], "dataset_type disparity"
         if row1["running_at"] == "rims_complete_row":
             assert row2["running_at"] == row1["running_at"], "running_at disparity"
             assert row2["prompt_file"] == row1["prompt_file"], "prompt file disparity"
 
         # start merging
-        merged_row = row1
+        merged_row = deepcopy(row1)
 
         # merge ansmap, solmap
-        merged_row["ansmap"] = _merge_dict(row1["ansmap"], row2["ansmap"])
-        merged_row["solmap"] = _merge_dict(row1["solmap"], row2["solmap"])
+        if isinstance(row1["ansmap"], dict) and isinstance(row2["ansmap"], dict):
+            merged_row["ansmap"] = _merge_dict(row1["ansmap"], row2["ansmap"])
+            merged_row["solmap"] = _merge_dict(row1["solmap"], row2["solmap"])
+        else:
+            continue
         merged_row["temperatures"]["n"] = 15
         if "eval_friendly_d_" in row1.keys():
-            assert "eval_friendly_d_" in row2.keys(), "eval_friendly_d_ disparity"
+            if not "eval_friendly_d_" in row2.keys():
+                continue
             # extend
             merged_row["eval_friendly_d_"] = _merge_dict(
                 row1["eval_friendly_d_"], row2["eval_friendly_d_"]
@@ -153,16 +170,22 @@ def merge_pieces(
 
         # merge other fields
         for k in keys_of_interest:
-            if k in row1.keys() and row2.keys():
+            if k in row1.keys() and k in row2.keys():
                 merged_row[k] = row1[k] + row2[k]
 
         # determine majority answer
-        candid_answers = merged_row["candid_answers"]
         assert (
-            len(candid_answers) == 15
-        ), f"check whether {keys_of_interest} are properly extended\n{len(merged_row['eval_friendly_d_'])=}"
+            len(merged_row["candid_answers"]) == 15
+        ), f"check whether {keys_of_interest} are properly extended\n{len(merged_row['candid_answers'])=}"
+        if "eval_friendly_d_" in merged_row.keys():
+            assert (
+                len(merged_row["eval_friendly_d_"]["good_method"]) == 15
+            ), f"check whether {keys_of_interest} are properly extended\n{len(merged_row['eval_friendly_d_'])=}"
+
+        dataset_type = merged_row["dataset_type"]
+        assert row1["dataset_type"] == row2["dataset_type"], "dataset_type disparity"
         majority_ans = get_concordant_answer_n(
-            candid_answers, dataset_type=dataset_type
+            merged_row["candid_answers"], dataset_type=dataset_type
         )
         merged_row["majority_ans"] = majority_ans
 
@@ -220,6 +243,14 @@ def split_SC15_to_5_10(records: List[Dict]) -> Dict[str, List[Dict]]:
         return sc5row, sc10row
 
     records_SC5, records_SC10 = [], []
+    # filter out none
+    df = pd.DataFrame(records)
+    L = len(df)
+    df.dropna(subset=["majvote_ans", "candid_answers", "inference_mode"], inplace=True)
+    df.dropna(subset=["ansmap", "solmap"], inplace=True)
+    delta = L - len(df)
+    records = df.to_dict(orient="records")
+    print(delta, "rows dropped")
     for row in records:
         sc5row, sc10row = process_row(row)
         records_SC5.append(sc5row)
@@ -246,18 +277,18 @@ def main(ymlf: str = "run_modif_SC_results.yaml"):
     """
     with open(ymlf) as yml:
         yml_dict = yaml.full_load(yml)
-    yml_to_merge_d: Dict[str, List[str]] = yml_dict["to_merge"]
+    # yml_to_merge_d: Dict[str, List[str]] = yml_dict["to_merge"]
     yml_to_split_d: List[str] = yml_dict["to_split"]
 
     # determine which to be done: split? or merge?
-    for wfname, pair in yml_to_merge_d.items():
-        records1 = list(jsl.open(pair[0]))
-        records2 = list(jsl.open(pair[1]))
-        merged_records = merge_pieces(records1, records2)
-        with jsl.open(wfname, "w") as writer:
-            writer.write_all(merged_records)
-            print(wfname)
-            print(len(merged_records))
+    # for wfname, pair in yml_to_merge_d.items():
+    #     records1 = list(jsl.open(pair[0]))
+    #     records2 = list(jsl.open(pair[1]))
+    #     merged_records = merge_pieces(records1, records2)
+    #     with jsl.open(wfname, "w") as writer:
+    #         writer.write_all(merged_records)
+    #         print(wfname)
+    #         print(len(merged_records))
     for fname_tmp, tospl_f in yml_to_split_d.items():
         assert (
             "_scXX" in fname_tmp

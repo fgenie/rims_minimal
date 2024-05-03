@@ -37,10 +37,10 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 - [x] `run_SC_truncation.py`: will reduce SC\<15 results from SC=15 jsonlines file
   - [x] merging
   - [x] splitting
-  - [ ] yaml file
-  - [ ] dbg
+  - [x] dbg
+  - [ ] yaml file and run
 - 2_1_leftovers.sh
-  - [ ] chatgpt -math SC5
+  - [x] chatgpt -math SC5
   - [ ] gpt4turbo -math SC5 ~4k rows
 - 2_2_leftovers_rims_after_merge.sh
   - [ ] chatgpt1106

@@ -21,22 +21,22 @@ THIS_PARENT = Path(__file__).parent.resolve()
 # Construct the path to the openai_key.txt file
 
 
-# client = AzureOpenAI(
-#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-#     api_version="2024-03-01-preview",
-#     timeout=120,
-#     max_retries=10,
-# )
+client = AzureOpenAI(
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    api_version="2024-03-01-preview",
+    timeout=120,
+    max_retries=10,
+)
 
 # # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
-client = AzureOpenAI(
-    azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
-    api_version="2023-07-01-preview",
-    timeout=120,
-    max_retries=4,
-)
+# client = AzureOpenAI(
+#     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
+#     api_version="2023-07-01-preview",
+#     timeout=120,
+#     max_retries=4,
+# )
 
 # # vllm/openai server that serves chatmodel
 # client = OpenAI(
@@ -1342,7 +1342,11 @@ def safe_execute_turbo(code_string: str):
 
     def _convert_to_str_if_not_none_nor_float(ans):
         if ans is not None and not isinstance(ans, float):
-            ans = str(ans)
+            try:
+                ans = str(ans)
+            except Exception as e:
+                print(e)
+                pass
         return ans
 
     # === find code snippets between def solution(): and return ===

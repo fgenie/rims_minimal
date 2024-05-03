@@ -767,10 +767,7 @@ def baseline_inference(
         outdir.mkdir(parents=True)
 
     # dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
-    if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}baseline.jsonl"
-    else:
-        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
+    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

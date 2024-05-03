@@ -1,39 +1,11 @@
 to_merge:
-    # chatgpt1106_ocw_simplegreedy_sc15.jsonl:
-    #     - outputs/n5_baseline_dt.ocw/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
-    #     - outputs/n10_baseline_dt.ocw/chatgpt1106/model_selection_prompts/n10_baseline.jsonl
-    # chatgpt1106_math_rims_sc15_T0.5:
-    #     - src/outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n5_rims_T0.2.jsonl
-    #     - src/outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n10_rims_T0.2.jsonl
-
-    # chatgpt1106_math_simplegreedy_SC15.jsonl:    # need to merge with leftovers
-    #     - outputs/n5_baseline_dt.math/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
-    #     - outputs/n10_baseline_dt.math/chatgpt1106/model_selection_prompts/n10_baseline.jsonl
-
-    outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n15_rims_T0.5.jsonl:
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.5.jsonl
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.5.jsonl
-
-    outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n15_rims_T0.2.jsonl:
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.2.jsonl
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.2.jsonl
-
-    outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n15_rims_T0.5.jsonl:
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n5_rims_T0.5.jsonl
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n10_rims_T0.5.jsonl
-
-    outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n15_rims_T0.2.jsonl:
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n10_rims_T0.2.jsonl
-        - outputs/0_final_results/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n5_rims_T0.2.jsonl
-
-
+    # leave it empty
 
 
 to_split:
-    # chatgpt1106_gsm_simplegreedy_scXX.jsonl: outputs/n15_baseline_dt.gsm/chatgpt1106/model_selection_prompts/n15_baseline.jsonl
-    # outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/rims_T0.2_scXX.jsonl: outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/n15_rims_T0.2.jsonl
-    # outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/rims_T0.5_scXX.jsonl: outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/n15_rims_T0.5.jsonl
-    # outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/rims_T0.2_scXX.jsonl: outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/n15_rims_T0.2.jsonl
-    # outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/rims_T0.5_scXX.jsonl: outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/n15_rims_T0.5.jsonl
-    # outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/rims_T0.2_scXX.jsonl: outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/n15_rims_T0.2.jsonl
-    # outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/rims_T0.5_scXX.jsonl: outputs/0_final_results/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/n15_rims_T0.5.jsonl
+    # filename must include _scXX which will be replaced with
+    #   - 5
+    #   - 10
+
+    # target_path_to_filename_scXX: to_be_split_jsonlines_file_path
+    outputs/-------/rims_T0.2_scXX.jsonl: outputs/-------/n15_rims_T0.2.jsonl

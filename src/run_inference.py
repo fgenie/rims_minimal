@@ -110,9 +110,9 @@ def indiv_inference(
     # check cot already exists or do query
     if "cot" in missing_methods:
         cot_max_tokens_d = {
-            "gsm": 400,
-            "ocw": 850,
-            "math": 950,
+            "gsm": 2048,
+            "ocw": 2048,
+            "math": 2048,
         }
 
         cot_lst, _msgs, _ = query_cot(
@@ -148,9 +148,9 @@ def indiv_inference(
     # check pal already exists or do query
     if "pal" in missing_methods:
         pal_max_tokens_d = {
-            "gsm": 350,
-            "ocw": 500,
-            "math": 400,
+            "gsm": 2048,
+            "ocw": 2048,
+            "math": 2048,
         }
         pal_lst, __msgs, _ = query_pal(
             question,

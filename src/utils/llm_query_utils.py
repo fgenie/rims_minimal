@@ -20,42 +20,17 @@ THIS_PARENT = Path(__file__).parent.resolve()
 
 # Construct the path to the openai_key.txt file
 
-# TPM limit manager
-from openlimit import ChatRateLimiter
 
-# no need to divide rate limit by n_jobs
-rate_limiter = ChatRateLimiter(request_limit=4_800, token_limit=800_000)
-
-client = AzureOpenAI(
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version="2024-03-01-preview",
+# vllm/openai server that serves chatmodel
+client = OpenAI(
+    base_url="api endpoint maybe localhost with some port",
+    api_key="no_need",
     timeout=120,
-    max_retries=10,
+    max_retries=4,
 )
 
 
-# # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
-# # no need to divide rate limit by n_jobs
-# rate_limiter = ChatRateLimiter(request_limit=1200, token_limit=200_000)
-# client = AzureOpenAI(
-#     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
-#     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
-#     api_version="2023-07-01-preview",
-#     timeout=120,
-#     max_retries=4,
-# )
-
-# # vllm/openai server that serves chatmodel
-# client = OpenAI(
-#     base_url = " api endpoint maybe localhost with some port "
-#     api_key = " no need ",
-#     timeout=120,
-#     max_retries=4,
-# )
-
-
-@rate_limiter.is_limited()
+# @rate_limiter.is_limited()
 def query_with_openlimit(**chat_params):
     return client.chat.completions.create(**chat_params)
 
@@ -99,7 +74,7 @@ def query_cot(
     backbone: str = "chatgpt",
     n: int = 1,
     seed: int = 777,
-    max_tokens: int = 950,
+    max_tokens: int = 2048,
 ):
     """
     This function is used to query OpenAI for CoT solutions.
@@ -220,14 +195,14 @@ def query_plancode(
     # print(plan_query_msg)
 
     plan_max_tokens_d = {
-        "gsm": 400,
-        "ocw": 400,
-        "math": 400,
+        "gsm": 800,
+        "ocw": 800,
+        "math": 800,
     }
     code_max_tokens_d = {
-        "gsm": 530,
-        "ocw": 850,
-        "math": 700,
+        "gsm": 1024,
+        "ocw": 1024,
+        "math": 1024,
     }
 
     plan, _ = _query(
@@ -318,7 +293,7 @@ def query_pal(
     n=1,
     seed=777,
     dataset_type: Literal["gsm", "ocw", "math", "svamp"] = None,
-    max_tokens: int = 500,
+    max_tokens: int = 1024,
 ):
     """
     This function is used to query OpenAI for PAL solutions.
@@ -365,7 +340,7 @@ def query_selection(
     cot_solution: str = "",
     pal_solution: str = "",
     p2c_plan_code_solution: str = "",  # former, this was actually List[str] and get_select_prompt() did pop()'d p2c solution out of list... which is super ugly and confusing
-    max_tokens: int = 150,
+    max_tokens: int = 512,
     temperature: float = 0.0,  # will not be modified
     n: int = 1,  # will not be used
 ):
@@ -425,7 +400,7 @@ def query_rims_inference(
     backbone: str,
     temperature: float = 0.0,
     n: int = 1,
-    max_tokens: int = 1450,  # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
+    max_tokens: int = 2048,  # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
     # continue_writing_gpt_messages: list = None,
     stop_tok=None,
 ) -> tuple:

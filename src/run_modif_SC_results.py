@@ -85,7 +85,7 @@ def merge_pieces(
     records2: List[Dict],
     # dataset_type: Literal["gsm", "ocw", "math"],
 ) -> List[Dict]:
-    # check for length and match each row
+    # check for length and match each row (almost no use for stable result w/o errors )
     keys_of_interest = ["majvote_ans", "candid_answers", "inference_mode", "plan"]
     keys_d_of_interest = ["solmap", "ansmap"]
 
@@ -260,35 +260,24 @@ def split_SC15_to_5_10(records: List[Dict]) -> Dict[str, List[Dict]]:
 
 
 def main(ymlf: str = "run_modif_SC_results.yaml"):
-    """
-    to_merge: # requires querying
-        gpt4turbo_ocw_baseline_SC15.jsonl:
-            - sc5.jsonl
-            - sc10.jsonl
-
-        chatgpt1106_gsm_baseline_SC15.jsonl: # saving name
-            - sc5.jsonl
-            - sc10.jsonl
-
-    to_split: # no need for querying
-        chatgpt1106_gsm_baseline_scXX.jsonl: sc15.jsonl
-        gpt4turbo_ocw_baseline_scXX.jsonl: sc15.jsonl
-
-    """
     with open(ymlf) as yml:
         yml_dict = yaml.full_load(yml)
-    # yml_to_merge_d: Dict[str, List[str]] = yml_dict["to_merge"]
-    yml_to_split_d: List[str] = yml_dict["to_split"]
+    # merge
+    yml_to_merge_d: Dict[str, List[str]] = yml_dict["to_merge"]
 
     # determine which to be done: split? or merge?
-    # for wfname, pair in yml_to_merge_d.items():
-    #     records1 = list(jsl.open(pair[0]))
-    #     records2 = list(jsl.open(pair[1]))
-    #     merged_records = merge_pieces(records1, records2)
-    #     with jsl.open(wfname, "w") as writer:
-    #         writer.write_all(merged_records)
-    #         print(wfname)
-    #         print(len(merged_records))
+    for wfname, pair in yml_to_merge_d.items():
+        records1 = list(jsl.open(pair[0]))
+        records2 = list(jsl.open(pair[1]))
+        merged_records = merge_pieces(records1, records2)
+        with jsl.open(wfname, "w") as writer:
+            writer.write_all(merged_records)
+            print(wfname)
+            print(len(merged_records))
+
+    # split
+    yml_to_split_d: List[str] = yml_dict["to_split"]
+
     for fname_tmp, tospl_f in yml_to_split_d.items():
         assert (
             "_scXX" in fname_tmp
@@ -302,7 +291,7 @@ def main(ymlf: str = "run_modif_SC_results.yaml"):
             writer5.write_all(sc5_records)
             writer10.write_all(sc10_records)
             print(sc5name, len(sc5_records))
-            print(sc5name, len(sc10_records))
+            print(sc10name, len(sc10_records))
 
 
 if __name__ == "__main__":

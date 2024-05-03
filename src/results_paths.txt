@@ -1,0 +1,58 @@
+# math n5
+    4904 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1/n5_rims_T0.5.jsonl
+    4904 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1/n5_rims_T0.2.jsonl
+    4904 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.5.jsonl
+    4904 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.2.jsonl
+     296 outputs/n5_baseline_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1/n5_rims_T0.5.jsonl
+     296 outputs/n5_baseline_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1/n5_rims_T0.2.jsonl
+     296 outputs/n5_baseline_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.5.jsonl
+     296 outputs/n5_baseline_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.2.jsonl
+# ocw n10
+     249 outputs_dgx/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.5.jsonl
+     249 outputs_dgx/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.2.jsonl
+     249 outputs_dgx/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n10_rims_T0.5.jsonl
+     249 outputs_dgx/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n10_rims_T0.2.jsonl
+      23 outputs/n10_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.5.jsonl
+      23 outputs/n10_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.2.jsonl
+      23 outputs/n10_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n10_rims_T0.5.jsonl
+      23 outputs/n10_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n10_rims_T0.2.jsonl
+
+# gsm n15
+    1297 outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/n15_rims_T0.2.jsonl
+    1297 outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/n15_rims_T0.5.jsonl
+    1297 outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/n15_rims_T0.2.jsonl
+    1297 outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/n15_rims_T0.5.jsonl
+    1297 outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/n15_rims_T0.2.jsonl
+    1297 outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/n15_rims_T0.5.jsonl
+      18 outputs/n15_baseline_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/n15_rims_T0.2.jsonl
+      18 outputs/n15_baseline_dt.gsm/chatgpt1106/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/n15_rims_T0.5.jsonl
+      18 outputs/n15_baseline_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/n15_rims_T0.2.jsonl
+      18 outputs/n15_baseline_dt.gsm/chatgpt1106/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/n15_rims_T0.5.jsonl
+      18 outputs/n15_baseline_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/n15_rims_T0.2.jsonl
+      18 outputs/n15_baseline_dt.gsm/chatgpt1106/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/n15_rims_T0.5.jsonl
+
+# ocw n5
+       8 outputs/n5_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.5.jsonl
+       8 outputs/n5_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.2.jsonl
+       8 outputs/n5_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n5_rims_T0.5.jsonl
+       8 outputs/n5_baseline_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n5_rims_T0.2.jsonl
+     264 outputs/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.5.jsonl
+     264 outputs/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.2.jsonl
+     264 outputs/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n5_rims_T0.5.jsonl
+     264 outputs/ocw_course_dt.ocw/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/n5_rims_T0.2.jsonl
+
+
+
+# merged
+chatgpt1106_gsm_simplegreedy_sc10.jsonl
+chatgpt1106_gsm_simplegreedy_sc5.jsonl
+chatgpt1106_ocw_simplegreedy_SC15.jsonl
+
+
+
+
+# incomplete (later rims on leftover + merge with leftover)
+     558 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1/n10_rims_T0.5.jsonl
+     558 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1/n10_rims_T0.2.jsonl
+     558 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.5.jsonl
+     558 outputs/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt/n10_rims_T0.2.jsonl

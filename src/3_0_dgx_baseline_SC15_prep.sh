@@ -1,12 +1,19 @@
 
 WRONGLY_DONE_OCWBASE_10=outputs_dgx/ocw_course_dt.ocw/chatgpt1106/model_selection_prompts/n10_baseline.jsonl
 WRONGLY_DONE_OCWBASE_5=outputs/ocw_course_dt.ocw/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
-python run_inference.py baseline_inference \
-    --backbone chatgpt1106 \
-    --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
-    --dataset_type ocw \
-    --n 10 \
-    --n_jobs 4
+# python run_inference.py baseline_inference \
+#     --backbone chatgpt1106 \
+#     --gsm_jslf $WRONGLY_DONE_OCWBASE_10 \
+#     --dataset_type ocw \
+#     --n 10 \
+#     --n_jobs 4
+
+# python run_inference.py baseline_inference \
+#     --backbone chatgpt1106 \
+#     --gsm_jslf $WRONGLY_DONE_OCWBASE_5 \
+#     --dataset_type ocw \
+#     --n 5 \
+#     --n_jobs 4
 
 FIXED_OCW_BASE_10=outputs_dgx/n10_baseline.ocw/chatgpt1106/model_selection_prompts/n10_baseline.jsonl
 FIXED_OCW_BASE_5=outputs/n5_baseline_dt.ocw/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
@@ -14,21 +21,21 @@ FIXED_OCW_BASE_5=outputs/n5_baseline_dt.ocw/chatgpt1106/model_selection_prompts/
 # # n=15 / n_jobs=4
 # # takes ~ 28 hrs
 WRONGLY_DONE_GSMBASE=outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/model_selection_prompts/n15_baseline.jsonl
-python run_inference.py baseline_inference \
-    --backbone chatgpt1106 \
-    --gsm_jslf $WRONGLY_DONE_GSMBASE \
-    --dataset_type gsm \
-    --n 15 \
-    --n_jobs 4
+# python run_inference.py baseline_inference \
+#     --backbone chatgpt1106 \
+#     --gsm_jslf $WRONGLY_DONE_GSMBASE \
+#     --dataset_type gsm \
+#     --n 15 \
+#     --n_jobs 4
 
 FIXED_GSM_BASE_15=outputs_dgx/n15_baseline.gsm/chatgpt1106/model_selection_prompts/n15_baseline.jsonl
 
 #MATH
-WRONGLY_DONE_MATHBASE=outputs/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
 # does not affect rims result
+WRONGLY_DONE_MATHBASE=outputs/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
 python run_inference.py baseline_inference \
 	--backbone chatgpt1106 \
-	--gsm_jslf $WRONGLY_DONE_BASE \
+	--gsm_jslf $WRONGLY_DONE_MATHBASE \
 	--dataset_type math \
 	--n 5 --n_jobs 4
 
@@ -67,6 +74,8 @@ done
 
 
 
+
+
 PTNRI=outputs/MATH-full_dt.math/chatgpt1106/**/n5_rims_T*.jsonl
 PTNRI1=outputs/MATH-full_dt.math/chatgpt1106/**/n10_rims_T*.jsonl
 PTNBL=$FIXED_MATH_BASE_5
@@ -80,7 +89,3 @@ for PTN in $PTNBL $PTNRI $PTNBL1 $PTNRI1 $PTNBL2 $PTNBL3 $PTNBL4; do
         --ptn $PTN \
         --eval_type math
 done
-
-
-# NEED TO DO on FIXED + error RIMS and merge
-# see 2_2_leftovers_rims_after_merged.sh

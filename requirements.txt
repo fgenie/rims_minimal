@@ -8,3 +8,6 @@ antlr4-python3-runtime==4.11
 jsonlines
 pandas
 fire
+
+# Package from a public GitHub repo (openlimit with aioredis problem fixed)
+-e git+https://github.com/trustalex/openlimit.git

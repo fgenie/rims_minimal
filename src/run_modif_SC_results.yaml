@@ -1,6 +1,10 @@
-# to_merge:
-#     chatgpt1106_ocw_simplegreedy_SC15.jsonl:
-#         - outputs/ocw_course_dt.ocw/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
-#         - outputs_dgx/ocw_course_dt.ocw/chatgpt1106/model_selection_prompts/n10_baseline.jsonl
+to_merge:
+    chatgpt1106_ocw_simplegreedy_sc15.jsonl:
+        - outputs/n5_baseline_dt.ocw/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
+        - outputs/n10_baseline_dt.ocw/chatgpt1106/model_selection_prompts/n10_baseline.jsonl
+    # chatgpt1106_math_simplegreedy_SC15.jsonl:    # need to merge with leftovers
+    #     - outputs/n5_baseline_dt.math/chatgpt1106/model_selection_prompts/n5_baseline.jsonl
+    #     - outputs/n10_baseline_dt.math/chatgpt1106/model_selection_prompts/n10_baseline.jsonl
+
 to_split:
-    chatgpt1106_gsm_simplegreedy_scXX.jsonl: outputs_dgx/gsm8K_test_dt.gsm/chatgpt1106/model_selection_prompts/n15_baseline.jsonl
+    chatgpt1106_gsm_simplegreedy_scXX.jsonl: outputs/n15_baseline_dt.gsm/chatgpt1106/model_selection_prompts/n15_baseline.jsonl

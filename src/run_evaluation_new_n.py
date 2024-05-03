@@ -127,7 +127,9 @@ def eval_ocw(
 ):
     if not submission_col_already_exists:
         df["submission"] = df.majority_ans
-    df.submission = df.submission.astype("str")
+    df.submission = df.submission.apply(
+        lambda x: [str(xx) for xx in x] if isinstance(x, list) else str(x)
+    )
     equiv_flag = df.progress_apply(
         lambda row: list_apply_check(ocw_check_answer, row.answer, row.submission),
         # lambda row: ocw_check_answer(row.submission, row.answer)

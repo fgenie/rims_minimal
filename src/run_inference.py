@@ -805,11 +805,14 @@ def baseline_inference(
     print(f"writing to \n\t{outpath}\n\n\n\n")
 
     if dbg:
-        records = records  # [:10]  # len 10
-        for row in tqdm(records):
-            out = _func(row)
-            row = out
-        records_done = records
+        records = records[:100]  # len 10
+        records_done = pqdm(
+            records, _func, n_jobs=n_jobs
+        )  # to avoid BrokenPipe, keep n_jobs<=4 for baseline when n==1
+        # for row in tqdm(records):
+        #     out = _func(row)
+        #     row = out
+        # records_done = records
     else:
         records_done = pqdm(
             records, _func, n_jobs=n_jobs

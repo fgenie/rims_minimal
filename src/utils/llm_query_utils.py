@@ -20,6 +20,11 @@ THIS_PARENT = Path(__file__).parent.resolve()
 
 # Construct the path to the openai_key.txt file
 
+# TPM limit manager
+from openlimit import ChatRateLimiter
+
+# no need to divide rate limit by n_jobs
+rate_limiter = ChatRateLimiter(request_limit=4_800, token_limit=800_000)
 
 client = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -29,7 +34,10 @@ client = AzureOpenAI(
     max_retries=10,
 )
 
+
 # # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
+# # no need to divide rate limit by n_jobs
+# rate_limiter = ChatRateLimiter(request_limit=1200, token_limit=200_000)
 # client = AzureOpenAI(
 #     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
 #     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
@@ -45,6 +53,11 @@ client = AzureOpenAI(
 #     timeout=120,
 #     max_retries=4,
 # )
+
+
+@rate_limiter.is_limited()
+def query_with_openlimit(**chat_params):
+    return client.chat.completions.create(**chat_params)
 
 
 def exception_handler(func):
@@ -108,7 +121,7 @@ def query_cot(
     model_name = backbone2model(backbone)
 
     completions = []
-    resp = client.chat.completions.create(
+    resp = query_with_openlimit(
         model=model_name,
         max_tokens=max_tokens,
         stop="\n\n\n",
@@ -140,7 +153,7 @@ def _query(  # key,
     atomic query func for query_plancode
     """
     try:
-        resp = client.chat.completions.create(
+        resp = query_with_openlimit(
             model=model_name,
             max_tokens=max_tokens,
             stop=stop,
@@ -329,7 +342,7 @@ def query_pal(
     model_name = backbone2model(backbone)
 
     completions = []
-    resp = client.chat.completions.create(
+    resp = query_with_openlimit(
         model=model_name,
         max_tokens=max_tokens,
         stop="\n\n\n",
@@ -388,7 +401,7 @@ def query_selection(
         dataset_type=dataset_type,
     )
 
-    response = client.chat.completions.create(
+    response = query_with_openlimit(
         model=model_name,
         max_tokens=max_tokens,
         seed=777,  # added on dec 21
@@ -665,7 +678,7 @@ def query_rims_inference(
     #     jsl.open(dbgf, "w").write_all(messages + [{"prompt_f": prompt_f}])
 
     # do query!
-    response = client.chat.completions.create(  # api_key=key,
+    response = query_with_openlimit(  # api_key=key,
         seed=777,
         model=model_name,
         max_tokens=max_tokens,
@@ -1492,7 +1505,13 @@ def bucket_count_floating_numbers(numbers: List, tolerance: float = 1e-3) -> Cou
     # Function to bucket the numbers
     def bucket_number(num, tolerance):
         # 0.00251 will assign to 0.003, 0.0025 will assign to 0.002
-        return round(num / tolerance) * tolerance
+        try:
+            buck_num = round(num / tolerance) * tolerance
+        except Exception as e:
+            print(e)
+            print("`bucket_count_floating_numbers()` fail!")
+            buck_num = None
+        return buck_num
 
     # Create a dictionary to count occurrences of each bucketed value
     bucket_counts = {}
@@ -1502,7 +1521,9 @@ def bucket_count_floating_numbers(numbers: List, tolerance: float = 1e-3) -> Cou
         bucketed_number = bucket_number(number, tolerance)
 
         # Update the count for this bucket
-        if bucketed_number in bucket_counts:
+        if bucketed_number is None:
+            continue
+        elif bucketed_number in bucket_counts:
             bucket_counts[bucketed_number] += 1
         else:
             bucket_counts[bucketed_number] = 1

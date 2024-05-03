@@ -123,10 +123,20 @@ def merge_pieces(
     records2 = sorted(records2, key=lambda row: row[question_key])
 
     def _merge_dict(dict1, dict2):
-        assert dict1.keys() == dict2.keys(), "key disparity"
-        for k, v in dict1.items():
-            dict2[k].extend(v)
-        return dict2
+        # assert dict1.keys() == dict2.keys(), "key disparity"
+        if isinstance(dict1, dict) and isinstance(dict2, dict):
+            for k, v in dict1.items():
+                dict2[k].extend(v)
+            res = dict2
+        elif [dict1, dict2].count(None) == 1:
+            for d in [dict1, dict2]:
+                if isinstance(d, dict):
+                    res = d
+                    break
+            assert isinstance(res, dict)
+        else:
+            res = None
+        return res
 
     # start merging
     merged_records = []
@@ -135,9 +145,6 @@ def merge_pieces(
         # check disparity
         assert row1[question_key] == row2[question_key], "question disparity"
         assert row1["dataset_type"] == row2["dataset_type"], "dataset_type disparity"
-        if row1["running_at"] == "rims_complete_row":
-            assert row2["running_at"] == row1["running_at"], "running_at disparity"
-            assert row2["prompt_file"] == row1["prompt_file"], "prompt file disparity"
 
         # start merging
         merged_row = deepcopy(row1)
@@ -149,6 +156,13 @@ def merge_pieces(
         else:
             continue
         merged_row["temperatures"]["n"] = 15
+
+        # merging rims part
+        for r in [row1, row2]:
+            if "rims_complete_row" == r["running_at"]:
+                merged_row["running_at"] = r["running_at"]  # rims complete row
+                merged_row["prompt_file"] = r["prompt_file"]
+
         if "eval_friendly_d_" in row1.keys():
             if not "eval_friendly_d_" in row2.keys():
                 continue
@@ -158,15 +172,17 @@ def merge_pieces(
             )
             # update idx2chosen_method
             updated_idx2chosen_method = row2["idx2chosen_method"]
-            offset = row1["temperature"]["n"]
+            offset = row1["temperatures"]["n"]
             updated_idx2chosen_method = {
                 str(int(k) + offset): v for k, v in updated_idx2chosen_method.items()
             }
             merged_row["idx2chosen_method"].update(updated_idx2chosen_method)
             # update temperatures
-            merged_row["temperatures"]["n_adj"] = (
-                row1["temperatures"]["n_adj"] + row2["temperatures"]["n_adj"]
-            )
+            merged_row["temperatures"]["n_adj"] = 0
+            if "n_adj" in row1["temperatures"]:
+                merged_row["temperatures"]["n_adj"] += row1["temperatures"]["n_adj"]
+            if "n_adj" in row2["temperatures"]:
+                merged_row["temperatures"]["n_adj"] += row2["temperatures"]["n_adj"]
 
         # merge other fields
         for k in keys_of_interest:
@@ -177,10 +193,6 @@ def merge_pieces(
         assert (
             len(merged_row["candid_answers"]) == 15
         ), f"check whether {keys_of_interest} are properly extended\n{len(merged_row['candid_answers'])=}"
-        if "eval_friendly_d_" in merged_row.keys():
-            assert (
-                len(merged_row["eval_friendly_d_"]["good_method"]) == 15
-            ), f"check whether {keys_of_interest} are properly extended\n{len(merged_row['eval_friendly_d_'])=}"
 
         dataset_type = merged_row["dataset_type"]
         assert row1["dataset_type"] == row2["dataset_type"], "dataset_type disparity"
@@ -213,12 +225,14 @@ def split_SC15_to_5_10(records: List[Dict]) -> Dict[str, List[Dict]]:
         sc5row["temperatures"]["n"] = 5
         sc10row["temperatures"]["n"] = 10
         if "eval_friendly_d_" in sc5row and "eval_friendly_d_" in sc10row:
-            sc5row["eval_friendly_d_"] = {
-                k: v[:5] for k, v in sc5row["eval_friendly_d_"].items()
-            }
-            sc10row["eval_friendly_d_"] = {
-                k: v[5:] for k, v in sc10row["eval_friendly_d_"].items()
-            }
+            if isinstance(sc5row["eval_friendly_d_"], dict):
+                sc5row["eval_friendly_d_"] = {
+                    k: v[:5] for k, v in sc5row["eval_friendly_d_"].items()
+                }
+                sc10row["eval_friendly_d_"] = {
+                    k: v[5:] for k, v in sc10row["eval_friendly_d_"].items()
+                }
+
             # update idx2chosen_method
             sc5row["idx2chosen_method"] = {
                 k: v for k, v in sc5row["idx2chosen_method"].items() if int(k) < 5
@@ -266,32 +280,36 @@ def main(ymlf: str = "run_modif_SC_results.yaml"):
     yml_to_merge_d: Dict[str, List[str]] = yml_dict["to_merge"]
 
     # determine which to be done: split? or merge?
-    for wfname, pair in yml_to_merge_d.items():
-        records1 = list(jsl.open(pair[0]))
-        records2 = list(jsl.open(pair[1]))
-        merged_records = merge_pieces(records1, records2)
-        with jsl.open(wfname, "w") as writer:
-            writer.write_all(merged_records)
-            print(wfname)
-            print(len(merged_records))
+    if isinstance(yml_to_merge_d, dict):
+        for wfname, pair in yml_to_merge_d.items():
+            records1 = list(jsl.open(pair[0]))
+            records2 = list(jsl.open(pair[1]))
+            merged_records = merge_pieces(records1, records2)
+            with jsl.open(wfname, "w") as writer:
+                writer.write_all(merged_records)
+                print(wfname)
+                print(len(merged_records))
 
     # split
     yml_to_split_d: List[str] = yml_dict["to_split"]
 
-    for fname_tmp, tospl_f in yml_to_split_d.items():
-        assert (
-            "_scXX" in fname_tmp
-        ), f"fname_tmp should contain _scXX, check {ymlf}, \n\n{yml_to_split_d.keys()=}"
-        records = list(jsl.open(tospl_f))
-        split_records_d = split_SC15_to_5_10(records)
-        sc5_records = split_records_d["SC5"]
-        sc10_records = split_records_d["SC10"]
-        sc5name, sc10name = fname_tmp.replace("XX", "5"), fname_tmp.replace("XX", "10")
-        with jsl.open(sc5name, "w") as writer5, jsl.open(sc10name, "w") as writer10:
-            writer5.write_all(sc5_records)
-            writer10.write_all(sc10_records)
-            print(sc5name, len(sc5_records))
-            print(sc10name, len(sc10_records))
+    if isinstance(yml_to_split_d, dict):
+        for fname_tmp, tospl_f in yml_to_split_d.items():
+            assert (
+                "_scXX" in fname_tmp
+            ), f"fname_tmp should contain _scXX, check {ymlf}, \n\n{yml_to_split_d.keys()=}"
+            records = list(jsl.open(tospl_f))
+            split_records_d = split_SC15_to_5_10(records)
+            sc5_records = split_records_d["SC5"]
+            sc10_records = split_records_d["SC10"]
+            sc5name, sc10name = fname_tmp.replace("XX", "5"), fname_tmp.replace(
+                "XX", "10"
+            )
+            with jsl.open(sc5name, "w") as writer5, jsl.open(sc10name, "w") as writer10:
+                writer5.write_all(sc5_records)
+                writer10.write_all(sc10_records)
+                print(sc5name, len(sc5_records))
+                print(sc10name, len(sc10_records))
 
 
 if __name__ == "__main__":

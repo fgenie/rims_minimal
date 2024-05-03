@@ -152,7 +152,7 @@ def main(
     outf: str = "testout.txt",
 ):
     # get jsonl files
-    paths = list(Path().glob(ptn))
+    paths = sorted(list(Path().glob(ptn)))
     for jslf in paths:
         # load data
         df = pd.DataFrame(jsl.open(jslf))

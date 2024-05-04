@@ -1,7 +1,7 @@
 from concurrent.futures.process import BrokenProcessPool
 from datetime import datetime
 from functools import partial
-from random import random
+from random import random, sample
 from time import sleep
 from typing import Any, Callable, Dict, List, Literal
 
@@ -342,15 +342,30 @@ def rims_complete_row(
             }
 
             candid_answers = majvote_ans.copy()
+            selection_answers = []
             for i, idx in enumerate(to_rims_idx):
+                selection_answers.append(eval_friendly_d_["good_ans"])
                 candid_answers[idx] = eval_friendly_d_["good_ans"][i]
             majority_ans = get_concordant_answer_n(
                 candid_answers, dataset_type=dataset_type
             )
-            # try get no-None answer from candid_answers at least.
-            if majority_ans is None:
-                nonone_answers = [a for a in candid_answers if a is not None]
-                majority_ans = nonone_answers[:1]
+
+            # # try get no-None answer from candid_answers at least.
+            # if majority_ans is None:
+            #     nonone_answers = [a for a in candid_answers if a is not None]
+            #     majority_ans = nonone_answers[:1]
+
+            # pick 1 from selection solution if exists, otherwise from majvote_ans
+            if not majority_ans:  # None or [] (empty list)
+                if selection_answers:
+                    majority_ans = sample(
+                        selection_answers, 2 if len(selection_answers) > 1 else 1
+                    )
+                else:
+                    majvote_no_none = [a for a in majvote_ans if a is not None]
+                    majority_ans = sample(
+                        majvote_no_none, 2 if len(majvote_no_none) > 1 else 1
+                    )
 
             # update row
             row["error"] = False
@@ -669,13 +684,27 @@ def baseline_complete_row(
             majvote if majvote is not None else idx2chosen_ans[idx]
             for idx, majvote in enumerate(majvote_ans)
         ]
+        selection_answers = list(idx2chosen_ans.values())
+
         majority_ans = get_concordant_answer_n(
             candid_answers, dataset_type=dataset_type
         )
-        # try get no-None answer from candid_answers at least.
-        if majority_ans is None:
-            nonone_answers = [a for a in majvote_ans if a is not None]
-            majority_ans = nonone_answers[:1]
+        # # try get no-None answer from candid_answers at least.
+        # if majority_ans is None:
+        #     nonone_answers = [a for a in majvote_ans if a is not None]
+        #     majority_ans = nonone_answers[:1]
+
+        # pick 1 from selection solution if exists, otherwise from majvote_ans
+        if not majority_ans:  # None or [] (empty list)
+            if selection_answers:
+                majority_ans = sample(
+                    selection_answers, 2 if len(selection_answers) > 1 else 1
+                )
+            else:
+                majvote_no_none = [a for a in majvote_ans if a is not None]
+                majority_ans = sample(
+                    majvote_no_none, 2 if len(majvote_no_none) > 1 else 1
+                )
 
         # update row: need to consider later it will be reused for rims inferencing.
         row["error"] = False
@@ -766,11 +795,7 @@ def baseline_inference(
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
-    # dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
-    if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}baseline.jsonl"
-    else:
-        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
+    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

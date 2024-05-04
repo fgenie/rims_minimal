@@ -84,7 +84,7 @@ MATH_RIMS1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2
 
 ### math additional tuning!
 
-for T in 0.1 0.3 0.7; do
+for T in 0.6 0.3; do
     for PROMPT in $MATH_RIMS $MATH_RIMS1; do
         python run_inference.py rims_inference \
                     --backbone chatgpt1106 \
@@ -97,4 +97,4 @@ for T in 0.1 0.3 0.7; do
     done
 done
 
-python run_evaluation_new_n.py --ptn outputs/0_final_results/MATH-full_dt.math/chatgpt1106/**/n5_rims_T*.jsonl --eval_type math --outf outputs/0_final_results/math_results_othertemp.txt
+python run_evaluation_new_n.py --ptn outputs/0_final_results/MATH-full_dt.math/chatgpt1106/**/n5_rims_T0.6.jsonl --eval_type math

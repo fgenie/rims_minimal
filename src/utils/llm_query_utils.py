@@ -1277,11 +1277,16 @@ def _execute(code, code_return: str):
     import random
     from fractions import Fraction
 
+    import matplotlib
     import sympy
     import sympy as sp
     from sympy import Symbol
     from sympy import isprime as is_prime
     from sympy import symbols
+
+    matplotlib.use(
+        "Agg"
+    )  # exec("import matplotlib\nmatplotlib.use('Agg')\n", locals_) # to prevent matplotlib drawing on subthread error
 
     # pip installed olympiad, and marker to avoid frequent errors of math solving
 

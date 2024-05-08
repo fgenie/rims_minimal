@@ -1,0 +1,45 @@
+=======overall performance=======
+file    = outputs/0_final_results/greedy_decoded_results/MATH-full_dt.math/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/rims_T0.0.jsonl
+dataset = math (4998 rows)
+overall_acc:	2170 / 4998 (43.4%)
+success_rate:	370  / 2360 (15.7%)
+4998 (total) =
+	2360 (seleciton)
+	+ 2638 (maj-votes)
+	+ 5 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/0_final_results/greedy_decoded_results/MATH-full_dt.math/chatgpt1106/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/rims_T0.0.jsonl
+dataset = math (4999 rows)
+overall_acc:	2150 / 4999 (43.0%)
+success_rate:	350  / 2361 (14.8%)
+4999 (total) =
+	2361 (seleciton)
+	+ 2638 (maj-votes)
+	+ 4 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/0_final_results/greedy_decoded_results/MATH-full_dt.math/chatgpt1106/rims_ocw_pal-p2c.pal-cot__.txt/rims_T0.0.jsonl
+dataset = math (4999 rows)
+overall_acc:	2124 / 4999 (42.5%)
+success_rate:	324  / 2361 (13.7%)
+4999 (total) =
+	2361 (seleciton)
+	+ 2638 (maj-votes)
+	+ 5 (fails: counted as incorrect)
+=====================================
+
+=======overall performance=======
+file    = outputs/0_final_results/greedy_decoded_results/MATH-full_dt.math/chatgpt1106/rims_ocw_pal-p2c.cot-p2c__.txt/rims_T0.0.jsonl
+dataset = math (4999 rows)
+overall_acc:	2171 / 4999 (43.4%)
+success_rate:	371  / 2361 (15.7%)
+4999 (total) =
+	2361 (seleciton)
+	+ 2638 (maj-votes)
+	+ 4 (fails: counted as incorrect)
+=====================================

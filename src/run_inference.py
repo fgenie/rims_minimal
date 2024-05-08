@@ -346,6 +346,8 @@ def rims_complete_row(
             for i, idx in enumerate(to_rims_idx):
                 selection_answers.append(eval_friendly_d_["good_ans"])
                 candid_answers[idx] = eval_friendly_d_["good_ans"][i]
+            majvote_no_none = [a for a in majvote_ans if a is not None]
+
             majority_ans = get_concordant_answer_n(
                 candid_answers, dataset_type=dataset_type
             )
@@ -362,7 +364,6 @@ def rims_complete_row(
                         selection_answers, 2 if len(selection_answers) > 1 else 1
                     )
                 else:
-                    majvote_no_none = [a for a in majvote_ans if a is not None]
                     majority_ans = sample(
                         majvote_no_none, 2 if len(majvote_no_none) > 1 else 1
                     )
@@ -376,6 +377,8 @@ def rims_complete_row(
             row["idx2chosen_method"] = idx2chosen_method
             # row["majvote_ans"] = majvote_ans # not changed
             row["candid_answers"] = candid_answers
+            row["selection_answers"] = selection_answers
+            row["majvote_no_none"] = majvote_no_none
             row["inference_mode"] = [
                 "majority_vote" if majvote_ans is not None else "rims"
                 for majvote_ans in majvote_ans
@@ -406,6 +409,8 @@ def rims_complete_row(
             row["idx2chosen_method"] = None
             row["majvote_ans"] = None
             row["candid_answers"] = None
+            row["selection_answers"] = None
+            row["majvote_no_none"] = None
             row["inference_mode"] = "rims"
             row["dataset_type"] = dataset_type
             row["prompt_file"] = prompt_f
@@ -589,7 +594,8 @@ def baseline_complete_row(
         row,
         num_methods=3,
         cot_temperature=0.5 if n > 1 else 0.0,
-        pal_temperature=0.8 if n > 1 else 0.0,
+        pal_temperature=0.5 if n > 1 else 0.0,
+        # pal_temperature=0.8 if n > 1 else 0.0,
         n=n,
         backbone=backbone,
         seed=seed,
@@ -685,6 +691,7 @@ def baseline_complete_row(
             for idx, majvote in enumerate(majvote_ans)
         ]
         selection_answers = list(idx2chosen_ans.values())
+        majvote_no_none = [a for a in majvote_ans if a is not None]
 
         majority_ans = get_concordant_answer_n(
             candid_answers, dataset_type=dataset_type
@@ -701,7 +708,6 @@ def baseline_complete_row(
                     selection_answers, 2 if len(selection_answers) > 1 else 1
                 )
             else:
-                majvote_no_none = [a for a in majvote_ans if a is not None]
                 majority_ans = sample(
                     majvote_no_none, 2 if len(majvote_no_none) > 1 else 1
                 )
@@ -714,6 +720,8 @@ def baseline_complete_row(
         row["majority_ans"] = majority_ans
         row["idx2chosen_method"] = idx2chosen_method
         row["majvote_ans"] = majvote_ans
+        row["selection_answers"] = selection_answers
+        row["majvote_no_none"] = majvote_no_none
         row["candid_answers"] = candid_answers  # for debug use
         row["inference_mode"] = [
             "majority_vote" if majvote_ans is not None else "model-selection-baseline"
@@ -795,7 +803,7 @@ def baseline_inference(
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
-    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
+    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_re.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

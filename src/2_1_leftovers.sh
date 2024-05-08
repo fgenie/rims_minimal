@@ -3,6 +3,6 @@ for i in {1..25}; do
         --backbone chatgpt1106 \
         --gsm_jslf ../dataset/MATH/MATH-full_pt${i}.jsonl \
         --dataset_type math \
-        --n 10 \
+        --n 5 \
         --n_jobs 4
 done

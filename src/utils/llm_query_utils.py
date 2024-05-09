@@ -23,7 +23,7 @@ THIS_PARENT = Path(__file__).parent.resolve()
 
 # vllm/openai server that serves chatmodel
 client = OpenAI(
-    base_url="api endpoint maybe localhost with some port",
+    base_url="http://localhost:8000/v1",
     api_key="no_need",
     timeout=120,
     max_retries=4,
@@ -942,7 +942,7 @@ def get_cot_prompt(
             system_message = math_prompt.GPT4_COT_SYSTEM
             user_message = math_prompt.GPT4_COT_USER
             assistant_message = math_prompt.GPT4_COT_ASSISTANT
-        elif "chatgpt" in backbone:
+        else:
             system_message = math_prompt.TURBO_COT_SYSTEM
             user_message = math_prompt.TURBO_COT_USER
             assistant_message = math_prompt.TURBO_COT_ASSISTANT
@@ -990,7 +990,7 @@ def get_pal_prompt(
     if dataset_type not in "gsm ocw math svamp":
         raise ValueError(f"get_pal_prompt(): {dataset_type=} is not supported")
 
-    if dataset_type in "gsm svamp":
+    if dataset_type in "gsm svamp".split():
         if backbone == "gpt4" or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_PAL_SYSTEM
             user_message = math_prompt.GPT4_PAL_USER
@@ -1006,7 +1006,7 @@ def get_pal_prompt(
                 }
             ]
 
-        elif "chatgpt" in backbone:
+        else:
             system_message = math_prompt.TURBO_PAL_SYSTEM
             user_message = math_prompt.TURBO_PAL_USER
             assistant_message = math_prompt.TURBO_PAL_ASSISTANT

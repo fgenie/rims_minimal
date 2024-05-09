@@ -22,8 +22,9 @@ GSM_RIMS_RW_2=prompt_construction_src/newer_prompts_3/renewed_gsm_prompts/rewrot
 OCW_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt
 OCW_RIMS_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt
 
-MATH_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt
-MATH_RIMS_1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1
+NEWMATH_RIMS1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/newprompts/newmath_rims_1.txt
+NEWMATH_RIMS2=prompt_construction_src/newer_prompts_3/math_ocw_prompts/newprompts/newmath_rims_2.txt
+NEWMATH_RIMS3=prompt_construction_src/newer_prompts_3/math_ocw_prompts/newprompts/newmath_rims_3.txt
 
 # 1-1: run baseline first
 # T=0, n=1, greedy decoding experiments (temperature hardcoded inside run_inference.py for baseline run)
@@ -75,7 +76,7 @@ for MODEL in $LLAMA3_8B_IT $PHI3_IT_medium $PHI3_IT_small; do
             --n 1 --n_jobs $NJOBS
     done
 
-    for MATHPROMPT in $MATH_RIMS $MATH_RIMS_1; do
+    for MATHPROMPT in $NEWMATH_RIMS1 $NEWMATH_RIMS2 $NEWMATH_RIMS3; do
         python run_inference.py rims_inference \
             --backbone $MODEL \
             --gsm_jslf $BASELINE_RESULT_JSL_MATH \
@@ -136,11 +137,11 @@ python run_modif_SC_results.py
 
 # n=1 results
 for data in gsm ocw MATH; do
-    python run_evaluation_new_n.py --ptn outputs/*${data}*/**/n1_*.jsonl --eval_type [gsm, ocw, math: depending on data] --outf [where to log .txt]
+    python run_evaluation_new_n.py --ptn "outputs/*${data}*/**/n1_*.jsonl" --eval_type [gsm, ocw, math: depending on data] --outf [where to log .txt]
 done
 # SC results
 for n in 5 10 15; do
     for data in gsm ocw MATH; do
-        python run_evaluation_new_n.py --ptn outputs/*${data}*/**/n${n}_*.jsonl --eval_type [gsm, ocw, math: depending on data] --outf [where to log .txt]
+        python run_evaluation_new_n.py --ptn "outputs/*${data}*/**/n${n}_*.jsonl" --eval_type [gsm, ocw, math: depending on data] --outf [where to log .txt]
     done
 done

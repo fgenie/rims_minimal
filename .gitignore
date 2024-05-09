@@ -25,5 +25,7 @@ src/gather_results.md
 src/testout.md
 src/result_table.md
 
+math_hacking.ipynb
+dataset/MATH/math_train/
+compare.ipynb
 *.ipynb
-math_train/

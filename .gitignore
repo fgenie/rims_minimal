@@ -24,3 +24,6 @@ src/prompt_construction_src/tests/*.json
 src/gather_results.md
 src/testout.md
 src/result_table.md
+
+*.ipynb
+math_train/

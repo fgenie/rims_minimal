@@ -854,7 +854,8 @@ def baseline_inference(
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
-    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last.jsonl"
+    # dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
+    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

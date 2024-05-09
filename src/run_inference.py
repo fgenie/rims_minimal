@@ -50,11 +50,30 @@ row:
 
 """
 
-# def split_records_into_chunks(records: list, chunksize:int=30)->list:
-#     """
-#     split records into chunks of size `chunksize`
-#     """
-#     return [records[i:i+chunksize] for i in range(0, len(records), chunksize)]
+
+# check
+def check_for_undone_rims(row):
+    undone = None  # to be dropped
+    if "selection_or_rims" in row:
+        if "did_reflect" in row.selection_or_rims:
+            undone = False  # rims
+        elif "majority_vote" in row.selection_or_rims:
+            undone = False  # majvote
+        else:
+            undone = True  # to be dropped
+    return undone
+
+
+def check_for_undone_rims_n(row):
+    undone = None  # to be dropped
+    if "inference_mode" in row:
+        if "rims" in row.inference_mode:
+            undone = False
+        elif {"majority_vote"} == set(row.inference_mode):
+            undone = False  # to be dropped
+        else:  # simple greedy left unprocessed after rims run
+            undone = True
+    return undone
 
 
 def indiv_inference(
@@ -460,9 +479,12 @@ def rims_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}rims_T{temperature}.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}rims_newfewshots.jsonl"
     else:  # n > 0
-        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_rims_T{temperature}.jsonl"
+        outpath = (
+            outdir
+            / f"{'dbg_' if dbg else ''}n{n}_rims_T{temperature}_newfewshots.jsonl"
+        )
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
@@ -555,9 +577,26 @@ def rims_inference(
     df.loc[
         df_done.index
     ] = df_done  # updating only selection-done rows in the original df
-    records_done = df.to_dict(orient="records")
 
-    with jsl.open(outpath, "w") as writer, open(f"{outpath}.errors", "w") as writer_err:
+    if n == 1:
+        undone_mask = df.apply(check_for_undone_rims, axis=1)
+        df_undone = df[undone_mask]
+        df_done_real = df[~undone_mask]
+    else:
+        undone_mask = df.apply(check_for_undone_rims_n, axis=1)
+        df_undone = df[undone_mask]
+        df_done_real = df[~undone_mask]
+
+    records_done = df_done_real.to_dict(orient="records")
+    if len(df_undone) > 0:
+        records_undone = df_undone.to_dict(orient="records")
+
+    nerr = 0
+    with jsl.open(outpath, "w") as writer, jsl.open(
+        f"{outpath}_undone.jsonl", "w"
+    ) as writer_undone, open(f"{outpath}.errors", "w") as f_err, jsl.open(
+        f"{outpath}_err.jsonl", "w"
+    ) as writer_err:
         for i, row in enumerate(records_done):
             try:
                 if "index" in row.keys():
@@ -565,12 +604,24 @@ def rims_inference(
                         del row["index"]
                 writer.write(row)
             except Exception as e:
-                writer_err.write(str(records[i]) + "\n")
-                writer_err.write(str(e) + "\n")
+                f_err.write(str(records[i]) + "\n")
+                f_err.write(str(e) + "\n")
+                nerr += 1
+                writer_err.write(records[i])
                 print(e)
                 print(f"{outpath}.errors")
+        if len(df_undone) > 0:
+            writer_undone.write_all(records_undone)
     print(f"DONE: \n\t{outpath}")
-
+    total = 0
+    print(f"{len(records_done)=}")
+    total += len(records_done)
+    print(f"{nerr=}")
+    total += nerr
+    if len(df_undone) > 0:
+        print(f"{len(records_undone)=}")
+        total += len(records_undone)
+    print(f"{total=} lines")
     return
 
 
@@ -594,8 +645,8 @@ def baseline_complete_row(
         row,
         num_methods=3,
         cot_temperature=0.5 if n > 1 else 0.0,
-        pal_temperature=0.5 if n > 1 else 0.0,
-        # pal_temperature=0.8 if n > 1 else 0.0,
+        # pal_temperature=0.5 if n > 1 else 0.0,
+        pal_temperature=0.8 if n > 1 else 0.0,
         n=n,
         backbone=backbone,
         seed=seed,
@@ -803,7 +854,7 @@ def baseline_inference(
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
-    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_re.jsonl"
+    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

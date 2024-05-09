@@ -1,0 +1,3 @@
+p2c-pal intermediate_algebra.txt - 2nd example
+p2c-cot precalculus
+cot2p2c number theory -- 1st example

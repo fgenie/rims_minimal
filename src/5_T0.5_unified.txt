@@ -1,0 +1,58 @@
+=======overall performance=======
+file    = outputs/0_final_results/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline_T0.5_re.jsonl
+dataset = math (4998 rows)
+overall_acc:	2540 / 4998 (50.8%)
+success_rate:	1379 / 3579 (38.5%)
+4998 (total) =
+	3579 (seleciton)
+	+ 1419 (maj-votes)
+	+ 0 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/0_final_results/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt/n5_rims_T0.5_re.jsonl
+dataset = math (4997 rows)
+overall_acc:	2469 / 4997 (49.4%)
+success_rate:	1308 / 3578 (36.6%)
+4997 (total) =
+	3578 (seleciton)
+	+ 1419 (maj-votes)
+	+ 1 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/0_final_results/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1/n5_rims_T0.5_re.jsonl
+dataset = math (4993 rows)
+overall_acc:	2434 / 4993 (48.7%)
+success_rate:	1273 / 3574 (35.6%)
+4993 (total) =
+	3574 (seleciton)
+	+ 1419 (maj-votes)
+	+ 4 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/0_final_results/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.txt/n5_rims_T0.5_re.jsonl
+dataset = math (4984 rows)
+overall_acc:	2458 / 4984 (49.3%)
+success_rate:	1297 / 3565 (36.4%)
+4984 (total) =
+	3565 (seleciton)
+	+ 1419 (maj-votes)
+	+ 14 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/0_final_results/MATH-full_dt.math/chatgpt1106/rims_math_p2c-cot.pal-p2c.txt1/n5_rims_T0.5_re.jsonl
+dataset = math (4981 rows)
+overall_acc:	2434 / 4981 (48.9%)
+success_rate:	1273 / 3562 (35.7%)
+4981 (total) =
+	3562 (seleciton)
+	+ 1419 (maj-votes)
+	+ 17 (fails: counted as incorrect)
+=====================================

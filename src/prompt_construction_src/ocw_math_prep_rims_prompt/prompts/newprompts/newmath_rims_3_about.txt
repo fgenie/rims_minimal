@@ -1,0 +1,3 @@
+cot-pal algebra.txt - 1st example
+p2c-cot precalculus
+cot-p2c counting_&_probability.txt -- 2nd example

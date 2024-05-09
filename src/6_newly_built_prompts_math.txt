@@ -1,0 +1,27 @@
+=======overall performance=======
+file    = outputs/0_final_results/greedy_decoded_results/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n1_baseline_fixed.jsonl
+dataset = math (4999 rows)
+overall_acc:	2202 / 4999 (44.0%)
+success_rate:	365  / 2361 (15.5%)
+4999 (total) =
+	2361 (seleciton)
+	+ 2638 (maj-votes)
+	+ 235 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/0_final_results/greedy_decoded_results/MATH-full_dt.math/chatgpt1106/newmath_rims_1.txt/rims.jsonl
+dataset = math (4999 rows)
+overall_acc:	2292 / 4999 (45.8%)
+success_rate:	417  / 2287 (18.2%)
+4999 (total) =
+	2287 (seleciton)
+	+ 2712 (maj-votes)
+	+ 4 (fails: counted as incorrect)
+=====================================
+=======overall performance=======
+=======overall performance=======
+=======overall performance=======
+=======overall performance=======
+=======overall performance=======

@@ -85,38 +85,25 @@
 
 
 ### math additional tuning!
+T05_fixed_base=outputs/0_final_results/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline_T0.5_re.jsonl
 
-# # original math prompt
-# MATH_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt
-# MATH_RIMS1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1
-
-# T_0508_base=outputs/0_final_results/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline_0.5_0.8.jsonl
-# T05_fixed_base=outputs/0_final_results/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline_0.5only.jsonl
-
-# for PROMPT in $MATH_RIMS $MATH_RIMS1; do
-#     python run_inference.py rims_inference \
-#                 --backbone chatgpt1106 \
-#                 --gsm_jslf $T05_fixed_base  \
-#                 --n 5 \
-#                 --dataset_type math \
-#                 --n_jobs 8 \
-#                 --temperature 0.5 \
-#                 --prompt_f $PROMPT
-# done
+# python run_evaluation_new_n.py --ptn $T05_fixed_base --eval_type math --outf 5_T0.5_unified.txt
 
 
+# original math prompts
+MATH_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt
+MATH_RIMS1=prompt_construction_src/newer_prompts_3/math_ocw_prompts/rims_math_p2c-cot.pal-p2c.pal-cot__.txt1
 
-T05_fixed_base=outputs/0_final_results/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline_0.5only.jsonl
+# # math prompt modified (truncated, selected)
+# MATHRIMS_A1=prompt_construction_src/ocw_math_prep_rims_prompt/prompts/tweaks/top2_failed/rims_math_p2c-cot.pal-p2c.txt
+# MATHRIMS_A2=prompt_construction_src/ocw_math_prep_rims_prompt/prompts/tweaks/top2_failed/rims_math_p2c-cot.pal-p2c.txt1
 
-# math prompt modified (truncated, selected)
-MATHRIMS_A1=prompt_construction_src/ocw_math_prep_rims_prompt/prompts/tweaks/top2_failed/rims_math_p2c-cot.pal-p2c.txt
-MATHRIMS_A2=prompt_construction_src/ocw_math_prep_rims_prompt/prompts/tweaks/top2_failed/rims_math_p2c-cot.pal-p2c.txt1
+# # ocw prompt modified, original, selected
+# OCW_RIMS1_MODIF=prompt_construction_src/newer_prompts_3/math_ocw_prompts/tweaks/from_ocw_modif/rims_ocw_pal-p2c.cot-p2c__.txt
+# OCW_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/tweaks/from_ocw_modif/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt
 
-# ocw prompt modified, original, selected
-OCW_RIMS1_MODIF=prompt_construction_src/newer_prompts_3/math_ocw_prompts/tweaks/from_ocw_modif/rims_ocw_pal-p2c.cot-p2c__.txt
-OCW_RIMS=prompt_construction_src/newer_prompts_3/math_ocw_prompts/tweaks/from_ocw_modif/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt
-
-for PROMPT in $MATHRIMS_A1 $MATHRIMS_A2 $OCW_RIMS1_MODIF $OCW_RIMS; do
+# for PROMPT in $MATHRIMS_A1 $MATHRIMS_A2 $OCW_RIMS1_MODIF $OCW_RIMS; do
+for PROMPT in $MATH_RIMS1 $MATH_RIMS; do
     python run_inference.py rims_inference \
                 --backbone chatgpt1106 \
                 --gsm_jslf $T05_fixed_base  \
@@ -127,4 +114,4 @@ for PROMPT in $MATHRIMS_A1 $MATHRIMS_A2 $OCW_RIMS1_MODIF $OCW_RIMS; do
                 --prompt_f $PROMPT
 done
 
-python run_evaluation_new_n.py --ptn "outputs/0_final_results/MATH-full_dt.math/chatgpt1106/**/n5_rims_T0.5*.jsonl" --eval_type math --outf 5_0.5unified_otherprompts.txt
+python run_evaluation_new_n.py --ptn "outputs/0_final_results/MATH-full_dt.math/chatgpt1106/**/n5_rims_T0.5_re.jsonl" --eval_type math --outf 5_T0.5_unified.txt

@@ -24,7 +24,7 @@ THIS_PARENT = Path(__file__).parent.resolve()
 from openlimit import ChatRateLimiter
 
 # no need to divide rate limit by n_jobs
-rate_limiter = ChatRateLimiter(request_limit=4_800, token_limit=800_000)
+rate_limiter = ChatRateLimiter(request_limit=4_700, token_limit=790_000)
 
 client = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),

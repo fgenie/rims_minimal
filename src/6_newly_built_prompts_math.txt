@@ -14,14 +14,45 @@ success_rate:	365  / 2361 (15.5%)
 file    = outputs/0_final_results/greedy_decoded_results/MATH-full_dt.math/chatgpt1106/newmath_rims_1.txt/rims.jsonl
 dataset = math (4999 rows)
 overall_acc:	2292 / 4999 (45.8%)
-success_rate:	417  / 2287 (18.2%)
+success_rate:	365 -> 417 (+51)  / 2361 (18.2%)
 4999 (total) =
 	2287 (seleciton)
 	+ 2712 (maj-votes)
 	+ 4 (fails: counted as incorrect)
 =====================================
+
+
+
+math new fewshot prompts / chatgpt1106
+# T=0 no SC (greedy decoding)
+2202 -> 2292 (+90 (+1.8%p)) / 5000
+# SC5
+2448 -> 2501 (+53 (+1.1%p)) / 5000
+
+
+
+# SC5 / 1
+
+
 =======overall performance=======
+file    = outputs/0_final_results/MATH-full_dt.math/chatgpt1106/model_selection_prompts/n5_baseline_T0.5_re.jsonl
+dataset = math (4998 rows)
+overall_acc:	2448 -> 2501 (+53) / 5000
+success_rate:	1290 -> 1318 (+27) / 3579
+4998 (total) =
+	3579 (seleciton)
+	+ 1419 (maj-votes)
+	+ 0 (fails: counted as incorrect)
+=====================================
+
+
 =======overall performance=======
-=======overall performance=======
-=======overall performance=======
-=======overall performance=======
+file    = outputs/0_final_results/MATH-full_dt.math/chatgpt1106/newmath_rims_1.txt/n5_rims_T0.5_newfewshots_merged.jsonl
+dataset = math (4993 rows)
+overall_acc:	2501 / 4993
+success_rate:	1317 / 3574
+4993 (total) =
+	3574 (seleciton)
+	+ 1419 (maj-votes)
+	+ 5 (fails: counted as incorrect)
+=====================================

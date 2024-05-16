@@ -27,3 +27,5 @@ src/result_table.md
 
 *.ipynb
 math_train/
+sj_outputs/
+sj_outputs.tar.gz

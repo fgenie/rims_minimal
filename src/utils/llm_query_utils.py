@@ -472,52 +472,23 @@ def query_rims_inference(
 
     def parse_raw_modif(rawqueryout: str) -> dict:
         """
-        helper for Attempt 1,2,3... variants
-
-        1/ read prompt to detect what to parse (`Some string here` <-- to be parsed)
-        2/ and then parse those into a dict
+        Parse a structured text input into a dictionary.
         """
-        # read the output and get what to parse
-        pattern = r"`(.*?)`:"
-        to_parse = re.findall(pattern, rawqueryout)
-        to_parse = list(set(to_parse) - {"Evaluation"})
+        # into a dict
+        pattern = r"(\*\*(.*?)\*\*|\`(.*?)\`)\s*(.*?)(?=\*\*|\`|\Z)"
+        matches = re.findall(pattern, rawqueryout, re.DOTALL)
+        result = {}
+        for match in matches:
+            key = match[1].strip() if match[1] else match[2].strip()
+            value = match[3].strip()
+            result[key] = value
 
-        # read the output again to parse the designated fields
-        parse_dd = dict()
+        # if any, postprocess code block
+        for k, v in results.items():
+            if v.startswith("```"):
+                results[k] = postprocess_code(v)
 
-        duplicated = 1
-
-        for fld in to_parse:
-            # pattern = rf"`{fld}`:\s*(.*?)(?=`|$)"
-            # pattern = rf"`{fld}`:\s*(?:```)?(.*?)(?:```)?(?=`|$)"
-            pattern = rf"`{fld}`:\s*(?:```)?([\s\S]*?)(?=(?:```)?\n`[A-Z]|$)"
-            matches = re.findall(pattern, rawqueryout, re.DOTALL)
-            if fld in {
-                "Mistakes",
-                "Hint for a better Method choice",
-                "Workaround Method",
-                "Method",
-            }:  # Method supposed not to appear multiple times, for chatgpt, it happens, and maybe for other plms too.
-                parse_dd[fld] = matches[::duplicated]
-            else:
-                duplicated = max(duplicated, len(matches))
-                if len(matches) > 0:
-                    parse_dd[fld] = matches[0].strip()
-                else:
-                    parse_dd[fld] = ""
-
-        for (
-            k
-        ) in (
-            parse_dd.keys()
-        ):  # found erratic parsings of the rims code solutions (``` at the end not removed properly)
-            if k.startswith("Attempt "):
-                if parse_dd[k].strip().endswith("```"):
-                    parse_dd[k] = parse_dd[k].strip().rstrip("```").strip()
-                if parse_dd[k].startswith("python\n"):
-                    parse_dd[k] = parse_dd[k].replace("python\n", "").strip()
-
-        return parse_dd
+        return result
 
     def process_rims_out_dict(parse_dd: dict) -> dict:
         """
@@ -542,22 +513,26 @@ def query_rims_inference(
 
         def get_answer_rims(solution: str, ans: str = "", method: str = ""):
             try:
-                if method == "cot":
+                if method == "cot":  # if method is given, follow it.
                     pred = parse_num_from_answer(ans)
-                elif method == "pal":
+                elif method in ["pal", "p2c"]:
                     pred = safe_execute_turbo(solution)
-                elif method == "p2c":
-                    code = separate_plan_code(solution)[
-                        1
-                    ]  # solution of p2c already processed by `postprocess_code()`
-                    pred = safe_execute_turbo(code)
-                else:
-                    raise ValueError(
-                        "method not in {cot, pal, p2c}, failed processing rims output ans"
-                    )
+                # elif method == "p2c":
+                #     code = separate_plan_code(solution)[
+                #         1
+                #     ]  # solution of p2c already processed by `postprocess_code()`
+                #     pred = safe_execute_turbo(code)
+                else:  # from here, find the executable method to get the answer
+                    try:
+                        pred = safe_execute_turbo(solution)
+                    except:
+                        pred = parse_num_from_answer(ans)
             except Exception as e:
-                print(e)
-                pred = None
+                print(
+                    f"Exception at llm_query_utils:query_rims_inference:process_rims_out_dict:get_answer_rims() --> using `ans` for get_anser_rims w/o executing\n\noriginal exception message:\n{e}"
+                )
+                pred = ans
+
             return pred
 
         attempts_keys = sorted([k for k in parse_dd.keys() if "Attempt" in k])
@@ -600,7 +575,7 @@ def query_rims_inference(
                 bad_solution = [parse_dd[atk] for atk in attempts_keys[:-1]]
 
             else:  # solved at once
-                good_method = parse_method2(parse_dd["Method"])
+                good_method = parse_method2(parse_dd.get("Method", ""))
                 bad_method = []
 
                 good_ans = parse_dd[ans_keys[-1]]
@@ -1165,33 +1140,17 @@ def postprocess_plan(rawanswer: str):
     return plan_
 
 
-### python code parsing for p2c... I know it's non-equivalent to the other function here. Used only for p2c
-def postprocess_code(rawanswer: str, k_fewshot: int = 0):
-    def remove_prints(code: str) -> str:
-        lines = code.split("\n")
-        lines_ = [
-            l if not l.startswith("print(") else l.replace("print(", "# print(")
-            for l in lines
-        ]
-        code_ = "\n".join(lines_)
-        return code_
+def postprocess_code(rawanswer: str):
+    # Compile the regex pattern
+    pattern = r"(?:```(?:python)?)?[\s\S]*(?=```)?"
 
-    try:
-        # 1 removing starting wrap ```
-        if "```python" in rawanswer:
-            rawanswer = rawanswer.split("```python")[-1]
-        elif rawanswer.startswith("```"):
-            rawanswer = rawanswer.split("```")[-1]
-
-        # 2 removing ``` at the end
-        code = rawanswer.split("```")[0]  # ending ``` removal
-
-        code = remove_prints(code)
-        assert code
-    except:
-        print("code gen fails (unexecutable or funcname?)")
-        print(f"code:\n{rawanswer}")
-        code = ""
+    # Find all matches
+    matches = re.findall(pattern, rawanswer)
+    if matches:
+        code = matches[0]
+    else:
+        code = rawanswer
+    code = code.strip().lstrip("```python").rstrip("```").lstrip("```").strip()
     return code
 
 
@@ -1218,21 +1177,24 @@ def separate_plan_code(rawstr: str) -> tuple:
 # method name normalization for rimsprompt
 def parse_method2(methodstr: str) -> str:
     # works for --rimsprompt option
-    normalized = methodstr.replace("-", " ").replace("_", " ").lower()
-    norm2short = {
-        "chain of thought": "cot",
-        "cot": "cot",
-        "program aided language modeling": "pal",
-        "program aided language model": "pal",
-        "pal": "pal",
-        "plan and then code": "p2c",
-        "p2c": "p2c",
-    }  # this should be key as abb, and value as a set of component patterns for capturing
-    for k in norm2short.keys():
-        if k in normalized:
-            return norm2short[k]
+    if not isinstance(methodstr, str) or not methodstr:
+        return None
     else:
-        return methodstr
+        normalized = methodstr.replace("-", " ").replace("_", " ").lower()
+        norm2short = {
+            "chain of thought": "cot",
+            "cot": "cot",
+            "program aided language modeling": "pal",
+            "program aided language model": "pal",
+            "pal": "pal",
+            "plan and then code": "p2c",
+            "p2c": "p2c",
+        }  # this should be key as abb, and value as a set of component patterns for capturing
+        for k in norm2short.keys():
+            if k in normalized:
+                return norm2short[k]
+        else:
+            return methodstr
 
 
 # rims prompt: cot answer extracting postprocessing
@@ -1240,6 +1202,9 @@ def parse_num_from_answer(rawstr) -> float:
     """
     used for parsing number out from Answer (dec 4 exp)
     """
+    if rawstr is None:
+        return None
+
     rawstr = rawstr.replace(",", "")
     ptn = r"(-?\d+\.\d+|\d+)"
     nums = re.findall(ptn, rawstr)
@@ -1352,6 +1317,9 @@ def _execute(code, code_return: str):
 
 ### executing a code
 def safe_execute_turbo(code_string: str):
+    def get_code_from_backticks_wrap(code_string):
+        return postprocess_code(code_string)
+
     def _convert_to_float_if_possible(ans):
         try:
             return float(ans)
@@ -1368,6 +1336,8 @@ def safe_execute_turbo(code_string: str):
         return ans
 
     # === find code snippets between def solution(): and return ===
+    code_string = get_code_from_backticks_wrap(code_string)
+
     try:
         code_list = code_string.strip().split("\n")
 

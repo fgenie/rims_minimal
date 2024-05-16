@@ -92,6 +92,8 @@ def eval_gsm_svamp(
 
 def list_apply_check(checkf, answer, submission):
     if isinstance(submission, list):
+        if len(submission) == 2:
+            submission = submission[:1]
         return any([checkf(sub, answer) for sub in submission])
     else:
         return checkf(submission, answer)

@@ -455,10 +455,15 @@ def rims_inference(
     # dev option
     dbg: bool = False,
     n_jobs: int = 6,
+    out_suffix: str = "",
 ):
     assert prompt_f, f"need to specify {prompt_f=}"
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
     assert dataset_type in "gsm ocw math svamp".split(), f"invalid {dataset_type=}"
+    if "undone" in str(gsm_jslf):
+        assert (
+            out_suffix
+        ), f"need to specify {out_suffix=} when {gsm_jslf=} contains 'undone'"
 
     # baseline `outdir` was like below
     # outdir = Path("outputs") / f"{Path(gsm_jslf).stem}_dt.{dataset_type}" / backbone / Path(prompt_f).stem
@@ -479,12 +484,15 @@ def rims_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}rims_newfewshots.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}rims_newfewshots{out_suffix}.jsonl"
     else:  # n > 0
         outpath = (
             outdir
-            / f"{'dbg_' if dbg else ''}n{n}_rims_T{temperature}_newfewshots.jsonl"
+            / f"{'dbg_' if dbg else ''}n{n}_rims_T{temperature}_newfewshots{out_suffix}.jsonl"
         )
+    while outpath.exists():
+        print(f"{str(outpath)} exists, put 1 at the end.")
+        outpath = outpath.parent / outpath.name.replace(out_suffix, f"{out_suffix}1")
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
@@ -597,6 +605,9 @@ def rims_inference(
     ) as writer_undone, open(f"{outpath}.errors", "w") as f_err, jsl.open(
         f"{outpath}_err.jsonl", "w"
     ) as writer_err:
+        f_err.write(
+            "row.selection_or_rims.error == True --> errors. Currently written in `_undone.jsonl` for now"
+        )
         for i, row in enumerate(records_done):
             try:
                 if "index" in row.keys():
@@ -634,179 +645,183 @@ def baseline_complete_row(
     dataset_type: Literal["gsm", "ocw", "math"],
     num_methods: int = 3,
 ):
-    # try:
-    if dataset_type == "ocw":
-        question = row["problem"]
-    else:
-        question = row["question"]
-
-    # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
-    ansmap, solmap, _plan = indiv_inference(
-        row,
-        num_methods=3,
-        cot_temperature=0.5 if n > 1 else 0.0,
-        # pal_temperature=0.5 if n > 1 else 0.0,
-        pal_temperature=0.8 if n > 1 else 0.0,
-        n=n,
-        backbone=backbone,
-        seed=seed,
-        dataset_type=dataset_type,
-    )
-
-    row["ansmap"] = ansmap
-    row["solmap"] = solmap
-    row["plan"] = _plan
-    if n == 1:
-        # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
-        majority_ans = get_concordant_answer(
-            list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
-        )
-
-        # ensure solmap is Dict[str, str]
-        for k, v in solmap.items():
-            if not isinstance(v, str):
-                if isinstance(v[0], str):
-                    solmap[k] = v[0]
-                else:
-                    raise ValueError(f"sth's going wrong with {solmap=}")
-
-        if majority_ans is None:  # do selection
-            chosen_method, selection_str, _ = query_selection(
-                question,
-                backbone=backbone,
-                cot_solution=solmap["cot"],
-                pal_solution=solmap["pal"],
-                p2c_plan_code_solution=solmap["p2c"],
-                dataset_type=dataset_type,
-            )
-            if chosen_method is not None:
-                row["selection_or_rims"] = {
-                    "good_method": chosen_method,
-                    "good_answer": ansmap[chosen_method],
-                    "good_solution": solmap[chosen_method],
-                    "selection_str": selection_str,
-                    "dataset_type": dataset_type,
-                }
-            else:
-                row["selection_or_rims"] = {
-                    "good_method": None,
-                    "good_answer": None,
-                    "good_solution": None,
-                    "selection_str": selection_str,
-                    "dataset_type": dataset_type,
-                }
-            row["majority_ans"] = row["selection_or_rims"]["good_answer"]
+    try:
+        if dataset_type == "ocw":
+            question = row["problem"]
         else:
-            row["selection_or_rims"] = {"majority_vote": True}
-            row["majority_ans"] = majority_ans
-        row["prompt_file"] = prompt_f
-        row["inference_mode"] = f"baseline {num_methods} methods"
-    else:  # n > 1:
-        # ansmap, solmap, plan = List[str] * 3
-        ans_triples = list(zip(*ansmap.values()))
-        sln_triples = list(zip(*solmap.values()))
-        kwargs_keys_selection = (
-            "cot_solution pal_solution p2c_plan_code_solution".split()
+            question = row["question"]
+
+        # individual method inference: this will check if row already has individual method inferred, and if done, keep those to use.
+        ansmap, solmap, _plan = indiv_inference(
+            row,
+            num_methods=3,
+            cot_temperature=0.5 if n > 1 else 0.0,
+            # pal_temperature=0.5 if n > 1 else 0.0,
+            pal_temperature=0.8 if n > 1 else 0.0,
+            n=n,
+            backbone=backbone,
+            seed=seed,
+            dataset_type=dataset_type,
         )
-        selection_kwargs_d_lst: List[Dict] = [
-            dict(zip(kwargs_keys_selection, triple)) for triple in sln_triples
-        ]
 
-        majvote_ans: List = [
-            get_concordant_answer(list(triple), dataset_type=dataset_type)
-            for triple in ans_triples
-        ]
+        row["ansmap"] = ansmap
+        row["solmap"] = solmap
+        row["plan"] = _plan
+        if n == 1:
+            # is there majority answer? in ansmap? (2,2,1 --> 2 is majority, can assert hard condition such as requiring unanimous votes)
+            majority_ans = get_concordant_answer(
+                list(ansmap.values()), ensure_unanimity=False, dataset_type=dataset_type
+            )
 
-        selection: Callable = partial(
-            query_selection, question, backbone, dataset_type=dataset_type
-        )
-        # query simple greedy selection
-        to_select_idx: List = [
-            i for i, maj_ans in enumerate(majvote_ans) if maj_ans is None
-        ]
-        selection_kwargs_d_lst_ = [selection_kwargs_d_lst[i] for i in to_select_idx]
+            # ensure solmap is Dict[str, str]
+            for k, v in solmap.items():
+                if not isinstance(v, str):
+                    if isinstance(v[0], str):
+                        solmap[k] = v[0]
+                    else:
+                        raise ValueError(f"sth's going wrong with {solmap=}")
 
-        idx2chosen_method: Dict = {
-            idx: selection(**selection_kwargs_d)[0]
-            for idx, selection_kwargs_d in zip(to_select_idx, selection_kwargs_d_lst_)
-        }
-        idx2chosen_ans: Dict = {
-            idx: ansmap[chosen_method][idx]
-            if chosen_method is not None
-            and (chosen_method in "cot pal p2c")  # checks from left
-            else None
-            for idx, chosen_method in idx2chosen_method.items()
-        }
-        candid_answers: List = [
-            majvote if majvote is not None else idx2chosen_ans[idx]
-            for idx, majvote in enumerate(majvote_ans)
-        ]
-        selection_answers = list(idx2chosen_ans.values())
-        majvote_no_none = [a for a in majvote_ans if a is not None]
-
-        majority_ans = get_concordant_answer_n(
-            candid_answers, dataset_type=dataset_type
-        )
-        # # try get no-None answer from candid_answers at least.
-        # if majority_ans is None:
-        #     nonone_answers = [a for a in majvote_ans if a is not None]
-        #     majority_ans = nonone_answers[:1]
-
-        # pick 1 from selection solution if exists, otherwise from majvote_ans
-        if not majority_ans:  # None or [] (empty list)
-            if selection_answers:
-                majority_ans = sample(
-                    selection_answers, 2 if len(selection_answers) > 1 else 1
+            if majority_ans is None:  # do selection
+                chosen_method, selection_str, _ = query_selection(
+                    question,
+                    backbone=backbone,
+                    cot_solution=solmap["cot"],
+                    pal_solution=solmap["pal"],
+                    p2c_plan_code_solution=solmap["p2c"],
+                    dataset_type=dataset_type,
                 )
+                if chosen_method is not None:
+                    row["selection_or_rims"] = {
+                        "good_method": chosen_method,
+                        "good_answer": ansmap[chosen_method],
+                        "good_solution": solmap[chosen_method],
+                        "selection_str": selection_str,
+                        "dataset_type": dataset_type,
+                    }
+                else:
+                    row["selection_or_rims"] = {
+                        "good_method": None,
+                        "good_answer": None,
+                        "good_solution": None,
+                        "selection_str": selection_str,
+                        "dataset_type": dataset_type,
+                    }
+                row["majority_ans"] = row["selection_or_rims"]["good_answer"]
             else:
-                majority_ans = sample(
-                    majvote_no_none, 2 if len(majvote_no_none) > 1 else 1
+                row["selection_or_rims"] = {"majority_vote": True}
+                row["majority_ans"] = majority_ans
+            row["prompt_file"] = prompt_f
+            row["inference_mode"] = f"baseline {num_methods} methods"
+        else:  # n > 1:
+            # ansmap, solmap, plan = List[str] * 3
+            ans_triples = list(zip(*ansmap.values()))
+            sln_triples = list(zip(*solmap.values()))
+            kwargs_keys_selection = (
+                "cot_solution pal_solution p2c_plan_code_solution".split()
+            )
+            selection_kwargs_d_lst: List[Dict] = [
+                dict(zip(kwargs_keys_selection, triple)) for triple in sln_triples
+            ]
+
+            majvote_ans: List = [
+                get_concordant_answer(list(triple), dataset_type=dataset_type)
+                for triple in ans_triples
+            ]
+
+            selection: Callable = partial(
+                query_selection, question, backbone, dataset_type=dataset_type
+            )
+            # query simple greedy selection
+            to_select_idx: List = [
+                i for i, maj_ans in enumerate(majvote_ans) if maj_ans is None
+            ]
+            selection_kwargs_d_lst_ = [selection_kwargs_d_lst[i] for i in to_select_idx]
+
+            idx2chosen_method: Dict = {
+                idx: selection(**selection_kwargs_d)[0]
+                for idx, selection_kwargs_d in zip(
+                    to_select_idx, selection_kwargs_d_lst_
                 )
+            }
+            idx2chosen_ans: Dict = {
+                idx: ansmap[chosen_method][idx]
+                if chosen_method is not None
+                and (chosen_method in "cot pal p2c")  # checks from left
+                else None
+                for idx, chosen_method in idx2chosen_method.items()
+            }
+            candid_answers: List = [
+                majvote if majvote is not None else idx2chosen_ans[idx]
+                for idx, majvote in enumerate(majvote_ans)
+            ]
+            selection_answers = list(idx2chosen_ans.values())
+            majvote_no_none = [a for a in majvote_ans if a is not None]
 
-        # update row: need to consider later it will be reused for rims inferencing.
-        row["error"] = False
-        row["error_msg"] = ""
-        row["running_at"] = "baseline_complete_row"
+            majority_ans = get_concordant_answer_n(
+                candid_answers, dataset_type=dataset_type
+            )
+            # # try get no-None answer from candid_answers at least.
+            # if majority_ans is None:
+            #     nonone_answers = [a for a in majvote_ans if a is not None]
+            #     majority_ans = nonone_answers[:1]
 
-        row["majority_ans"] = majority_ans
-        row["idx2chosen_method"] = idx2chosen_method
-        row["majvote_ans"] = majvote_ans
-        row["selection_answers"] = selection_answers
-        row["majvote_no_none"] = majvote_no_none
-        row["candid_answers"] = candid_answers  # for debug use
-        row["inference_mode"] = [
-            "majority_vote" if majvote_ans is not None else "model-selection-baseline"
-            for majvote_ans in majvote_ans
-        ]
-        row["dataset_type"] = dataset_type
-        row["prompt_file"] = prompt_f
-        row["temperatures"] = {
-            "cot_temperature": 0.5,
-            "pal_temperature": 0.8,
-            "n": n,
-        }
+            # pick 1 from selection solution if exists, otherwise from majvote_ans
+            if not majority_ans:  # None or [] (empty list)
+                if selection_answers:
+                    majority_ans = sample(
+                        selection_answers, 2 if len(selection_answers) > 1 else 1
+                    )
+                else:
+                    majority_ans = sample(
+                        majvote_no_none, 2 if len(majvote_no_none) > 1 else 1
+                    )
 
-    # except Exception as e:
-    #     print(e)
-    #     if n == 1:
-    #         row["selection_or_rims"] = {"error": True, "exception": str(e)}
-    #     else:  # n>1:
-    #         row["error"] = True
-    #         row["error_msg"] = str(e)
-    #         row["running_at"] = "baseline_complete_row"
+            # update row: need to consider later it will be reused for rims inferencing.
+            row["error"] = False
+            row["error_msg"] = ""
+            row["running_at"] = "baseline_complete_row"
 
-    #         row["majority_ans"] = None
-    #         row["idx2chosen_method"] = None
-    #         row["majvote_ans"] = None
-    #         row["candid_answers"] = None
-    #         row["inference_mode"] = None
-    #         row["dataset_type"] = dataset_type
-    #         row["prompt_file"] = prompt_f
-    #         row["temperatures"] = {
-    #             "cot_temperature": 0.5,
-    #             "pal_temperature": 0.8,
-    #             "n": n,
-    #         }
+            row["majority_ans"] = majority_ans
+            row["idx2chosen_method"] = idx2chosen_method
+            row["majvote_ans"] = majvote_ans
+            row["selection_answers"] = selection_answers
+            row["majvote_no_none"] = majvote_no_none
+            row["candid_answers"] = candid_answers  # for debug use
+            row["inference_mode"] = [
+                "majority_vote"
+                if majvote_ans is not None
+                else "model-selection-baseline"
+                for majvote_ans in majvote_ans
+            ]
+            row["dataset_type"] = dataset_type
+            row["prompt_file"] = prompt_f
+            row["temperatures"] = {
+                "cot_temperature": 0.5,
+                "pal_temperature": 0.8,
+                "n": n,
+            }
+
+    except Exception as e:
+        print(e)
+        if n == 1:
+            row["selection_or_rims"] = {"error": True, "exception": str(e)}
+        else:  # n>1:
+            row["error"] = True
+            row["error_msg"] = str(e)
+            row["running_at"] = "baseline_complete_row"
+
+            row["majority_ans"] = None
+            row["idx2chosen_method"] = None
+            row["majvote_ans"] = None
+            row["candid_answers"] = None
+            row["inference_mode"] = None
+            row["dataset_type"] = dataset_type
+            row["prompt_file"] = prompt_f
+            row["temperatures"] = {
+                "cot_temperature": 0.5,
+                "pal_temperature": 0.8,
+                "n": n,
+            }
 
     return row
 
@@ -827,9 +842,14 @@ def baseline_inference(
     # dev option
     dbg: bool = False,
     n_jobs: int = 4,
+    out_suffix: str = "",
 ):
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
     assert dataset_type in "gsm ocw math svamp".split(), f"invalid {dataset_type=}"
+    if "undone" in str(gsm_jslf):
+        assert (
+            out_suffix
+        ), f"need to specify {out_suffix=} when {gsm_jslf=} contains 'undone'"
 
     if (
         prompt_f
@@ -854,7 +874,13 @@ def baseline_inference(
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
-    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last.jsonl"
+    outpath = (
+        outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last{out_suffix}.jsonl"
+    )
+
+    while outpath.exists():
+        print(f"{str(outpath)} exists, put 1 at the end.")
+        outpath = outpath.parent / outpath.name.replace(out_suffix, f"{out_suffix}1")
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:
@@ -918,7 +944,6 @@ def baseline_inference(
                 print(e)
                 print(f"{outpath}.errors")
                 print(f"{outpath}.error_idx")
-
     print(f"DONE: \n\t{outpath}")
     return
 

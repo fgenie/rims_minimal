@@ -20,42 +20,27 @@ THIS_PARENT = Path(__file__).parent.resolve()
 
 # Construct the path to the openai_key.txt file
 
-# TPM limit manager
-from openlimit import ChatRateLimiter
 
-# no need to divide rate limit by n_jobs
-rate_limiter = ChatRateLimiter(request_limit=4_700, token_limit=790_000)
-
-client = AzureOpenAI(
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version="2024-03-01-preview",
+# vllm/openai server that serves chatmodel
+client = OpenAI(
+    base_url="http://172.21.0.1:8080/v1",
+    api_key="no_need",
     timeout=120,
-    max_retries=10,
+    max_retries=4,
 )
 
-
-# # when to use "gpt4turbo" (gpt-4-1106-preview) as a backbone
-# # no need to divide rate limit by n_jobs
-# rate_limiter = ChatRateLimiter(request_limit=1200, token_limit=200_000)
-# client = AzureOpenAI(
-#     azure_endpoint=os.getenv("OLD_AZURE_OPENAI_ENDPOINT"),
-#     api_key=os.getenv("OLD_AZURE_OPENAI_API_KEY"),
-#     api_version="2023-07-01-preview",
-#     timeout=120,
-#     max_retries=4,
-# )
-
-# # vllm/openai server that serves chatmodel
-# client = OpenAI(
-#     base_url = " api endpoint maybe localhost with some port "
-#     api_key = " no need ",
-#     timeout=120,
-#     max_retries=4,
-# )
+def merge_system_into_first_user(msgs)->list:
+    if msgs[0]["role"] == "user":
+        msgs_new = msgs
+    else: # system role
+        system_turn = msgs[0]
+        start_turn = msgs[1]
+        msgs[1]["content"] = system_turn["content"] + "\n\n" + start_turn["content"]
+        msgs_new = msgs[1:]
+    return msgs_new
 
 
-@rate_limiter.is_limited()
+# @rate_limiter.is_limited()
 def query_with_openlimit(**chat_params):
     return client.chat.completions.create(**chat_params)
 
@@ -99,7 +84,7 @@ def query_cot(
     backbone: str = "chatgpt",
     n: int = 1,
     seed: int = 777,
-    max_tokens: int = 950,
+    max_tokens: int = 2048,
 ):
     """
     This function is used to query OpenAI for CoT solutions.
@@ -121,13 +106,15 @@ def query_cot(
     model_name = backbone2model(backbone)
 
     completions = []
+    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+        query_message = merge_system_into_first_user(query_message)
     resp = query_with_openlimit(
         model=model_name,
         max_tokens=max_tokens,
-        stop="\n\n\n",
+        stop=["\n\n\n", "<|end|>"],
         messages=query_message,
         temperature=temperature,
-        top_p=1.0,
+        # top_p=1.0,
         seed=seed,
         n=n,
     )
@@ -144,7 +131,7 @@ def _query(  # key,
     stop: str = None,
     messages=None,
     temperature=0.0,
-    top_p=1.0,
+    # top_p=1.0,
     n=1,
     mode="plan",
     seed=777,
@@ -159,7 +146,7 @@ def _query(  # key,
             stop=stop,
             messages=messages,
             temperature=temperature,
-            top_p=top_p,
+            # top_p=# top_p,
             n=n,
             seed=seed,
             # timeout=120,
@@ -220,23 +207,25 @@ def query_plancode(
     # print(plan_query_msg)
 
     plan_max_tokens_d = {
-        "gsm": 400,
-        "ocw": 400,
-        "math": 400,
+        "gsm": 1024,
+        "ocw": 1024,
+        "math": 1024,
     }
     code_max_tokens_d = {
-        "gsm": 530,
-        "ocw": 850,
-        "math": 700,
+        "gsm": 2048,
+        "ocw": 2048,
+        "math": 2048,
     }
 
+    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+        plan_query_msg = merge_system_into_first_user(plan_query_msg)
     plan, _ = _query(
         model_name=model_name,
         max_tokens=plan_max_tokens_d[dataset_type],
-        stop="Question: ",
+        stop=["Question: ", "<|end|>"],
         messages=plan_query_msg,
         temperature=plan_temperature,
-        top_p=1.0,
+        # top_p=1.0,
         # n=n,
         n=1,  # plan*1 + code*n (bad for p2c acc but perf. consideration)
         mode="plan",
@@ -247,13 +236,15 @@ def query_plancode(
     if plan:
         code_query_msg = get_plan2code_prompt(question, plan=plan, k_fewshot=k_fewshot)
         # print(code_query_msg)
+        if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+            code_query_msg = merge_system_into_first_user(code_query_msg)
         code, _ = _query(
             model_name=model_name,
             max_tokens=code_max_tokens_d[dataset_type],
-            stop="Question: ",
+            stop=["Question: ", "<|end|>"],
             messages=code_query_msg,
             temperature=code_temperature,
-            top_p=1.0,
+            # top_p=1.0,
             n=n,
             mode="code",
             seed=seed,
@@ -286,7 +277,7 @@ def query_plancode(
     #                 stop="Question: ",
     #                 messages=cqm,
     #                 temperature=code_temperature,
-    #                 top_p=1.0,
+    #                 # top_p=1.0,
     #                 n=n,
     #                 mode="code",
     #                 seed=seed,
@@ -318,7 +309,7 @@ def query_pal(
     n=1,
     seed=777,
     dataset_type: Literal["gsm", "ocw", "math", "svamp"] = None,
-    max_tokens: int = 500,
+    max_tokens: int = 1024,
 ):
     """
     This function is used to query OpenAI for PAL solutions.
@@ -340,15 +331,16 @@ def query_pal(
     )
     # print(query_message)
     model_name = backbone2model(backbone)
-
+    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+        query_message = merge_system_into_first_user(query_message)
     completions = []
     resp = query_with_openlimit(
         model=model_name,
         max_tokens=max_tokens,
-        stop="\n\n\n",
+        stop=["\n\n\n", "<|end|>"],
         messages=query_message,
         temperature=temperature,
-        top_p=1.0,
+        # top_p=1.0,
         seed=seed,
         n=n,
     )
@@ -365,7 +357,7 @@ def query_selection(
     cot_solution: str = "",
     pal_solution: str = "",
     p2c_plan_code_solution: str = "",  # former, this was actually List[str] and get_select_prompt() did pop()'d p2c solution out of list... which is super ugly and confusing
-    max_tokens: int = 150,
+    max_tokens: int = 512,
     temperature: float = 0.0,  # will not be modified
     n: int = 1,  # will not be used
 ):
@@ -401,14 +393,17 @@ def query_selection(
         dataset_type=dataset_type,
     )
 
+    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+        selection_message = merge_system_into_first_user(selection_message)
+
     response = query_with_openlimit(
         model=model_name,
         max_tokens=max_tokens,
         seed=777,  # added on dec 21
-        stop="\n\n",
+        stop=["\n\n", "<|end|>"],
         messages=selection_message,
         temperature=temperature,
-        top_p=1.0,
+        # top_p=1.0,
         n=n,
     )
     # completion_usage = response.usage
@@ -425,9 +420,10 @@ def query_rims_inference(
     backbone: str,
     temperature: float = 0.0,
     n: int = 1,
-    max_tokens: int = 1450,  # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
+    max_tokens: int = 2048,  # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
     # continue_writing_gpt_messages: list = None,
     stop_tok=None,
+    dataset_type:str=None,
 ) -> tuple:
     model_name = backbone2model(backbone)
 
@@ -519,7 +515,7 @@ def query_rims_inference(
 
         return parse_dd
 
-    def process_rims_out_dict(parse_dd: dict) -> dict:
+    def process_rims_out_dict(parse_dd: dict, dataset_type=None) -> dict:
         """
         in:
             parsed_dict: contains fields that is directly related to the prompt response such as...
@@ -540,25 +536,23 @@ def query_rims_inference(
 
         """
 
-        def get_answer_rims(solution: str, ans: str = "", method: str = ""):
+        def get_answer_rims(solution: str, ans: str = None, method: str = "", dataset_type:str="gsm"):
+            pred = ans
             try:
-                if method == "cot":
-                    pred = parse_num_from_answer(ans)
-                elif method == "pal":
+                if method == "cot": # if method is given, follow it.
+                    pred = parse_num_from_answer(ans) if ans is not None and dataset_type == "gsm" else ans
+                elif method in ["pal", "p2c"]:
                     pred = safe_execute_turbo(solution)
-                elif method == "p2c":
-                    code = separate_plan_code(solution)[
-                        1
-                    ]  # solution of p2c already processed by `postprocess_code()`
-                    pred = safe_execute_turbo(code)
-                else:
-                    raise ValueError(
-                        "method not in {cot, pal, p2c}, failed processing rims output ans"
-                    )
             except Exception as e:
-                print(e)
-                pred = None
+                try: 
+                    pred = safe_execute_turbo(solution)
+                except:
+                    pred = parse_num_from_answer(ans) if ans is not None and dataset_type=="gsm"  else ans
+                finally:
+                    print(f"Exception at llm_query_utils:query_rims_inference:process_rims_out_dict:get_answer_rims() --> using `ans` for get_anser_rims w/o executing\n\noriginal exception message:\n{e}")
             return pred
+
+
 
         attempts_keys = sorted([k for k in parse_dd.keys() if "Attempt" in k])
         ans_keys = sorted([k for k in parse_dd.keys() if "Answer" in k])
@@ -635,11 +629,11 @@ def query_rims_inference(
 
         eval_friendly_d = dict(
             good_solution=good_solution,
-            good_ans=get_answer_rims(good_solution, ans=good_ans, method=good_method),
+            good_ans=get_answer_rims(good_solution, ans=good_ans, method=good_method, dataset_type=dataset_type),
             good_method=good_method,
             bad_solutions=bad_solution,
             bad_ans=[
-                get_answer_rims(s, ans=a, method=m)
+                get_answer_rims(s, ans=a, method=m, dataset_type=dataset_type)
                 for s, a, m in zip(bad_solution, bad_ans, bad_method)
             ],
             bad_method=bad_method,
@@ -669,6 +663,7 @@ def query_rims_inference(
             "\n`Evaluation`: Correct",
             "`Evaluation`: Correct",
             "Evaluation: Correct",
+            "<|end|>", # phi3
         ]  # could be a list or a single string object. Defaults: None
 
     # # inspect prompt ready
@@ -702,7 +697,7 @@ def query_rims_inference(
         #         raw_query_out = raw_query_out.strip()
         parsed_dict = parse_raw_modif(raw_query_out)
         try:
-            eval_friendly_d = process_rims_out_dict(parsed_dict)
+            eval_friendly_d = process_rims_out_dict(parsed_dict, dataset_type=dataset_type)
         except Exception as e:
             print(str(e))
             print(f"{raw_query_out=}")
@@ -735,7 +730,7 @@ def query_rims_inference(
             parse_raw_modif(raw_query_out) for raw_query_out in raw_query_outs
         ]
         eval_friendly_ds = [
-            process_rims_out_dict(parsed_dict) for parsed_dict in parsed_dicts
+            process_rims_out_dict(parsed_dict, dataset_type=dataset_type) for parsed_dict in parsed_dicts
         ]
 
         return (
@@ -967,7 +962,7 @@ def get_cot_prompt(
             system_message = math_prompt.GPT4_COT_SYSTEM
             user_message = math_prompt.GPT4_COT_USER
             assistant_message = math_prompt.GPT4_COT_ASSISTANT
-        elif "chatgpt" in backbone:
+        else:
             system_message = math_prompt.TURBO_COT_SYSTEM
             user_message = math_prompt.TURBO_COT_USER
             assistant_message = math_prompt.TURBO_COT_ASSISTANT
@@ -1015,7 +1010,7 @@ def get_pal_prompt(
     if dataset_type not in "gsm ocw math svamp":
         raise ValueError(f"get_pal_prompt(): {dataset_type=} is not supported")
 
-    if dataset_type in "gsm svamp":
+    if dataset_type in "gsm svamp".split():
         if backbone == "gpt4" or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_PAL_SYSTEM
             user_message = math_prompt.GPT4_PAL_USER
@@ -1031,7 +1026,7 @@ def get_pal_prompt(
                 }
             ]
 
-        elif "chatgpt" in backbone:
+        else:
             system_message = math_prompt.TURBO_PAL_SYSTEM
             user_message = math_prompt.TURBO_PAL_USER
             assistant_message = math_prompt.TURBO_PAL_ASSISTANT
@@ -1277,16 +1272,17 @@ def _execute(code, code_return: str):
     import random
     from fractions import Fraction
 
-    import matplotlib
     import sympy
     import sympy as sp
     from sympy import Symbol
     from sympy import isprime as is_prime
     from sympy import symbols
+    import matplotlib 
 
     matplotlib.use(
         "Agg"
     )  # exec("import matplotlib\nmatplotlib.use('Agg')\n", locals_) # to prevent matplotlib drawing on subthread error
+
 
     # pip installed olympiad, and marker to avoid frequent errors of math solving
 
@@ -1352,6 +1348,8 @@ def _execute(code, code_return: str):
 
 ### executing a code
 def safe_execute_turbo(code_string: str):
+    if "<|end|>" in code_string:
+        code_string = code_string.split("<|end|>")[0]
     def _convert_to_float_if_possible(ans):
         try:
             return float(ans)

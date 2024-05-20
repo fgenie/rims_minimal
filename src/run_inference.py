@@ -480,12 +480,9 @@ def rims_inference(
 
     dt_string = f"{datetime.now():%m_%d_%H_%M_%S}"
     if n == 1:
-        outpath = outdir / f"{'dbg_' if dbg else ''}rims_newfewshots.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}rims.jsonl"
     else:  # n > 0
-        outpath = (
-            outdir
-            / f"{'dbg_' if dbg else ''}n{n}_rims_T{temperature}_newfewshots.jsonl"
-        )
+        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_rims_T{temperature}.jsonl"
 
     # load_gsm_dataset to infer on
     records = list(jsl.open(gsm_jslf))[start_idx:]
@@ -855,7 +852,10 @@ def baseline_inference(
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
-    outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last.jsonl"
+    if n == 1:
+        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
+    else:
+        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

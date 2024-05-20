@@ -855,7 +855,7 @@ def baseline_inference(
     if n == 1:
         outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline.jsonl"
     else:
-        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last.jsonl"
+        outpath = outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8.jsonl"
 
     # handle only error indexes, discard otherwise
     if Path(err_idxs_f).exists() and err_idxs_f:

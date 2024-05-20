@@ -23,7 +23,7 @@ THIS_PARENT = Path(__file__).parent.resolve()
 
 # vllm/openai server that serves chatmodel
 client = OpenAI(
-    base_url="http://172.21.0.1:8080/v1",
+    base_url="http://172.21.0.1:8000/v1",
     api_key="no_need",
     timeout=120,
     max_retries=4,

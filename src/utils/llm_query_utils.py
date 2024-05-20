@@ -29,10 +29,11 @@ client = OpenAI(
     max_retries=4,
 )
 
-def merge_system_into_first_user(msgs)->list:
+
+def merge_system_into_first_user(msgs) -> list:
     if msgs[0]["role"] == "user":
         msgs_new = msgs
-    else: # system role
+    else:  # system role
         system_turn = msgs[0]
         start_turn = msgs[1]
         msgs[1]["content"] = system_turn["content"] + "\n\n" + start_turn["content"]
@@ -106,8 +107,8 @@ def query_cot(
     model_name = backbone2model(backbone)
 
     completions = []
-    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
-        query_message = merge_system_into_first_user(query_message)
+    # if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+    #     query_message = merge_system_into_first_user(query_message)
     resp = query_with_openlimit(
         model=model_name,
         max_tokens=max_tokens,
@@ -217,8 +218,8 @@ def query_plancode(
         "math": 2048,
     }
 
-    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
-        plan_query_msg = merge_system_into_first_user(plan_query_msg)
+    # if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+    #     plan_query_msg = merge_system_into_first_user(plan_query_msg)
     plan, _ = _query(
         model_name=model_name,
         max_tokens=plan_max_tokens_d[dataset_type],
@@ -236,8 +237,8 @@ def query_plancode(
     if plan:
         code_query_msg = get_plan2code_prompt(question, plan=plan, k_fewshot=k_fewshot)
         # print(code_query_msg)
-        if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
-            code_query_msg = merge_system_into_first_user(code_query_msg)
+        # if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+        #     code_query_msg = merge_system_into_first_user(code_query_msg)
         code, _ = _query(
             model_name=model_name,
             max_tokens=code_max_tokens_d[dataset_type],
@@ -331,8 +332,8 @@ def query_pal(
     )
     # print(query_message)
     model_name = backbone2model(backbone)
-    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
-        query_message = merge_system_into_first_user(query_message)
+    # if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+    #     query_message = merge_system_into_first_user(query_message)
     completions = []
     resp = query_with_openlimit(
         model=model_name,
@@ -393,8 +394,8 @@ def query_selection(
         dataset_type=dataset_type,
     )
 
-    if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
-        selection_message = merge_system_into_first_user(selection_message)
+    # if backbone2model(backbone) == backbone: # openllm (assumed to have no sys)
+    #     selection_message = merge_system_into_first_user(selection_message)
 
     response = query_with_openlimit(
         model=model_name,
@@ -423,7 +424,7 @@ def query_rims_inference(
     max_tokens: int = 2048,  # (rims prompts w/o question is ~ 2400 tokens with 3 blurbs + system)
     # continue_writing_gpt_messages: list = None,
     stop_tok=None,
-    dataset_type:str=None,
+    dataset_type: str = None,
 ) -> tuple:
     model_name = backbone2model(backbone)
 
@@ -513,6 +514,9 @@ def query_rims_inference(
                 if parse_dd[k].startswith("python\n"):
                     parse_dd[k] = parse_dd[k].replace("python\n", "").strip()
 
+        if "Method" not in parse_dd.keys():
+            parse_dd["Method"] = []  # for later pop error prevention
+
         return parse_dd
 
     def process_rims_out_dict(parse_dd: dict, dataset_type=None) -> dict:
@@ -536,23 +540,33 @@ def query_rims_inference(
 
         """
 
-        def get_answer_rims(solution: str, ans: str = None, method: str = "", dataset_type:str="gsm"):
+        def get_answer_rims(
+            solution: str, ans: str = None, method: str = "", dataset_type: str = "gsm"
+        ):
             pred = ans
             try:
-                if method == "cot": # if method is given, follow it.
-                    pred = parse_num_from_answer(ans) if ans is not None and dataset_type == "gsm" else ans
+                if method == "cot":  # if method is given, follow it.
+                    pred = (
+                        parse_num_from_answer(ans)
+                        if ans is not None and dataset_type == "gsm"
+                        else ans
+                    )
                 elif method in ["pal", "p2c"]:
                     pred = safe_execute_turbo(solution)
             except Exception as e:
-                try: 
+                try:
                     pred = safe_execute_turbo(solution)
                 except:
-                    pred = parse_num_from_answer(ans) if ans is not None and dataset_type=="gsm"  else ans
+                    pred = (
+                        parse_num_from_answer(ans)
+                        if ans is not None and dataset_type == "gsm"
+                        else ans
+                    )
                 finally:
-                    print(f"Exception at llm_query_utils:query_rims_inference:process_rims_out_dict:get_answer_rims() --> using `ans` for get_anser_rims w/o executing\n\noriginal exception message:\n{e}")
+                    print(
+                        f"Exception at llm_query_utils:query_rims_inference:process_rims_out_dict:get_answer_rims() --> using `ans` for get_anser_rims w/o executing\n\noriginal exception message:\n{e}"
+                    )
             return pred
-
-
 
         attempts_keys = sorted([k for k in parse_dd.keys() if "Attempt" in k])
         ans_keys = sorted([k for k in parse_dd.keys() if "Answer" in k])
@@ -562,7 +576,12 @@ def query_rims_inference(
             ans_keys and attempts_keys
         ):  # answer and solutions inside. additionally Method key is also in the parse_dd
             good_solution = parse_dd[attempts_keys[-1]] if attempts_keys else None
+
+            # reflection count
             did_reflect = 0
+            if "Mistakes" in parse_dd.keys():
+                did_reflect += len(parse_dd["Mistakes"])
+
             if "Workaround Method" in parse_dd.keys():
                 did_reflect += len(parse_dd["Workaround Method"])
                 good_method = parse_method2(parse_dd["Workaround Method"][-1])
@@ -580,9 +599,7 @@ def query_rims_inference(
                 good_solution = parse_dd[attempts_keys[-1]]
                 bad_solution = [parse_dd[atk] for atk in attempts_keys[:-1]]
 
-            elif "Method" in parse_dd.keys():
-                if "Mistakes" in parse_dd.keys():
-                    did_reflect += len(parse_dd["Mistakes"])
+            elif "Method" in parse_dd.keys():  # no reflection (solved at once)
                 good_method = parse_method2(parse_dd["Method"][-1])
                 bad_method = [parse_method2(m) for m in parse_dd["Method"][:-1]]
 
@@ -593,8 +610,8 @@ def query_rims_inference(
                 good_solution = parse_dd[attempts_keys[-1]]
                 bad_solution = [parse_dd[atk] for atk in attempts_keys[:-1]]
 
-            else:  # solved at once
-                good_method = parse_method2(parse_dd["Method"])
+            else:  # no "Method" key
+                good_method = ""
                 bad_method = []
 
                 good_ans = parse_dd[ans_keys[-1]]
@@ -629,7 +646,12 @@ def query_rims_inference(
 
         eval_friendly_d = dict(
             good_solution=good_solution,
-            good_ans=get_answer_rims(good_solution, ans=good_ans, method=good_method, dataset_type=dataset_type),
+            good_ans=get_answer_rims(
+                good_solution,
+                ans=good_ans,
+                method=good_method,
+                dataset_type=dataset_type,
+            ),
             good_method=good_method,
             bad_solutions=bad_solution,
             bad_ans=[
@@ -663,7 +685,7 @@ def query_rims_inference(
             "\n`Evaluation`: Correct",
             "`Evaluation`: Correct",
             "Evaluation: Correct",
-            "<|end|>", # phi3
+            "<|end|>",  # phi3
         ]  # could be a list or a single string object. Defaults: None
 
     # # inspect prompt ready
@@ -697,7 +719,9 @@ def query_rims_inference(
         #         raw_query_out = raw_query_out.strip()
         parsed_dict = parse_raw_modif(raw_query_out)
         try:
-            eval_friendly_d = process_rims_out_dict(parsed_dict, dataset_type=dataset_type)
+            eval_friendly_d = process_rims_out_dict(
+                parsed_dict, dataset_type=dataset_type
+            )
         except Exception as e:
             print(str(e))
             print(f"{raw_query_out=}")
@@ -730,7 +754,8 @@ def query_rims_inference(
             parse_raw_modif(raw_query_out) for raw_query_out in raw_query_outs
         ]
         eval_friendly_ds = [
-            process_rims_out_dict(parsed_dict, dataset_type=dataset_type) for parsed_dict in parsed_dicts
+            process_rims_out_dict(parsed_dict, dataset_type=dataset_type)
+            for parsed_dict in parsed_dicts
         ]
 
         return (
@@ -1272,17 +1297,16 @@ def _execute(code, code_return: str):
     import random
     from fractions import Fraction
 
+    import matplotlib
     import sympy
     import sympy as sp
     from sympy import Symbol
     from sympy import isprime as is_prime
     from sympy import symbols
-    import matplotlib 
 
     matplotlib.use(
         "Agg"
     )  # exec("import matplotlib\nmatplotlib.use('Agg')\n", locals_) # to prevent matplotlib drawing on subthread error
-
 
     # pip installed olympiad, and marker to avoid frequent errors of math solving
 
@@ -1348,8 +1372,14 @@ def _execute(code, code_return: str):
 
 ### executing a code
 def safe_execute_turbo(code_string: str):
-    if "<|end|>" in code_string:
+    if (
+        "<|end|>" in code_string
+    ):  # for buggy output from tgi-phi3 serving, just let it stay here.
         code_string = code_string.split("<|end|>")[0]
+
+    def get_code_from_backticks_wrap(code_string):
+        return postprocess_code(code_string)
+
     def _convert_to_float_if_possible(ans):
         try:
             return float(ans)

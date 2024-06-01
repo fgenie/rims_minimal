@@ -840,10 +840,10 @@ def baseline_inference(
 ):
     assert gsm_jslf, f"need to specify {gsm_jslf=}"
     assert dataset_type in "gsm ocw math svamp".split(), f"invalid {dataset_type=}"
-    if "undone" in str(gsm_jslf):
-        assert (
-            out_suffix
-        ), f"need to specify {out_suffix=} when {gsm_jslf=} contains 'undone'"
+    # if "undone" in str(gsm_jslf):
+    #     assert (
+    #         out_suffix
+    #     ), f"need to specify {out_suffix=} when {gsm_jslf=} contains 'undone'"
 
     if (
         prompt_f

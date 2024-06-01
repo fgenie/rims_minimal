@@ -129,9 +129,9 @@ def indiv_inference(
     # check cot already exists or do query
     if "cot" in missing_methods:
         cot_max_tokens_d = {
-            "gsm": 400,
-            "ocw": 850,
-            "math": 950,
+            "gsm": 1024,
+            "ocw": 1024,
+            "math": 1024,
         }
 
         cot_lst, _msgs, _ = query_cot(
@@ -152,7 +152,7 @@ def indiv_inference(
             else extract_ans_from_cot_MATHnOCW
         )
         if n == 1:
-            cot_sol = cot_lst.pop()  # solution: str
+            cot_sol = cot_lst.pop() if cot_lst else ""  # solution: str
             cot_ans = execute_f(cot_sol)
         else:  # n>1
             cot_sol = cot_lst
@@ -167,9 +167,9 @@ def indiv_inference(
     # check pal already exists or do query
     if "pal" in missing_methods:
         pal_max_tokens_d = {
-            "gsm": 350,
-            "ocw": 500,
-            "math": 400,
+            "gsm": 1024,
+            "ocw": 1024,
+            "math": 1024,
         }
         pal_lst, __msgs, _ = query_pal(
             question,
@@ -181,7 +181,7 @@ def indiv_inference(
             max_tokens=pal_max_tokens_d[dataset_type],
         )
         if n == 1:
-            pal_sol = pal_lst.pop()
+            pal_sol = pal_lst.pop() if pal_lst else ""
             pal_ans = safe_execute_turbo(pal_sol)
         else:  # n>1
             pal_sol = pal_lst
@@ -197,7 +197,6 @@ def indiv_inference(
     if num_methods == 3:
         # check p2c already exists or do query
         if "p2c" in missing_methods:
-            # try:
             code_lst, plan_lst, ___msgs = query_plancode(
                 question,
                 plan_temperature=cot_temperature,
@@ -207,16 +206,11 @@ def indiv_inference(
                 seed=seed,
                 dataset_type=dataset_type,  # for max_token
             )
-            # dbgf=f"p2c_debug_{dataset_type}.jsonl"
-            # if not Path(dbgf).exists():
-            #     msgs = ___msgs["planquery"]  + ___msgs["codequery"]
-            #     jsl.open(f"p2c_debug_{dataset_type}.jsonl", "w").write_all(msgs)
             if n == 1:
-                plan = plan_lst.pop()
+                plan = plan_lst.pop() if plan_lst else ""
                 p2c_solution = code_lst  # plan is now generated inbetween the docstring
-                if code_lst:
-                    code = code_lst[0]
-                if code is not None:
+                code = code_lst.pop() if code_lst else ""
+                if code:
                     p2c_ans = safe_execute_turbo(code)
                 else:
                     p2c_ans = None
@@ -472,7 +466,7 @@ def rims_inference(
 
     # sanity check for the directory hierarchy
     assert (
-        Path(gsm_jslf).parent.parent.name == backbone
+        Path(gsm_jslf).parent.parent.name in backbone
     ), f"inferred backbone differs with the current:\n \
             inferred: {Path(gsm_jslf).parent.parent=} != current: {backbone=}"
     # assert Path(gsm_jslf).parent.parent.parent.name.endswith(dataset_type), \
@@ -873,10 +867,14 @@ def baseline_inference(
 
     if not outdir.exists():
         outdir.mkdir(parents=True)
-
-    outpath = (
-        outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_last{out_suffix}.jsonl"
-    )
+    if n>1:
+        outpath = (
+            outdir / f"{'dbg_' if dbg else ''}n{n}_baseline_T0.5_0.8_{out_suffix}.jsonl"
+        )
+    else: # n==1
+        outpath = (
+            outdir / f"{'dbg_' if dbg else ''}n1_baseline_T0.0_{out_suffix}.jsonl"
+        )
 
     while outpath.exists():
         print(f"{str(outpath)} exists, put 1 at the end.")

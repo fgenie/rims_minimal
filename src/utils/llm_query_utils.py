@@ -936,6 +936,10 @@ def get_cot_prompt(
             system_message = math_prompt.TURBO_COT_SYSTEM
             user_message = math_prompt.TURBO_COT_USER
             assistant_message = math_prompt.TURBO_COT_ASSISTANT
+        else: # openllms
+            system_message = math_prompt.TURBO_COT_SYSTEM
+            user_message = math_prompt.TURBO_COT_USER
+            assistant_message = math_prompt.TURBO_COT_ASSISTANT
         messages = get_user_assistant_messages(
             system_message, user_message, assistant_message
         )
@@ -1010,6 +1014,21 @@ def get_pal_prompt(
                     "content": f"Answer the following question in Python: {question}",
                 }
             ]
+        else: # openllm
+            system_message = math_prompt.TURBO_PAL_SYSTEM
+            user_message = math_prompt.TURBO_PAL_USER
+            assistant_message = math_prompt.TURBO_PAL_ASSISTANT
+            messages = get_user_assistant_messages(
+                system_message, user_message, assistant_message
+            )
+
+            messages += [
+                {
+                    "role": "user",
+                    "content": f"Answer the following question in Python: {question}",
+                }
+            ]
+            
     elif dataset_type in ["ocw", "math"]:
         # open ocw/MATH targeted CoT prompts
         ymlf = THIS_PARENT / "ocw_MATH_prompts.yaml"

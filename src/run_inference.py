@@ -209,7 +209,7 @@ def indiv_inference(
             if n == 1:
                 plan = plan_lst.pop() if plan_lst else ""
                 p2c_solution = code_lst  # plan is now generated inbetween the docstring
-                code = code_lst.pop() if code_lst else ""
+                code = code_lst[0] if code_lst else ""
                 if code:
                     p2c_ans = safe_execute_turbo(code)
                 else:

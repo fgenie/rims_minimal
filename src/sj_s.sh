@@ -10,22 +10,47 @@ CMD="python run_inference.py baseline_inference \
     --gsm_jslf ../dataset/ocw/ocw_course.jsonl \
     --dataset_type ocw \
     --n_jobs $NJOBS \
-    --out_suffix sys_as_sys"
+    --out_suffix user_as_sys"
 echo $CMD
 $CMD
 
-BASELINE_RESULT_JSL_OCW=outputs/ocw_course_dt.ocw/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+BASELINE_RESULT_JSL_OCW=outputs/ocw_course_dt.ocw/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_user_as_sys.jsonl
 
-python run_evaluation_new.py --ptn "$BASELINE_RESULT_JSL_OCW" --eval_type ocw --outf n1_ocw_phi_system_as_system.txt
-
-
+python run_evaluation_new.py --ptn "$BASELINE_RESULT_JSL_OCW" --eval_type ocw --eval_indiv_and_overlap --outf n1_indiv.txt
 
 
 
 
+# baseline n=1
+CMD="python run_inference.py baseline_inference \
+    --backbone $MODEL_NAME \
+    --gsm_jslf ../dataset/gsm8K_test.jsonl \
+    --dataset_type gsm \
+    --n_jobs $NJOBS \
+    --out_suffix user_as_sys"
+echo $CMD
+$CMD
+
+BASELINE_RESULT_JSL_GSM=outputs/gsm8K_test_dt.gsm/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_user_as_sys.jsonl
+
+python run_evaluation_new.py --ptn "$BASELINE_RESULT_JSL_GSM" --eval_type gsm --eval_indiv_and_overlap --outf n1_indiv.txt
 
 
 
+
+# # baseline n=1
+# CMD="python run_inference.py baseline_inference \
+#     --backbone $MODEL_NAME \
+#     --gsm_jslf ../dataset/MATH/MATH-full.jsonl \
+#     --dataset_type math \
+#     --n_jobs $NJOBS \
+#     --out_suffix user_as_sys"
+# echo $CMD
+# $CMD
+
+# BASELINE_RESULT_JSL_MATH=outputs/MATH-full_dt.math/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_user_as_sys.jsonl
+
+# python run_evaluation_new.py --ptn "$BASELINE_RESULT_JSL_MATH" --eval_type math --eval_indiv_and_overlap --outf n1_indiv.txt
 
 
 

@@ -1,0 +1,109 @@
+=======individual performance=======
+file      = outputs/ocw_course_dt.ocw/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = ocw
+cot:	8    /  272 (2.9%)
+
+file      = outputs/ocw_course_dt.ocw/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = ocw
+pal:	2    /  272 (0.7%)
+
+file      = outputs/ocw_course_dt.ocw/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = ocw
+p2c:	22   /  272 (8.1%)
+
+
+=====================================
+
+
+========distinctive behaviors========
+{'all': 0, 'cotpal-p2c': 0, 'palp2c-cot': 0, 'p2ccot-pal': 0, 'cot_only': 8, 'pal_only': 2, 'p2c_only': 22}
+=====================================
+
+
+=======overall performance=======
+file    = outputs/ocw_course_dt.ocw/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset = ocw (272 rows)
+overall_acc:	7    /  272 (2.6%)
+success_rate:	1    /  127 (0.8%)
+272 (total) = 
+	127 (seleciton) 
+	+ 145 (maj-votes) 
+	+ 0 (fails: counted as incorrect)
+=====================================
+
+
+
+
+
+=======individual performance=======
+file      = outputs/gsm8K_test_dt.gsm/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = gsm
+cot:	74   / 1319 (5.6%)
+
+
+file      = outputs/gsm8K_test_dt.gsm/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = gsm
+pal:	54   / 1319 (4.1%)
+
+
+file      = outputs/gsm8K_test_dt.gsm/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = gsm
+p2c:	799  / 1319 (60.6%)
+
+
+=====================================
+
+========distinctive behaviors========
+{'all': 3, 'cotpal-p2c': 1, 'palp2c-cot': 35, 'p2ccot-pal': 51, 'cot_only': 19, 'pal_only': 15, 'p2c_only': 710}
+=====================================
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset = gsm (1319 rows)
+overall_acc:	789  / 1319 (59.8%)
+success_rate:	2    /  277 (0.7%)
+1319 (total) = 
+	277 (seleciton) 
+	+ 1042 (maj-votes) 
+	+ 196 (fails: counted as incorrect)
+=====================================
+
+
+
+
+
+
+=======individual performance=======
+file      = outputs/MATH-full_dt.math/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = math
+cot:	66   / 5000 (1.3%)
+
+
+file      = outputs/MATH-full_dt.math/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = math
+pal:	63   / 5000 (1.3%)
+
+
+file      = outputs/MATH-full_dt.math/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset   = math
+p2c:	1051 / 5000 (21.0%)
+
+
+=====================================
+
+========distinctive behaviors========
+{'all': 3, 'cotpal-p2c': 0, 'palp2c-cot': 27, 'p2ccot-pal': 25, 'cot_only': 38, 'pal_only': 33, 'p2c_only': 996}
+=====================================
+
+=======overall performance=======
+file    = outputs/MATH-full_dt.math/microsoft/Phi-3-mini-128k-instruct/model_selection_prompts/n1_baseline_T0.0_sys_as_sys.jsonl
+dataset = math (5000 rows)
+overall_acc:	112  / 5000 (2.2%)
+success_rate:	35   / 2642 (1.3%)
+5000 (total) = 
+	2642 (seleciton) 
+	+ 2358 (maj-votes) 
+	+ 12 (fails: counted as incorrect)
+=====================================
+
+

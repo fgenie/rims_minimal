@@ -1,0 +1,91 @@
+The below are the result of running
+
+```bash
+cd src/
+bash sj.sh
+```
+
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/model_selection_prompts/n1_baseline.jsonl
+dataset = gsm (1317 rows)
+overall_acc:	1069 / 1317 (81.2%)
+success_rate:	75   /  253 (29.6%)
+1317 (total) =
+	253 (seleciton)
+	+ 1064 (maj-votes)
+	+ 0 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/model_selection_prompts/n1_baseline.jsonl
+dataset = ocw (272 rows)
+overall_acc:	35   /  272 (12.9%)
+success_rate:	15   /  164 (9.1%)
+272 (total) =
+	164 (seleciton)
+	+ 108 (maj-votes)
+	+ 0 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/rewrote.p2c_gsm_newer_best_p2c2cot.pal2p2c.pal2cot.txt/rims_T0.0.jsonl
+dataset = gsm (1317 rows)
+overall_acc:	1084 / 1317 (82.3%)
+success_rate:	90   /  253 (35.6%)
+1317 (total) =
+	253 (seleciton)
+	+ 1064 (maj-votes)
+	+ 43 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/rewrote.p2c_gsm_cot2p2c.pal2cot.pal2p2c.txt/rims_T0.0.jsonl
+dataset = gsm (1317 rows)
+overall_acc:	1094 / 1317 (83.1%)
+success_rate:	100  /  253 (39.5%)
+1317 (total) =
+	253 (seleciton)
+	+ 1064 (maj-votes)
+	+ 34 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/rewrote.p2c_gsm_pal2p2c.cot2p2c.cot2pal.txt/rims_T0.0.jsonl
+dataset = gsm (1317 rows)
+overall_acc:	1045 / 1317 (79.3%)
+success_rate:	51   /  253 (20.2%)
+1317 (total) =
+	253 (seleciton)
+	+ 1064 (maj-votes)
+	+ 135 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/rims_ocw_p2c-cot.pal-p2c.pal-cot__.txt/rims_T0.0.jsonl
+dataset = ocw (272 rows)
+overall_acc:	26   /  272 (9.6%)
+success_rate:	6    /  163 (3.7%)
+272 (total) =
+	163 (seleciton)
+	+ 109 (maj-votes)
+	+ 47 (fails: counted as incorrect)
+=====================================
+
+
+=======overall performance=======
+file    = outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/rims_ocw_p2c-cot.pal-p2c.cot-p2c__.txt/rims_T0.0.jsonl
+dataset = ocw (272 rows)
+overall_acc:	26   /  272 (9.6%)
+success_rate:	6    /  163 (3.7%)
+272 (total) =
+	163 (seleciton)
+	+ 109 (maj-votes)
+	+ 16 (fails: counted as incorrect)
+=====================================

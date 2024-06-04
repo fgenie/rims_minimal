@@ -13,9 +13,9 @@ NJOBS=16 # network bound job: larger better for faster results
 
 ### openllms names...
 # you need to edit endpoint at src/utils/llm_query_utils.py:L26 to point your openllm. followings now does not help but affects result directory namings.
-# MODEL_NAME=Meta-Llama-3-8B-Instruct 
+# MODEL_NAME=Meta-Llama-3-8B-Instruct
 # MODEL_NAME=Mistral-7B-Instruct-v0.2
-MODEL_NAME=gemma-1.1-2b-it
+MODEL_NAME=meta-llama/Meta-Llama-3-8B-Instruct
 # ...
 
 
@@ -100,8 +100,8 @@ done
 
 
 # 2-2: rims run + SC
-BASELINE_RESULT_GSM_JSL=outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/model_selection_prompts/n15_baseline.jsonl
-BASELINE_RESULT_OCW_JSL=outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/model_selection_prompts/n15_baseline.jsonl
+# BASELINE_RESULT_GSM_JSL=outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/model_selection_prompts/n15_baseline.jsonl
+# BASELINE_RESULT_OCW_JSL=outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/model_selection_prompts/n15_baseline.jsonl
 
 # for T in 0.2 0.5; do
 #     python3 run_inference.py rims_inference \
@@ -152,11 +152,11 @@ BASELINE_RESULT_OCW_JSL=outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/model
 
 # # n=1 results
 for data in gsm ocw; do
-    python3 run_evaluation_new.py --ptn outputs/*${data}*/**/n1_*.jsonl --eval_type $data --outf testout.txt
+    python3 run_evaluation_new.py --ptn outputs/*${data}*/**/n1_*.jsonl --eval_type $data --outf llamaout.txt
 done
 
 for data in gsm ocw; do
-    python3 run_evaluation_new.py --ptn outputs/*${data}*/**/rims_*.jsonl --eval_type $data --outf testout.txt
+    python3 run_evaluation_new.py --ptn outputs/*${data}*/**/rims_*.jsonl --eval_type $data --outf llamaout.txt
 done
 # # SC results
 # for n in 15; do

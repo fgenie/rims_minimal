@@ -24,3 +24,12 @@ src/prompt_construction_src/tests/*.json
 src/gather_results.md
 src/testout.md
 src/result_table.md
+
+
+
+dataset/MATH/math_train/
+sj_outputs/
+src/compare.ipynb
+src/llamaout.txt
+src/outputs_old/
+src/math_hacking.ipynb

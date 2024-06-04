@@ -441,15 +441,6 @@ def rims_inference(
     # rims `outdir` below shares backbone
     outdir = Path(gsm_jslf).parent.parent / Path(prompt_f).name
 
-    # sanity check for the directory hierarchy
-    assert (
-        Path(gsm_jslf).parent.parent.name == backbone
-    ), f"inferred backbone differs with the current:\n \
-            inferred: {Path(gsm_jslf).parent.parent=} != current: {backbone=}"
-    # assert Path(gsm_jslf).parent.parent.parent.name.endswith(dataset_type), \
-    #     f"inferred dataset_type differs with the current:\n \
-    #         inferred: {Path(gsm_jslf).parent.parent.parent.name=} != current: {dataset_type=}"
-
     if not outdir.exists():
         outdir.mkdir(parents=True)
 

@@ -57,12 +57,8 @@ python run_evaluation_new.py --ptn "outputs/MATH-full_dt.math/chatgpt1106/*/*jso
 
 
 
-### SJ
-- [ ] opensource LLM: `sj.sh` 을 따라서 실험한다
-  - vllm/openai 서버를 태형님 DGX에서 구동한다 (서버 구동시 `--gpu_memory_utilization 0.5` 로 하여 GPU=2~7 번 중에서만 사용할 것)
-  - 코드 일부 수정
-    - `llm_query_utils.py` 에서 client 부분을 uncomment하고 `base_url` 설정. AzureClient는 comment처리
-    - `client.chat.completion.create()` 의 인자 중에서 vllm_endpoint가 지원하지 않는 kwarg를 배제한다 (e.g. seed? model?)
-  - `sj.sh` 의 빈 칸들을 채워서 구동한다
-    - baseline model selection의 경로 등
-  - 이렇게 했을 때 혹시 간단하게 해결할 수 없어보이는 문제 있으면 문의
+### 전달시
+openllm-sj 브랜치에서
+- tunneling 으로 dgx api query 가능한지 확인
+- sj.sh 작동하는지 확인, 숫자도 얼핏
+- 함수 분야별로 쪼개기, 새로 짤 부분 만들기...

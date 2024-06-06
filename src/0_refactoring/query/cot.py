@@ -16,6 +16,8 @@ class CoTQueryObject(BaseQueryObject):
             question, backbone=backbone, dataset_type=dataset_type
         )
 
+    def query_error_msg(self, query_message):
+        return False, None
 
 def get_cot_prompt(
     question: str,

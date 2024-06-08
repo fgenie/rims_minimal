@@ -16,8 +16,10 @@ src/utils/llm_query_utils.py
     src/utils/plancode_util_v2.py # plan2code prompts
 
 """
+import asyncio
 
 from query import CoTQueryObject, PALQueryObject, P2CQueryObject
+from typing import  Literal
 
 
 async def indiv_query(
@@ -78,6 +80,8 @@ async def indiv_query(
     }
 
     return_data = {}
+
+    jobs = []
     
     for method in missing_methods:
         # function prepare variables
@@ -93,18 +97,21 @@ async def indiv_query(
             "backbone": backbone,
             "n": n,
             "seed": seed,
-            "max_tokens": max_tokens[method][dataset_type]
-            stop="\n\n\n"
+            "max_tokens": max_tokens[method][dataset_type],
+            "stop": "\n\n\n"
         }
         
         if method == "p2c":
             query_params["stop"] = "Question: "
 
         query_obj = query_objects[method](**init_param)
-        contents, query_message, resp = await query_obj.async_query(**query_params)
-        return_data[method] = {
+        jobs.append(query_obj.async_query(**query_params))
+
+    for contents, query_message, resp, meta in await asyncio.gather(*jobs):
+        return_data[meta['method_obj']] = {
             "contents": contents,
             "query_message": query_message,
-            "resp": resp
+            "resp": resp,
+            "meta": meta
         }
     return return_data

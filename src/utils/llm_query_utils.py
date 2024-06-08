@@ -1170,44 +1170,24 @@ def postprocess_code(rawanswer: str, k_fewshot: int = 0):
     return code
 
 
-# p2c response postprocessing utility
-def separate_plan_code(rawstr: str) -> tuple:
-    # used for 5_cohlike_prompt
-    # p2c results in plan\ncode so split it.
-    # new p2c result will not be affected by this. so let it be here still in case of revert
-    rawstr = rawstr.strip()
-    lines = rawstr.split("\n")
-    found_code = False
-    for i, l in enumerate(lines):
-        if l.startswith("def ") and l.strip().endswith(":"):
-            found_code = True
-            break
-    if found_code:
-        plan = "\n".join(lines[:i])
-        code = "\n".join(lines[i:])
-    else:
-        plan, code = None, None
-    return plan, code  # plan never used...
-
-
-# method name normalization for rimsprompt
-def parse_method2(methodstr: str) -> str:
-    # works for --rimsprompt option
-    normalized = methodstr.replace("-", " ").replace("_", " ").lower()
-    norm2short = {
-        "chain of thought": "cot",
-        "cot": "cot",
-        "program aided language modeling": "pal",
-        "program aided language model": "pal",
-        "pal": "pal",
-        "plan and then code": "p2c",
-        "p2c": "p2c",
-    }  # this should be key as abb, and value as a set of component patterns for capturing
-    for k in norm2short.keys():
-        if k in normalized:
-            return norm2short[k]
-    else:
-        return methodstr
+# # p2c response postprocessing utility
+# def separate_plan_code(rawstr: str) -> tuple:
+#     # used for 5_cohlike_prompt
+#     # p2c results in plan\ncode so split it.
+#     # new p2c result will not be affected by this. so let it be here still in case of revert
+#     rawstr = rawstr.strip()
+#     lines = rawstr.split("\n")
+#     found_code = False
+#     for i, l in enumerate(lines):
+#         if l.startswith("def ") and l.strip().endswith(":"):
+#             found_code = True
+#             break
+#     if found_code:
+#         plan = "\n".join(lines[:i])
+#         code = "\n".join(lines[i:])
+#     else:
+#         plan, code = None, None
+#     return plan, code  # plan never used...
 
 
 # rims prompt: cot answer extracting postprocessing

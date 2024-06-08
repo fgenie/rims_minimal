@@ -8,6 +8,7 @@ rims (ours) selection
 for a designated dataset
 
 ----
+resources:
     src/run_inference.py
 
     prompts for

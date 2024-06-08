@@ -35,7 +35,14 @@ class BaseQueryObject:
         max_tokens: int = 2048,
         stop="\n\n\n",
     ):
-        query_message = await self.prepare_query(question, backbone=backbone)
+        meta = {'method_obj': self.__class__.__name__}
+        query_message = await self.prepare_query(question, backbone=backbone, **{
+            "temperature": temperature,
+            "n": n,
+            "seed": seed,
+            "max_tokens": max_tokens,
+            "stop": stop
+        })
         is_error, error_msg = self.query_error_msg(query_message)
         if is_error:
             return error_msg
@@ -54,26 +61,24 @@ class BaseQueryObject:
             n=n,
         )
     
-        contents = get_contents(resp)
-        return contents, query_message, resp
+        contents = self.get_contents(resp)
+        return contents, query_message, resp, meta
 
     def prepare_query(
         self,
         question: str,
         backbone: str,
+        **kwargs
     ):
         raise NotImplementedError()
 
     def query_error_msg(self, query_message):
         raise NotImplementedError()
 
-    @staticmethod
-    def query_to_llm(**chat_params):
-        res = client.chat.completions.create(**chat_params)
-        return res
 
     @staticmethod
     async def async_query_to_llm(**chat_params):
+        print(chat_params)
         res = await async_client.chat.completions.create(**chat_params)
         return res
 

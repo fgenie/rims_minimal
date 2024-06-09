@@ -1,7 +1,9 @@
 import yaml
 
 from query import BaseQueryObject, get_user_assistant_messages
-from query import math_util
+from query import math_prompt
+from typing import Literal
+
 
 class PALQueryObject(BaseQueryObject):
     def __init__(self, dataset_type):
@@ -11,9 +13,10 @@ class PALQueryObject(BaseQueryObject):
         self,
         question: str,
         backbone: str,
+        **kwargs
     ):
         return get_pal_prompt(
-            question, backbone=backbone, dataset_type=dataset_type
+            question, backbone=backbone, dataset_type=self.dataset_type
         )
         
     def query_error_msg(self, query_message):
@@ -30,7 +33,7 @@ def get_pal_prompt(
     if dataset_type not in "gsm ocw math svamp":
         raise ValueError(f"get_pal_prompt(): {dataset_type=} is not supported")
 
-    if dataset_type in "gsm svamp":
+    if dataset_type in "gsm svamp".split():
         if backbone == "gpt4" or backbone == "gpt4turbo":
             system_message = math_prompt.GPT4_PAL_SYSTEM
             user_message = math_prompt.GPT4_PAL_USER
@@ -46,7 +49,7 @@ def get_pal_prompt(
                 }
             ]
 
-        elif "chatgpt" in backbone:
+        else:
             system_message = math_prompt.TURBO_PAL_SYSTEM
             user_message = math_prompt.TURBO_PAL_USER
             assistant_message = math_prompt.TURBO_PAL_ASSISTANT

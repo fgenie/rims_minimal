@@ -1,7 +1,8 @@
 import yaml
 
 from query import BaseQueryObject, get_user_assistant_messages
-from query import math_util
+from query import math_prompt
+from typing import Literal
 
 class CoTQueryObject(BaseQueryObject):
     def __init__(self, dataset_type):
@@ -11,9 +12,10 @@ class CoTQueryObject(BaseQueryObject):
         self,
         question: str,
         backbone: str,
+        **kwargs
     ):
         return get_cot_prompt(
-            question, backbone=backbone, dataset_type=dataset_type
+            question, backbone=backbone, dataset_type=self.dataset_type
         )
 
     def query_error_msg(self, query_message):
@@ -36,7 +38,7 @@ def get_cot_prompt(
             system_message = math_prompt.GPT4_COT_SYSTEM
             user_message = math_prompt.GPT4_COT_USER
             assistant_message = math_prompt.GPT4_COT_ASSISTANT
-        elif "chatgpt" in backbone:
+        else:
             system_message = math_prompt.TURBO_COT_SYSTEM
             user_message = math_prompt.TURBO_COT_USER
             assistant_message = math_prompt.TURBO_COT_ASSISTANT

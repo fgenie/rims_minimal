@@ -1,5 +1,4 @@
 import yaml
-
 from query import BaseQueryObject, get_user_assistant_messages
 from query import math_prompt
 from typing import Literal
@@ -20,6 +19,7 @@ class CoTQueryObject(BaseQueryObject):
 
     def query_error_msg(self, query_message):
         return False, None
+
 
 def get_cot_prompt(
     question: str,

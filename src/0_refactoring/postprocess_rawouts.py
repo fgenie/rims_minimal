@@ -21,19 +21,6 @@ def process_indiv(
     outfile: str = "processed_indiv.jsonl",
 ):
     """
-    raw_indiv.jsonl
-    row:
-    {
-        "question":
-        "answer":
-        "cot": List[str] # raw cot solution(s) (n>=1)
-        "pal": List[str]
-        "p2c": List[str]
-        ...
-        ..
-        . # 여기에 query prompt도 기재할 것인가?
-
-    }
     processed_indiv.jsonl
     row:
     {
@@ -48,6 +35,7 @@ def process_indiv(
     "cot_solution": List[str],
     "pal_solution": List[str],
     "p2c_solution": List[str],
+    "p2c_plan": List[str],
     }
 
     """
@@ -57,9 +45,9 @@ def process_indiv(
     processed_rows = []
     for row in tqdm(records):
         # regardless of n,
-        raw_cots = row["cot"]
-        raw_pals = row["pal"]
-        raw_p2cs = row["p2c"]
+        raw_cots = row["CoTQueryObject"]["contents"]
+        raw_pals = row["PALQueryObject"]["contents"]
+        raw_p2cs = row["P2CQueryObject"]["contents"]
 
         # solutions
         cot_solutions = raw_cots

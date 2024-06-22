@@ -2,26 +2,17 @@ import os
 from openai import OpenAI, AsyncOpenAI
 
 
-base_url = os.environ.get("OPENAI_API_BASE", "http://localhost:49999/v1")
+base_url = os.environ.get("OPENAI_API_BASE", "http://localhost:8000/v1")
 api_key = os.environ.get("OPENAI_API_KEY", "no_need")
 timeout = int(os.environ.get("OPENAI_TIMEOUT", 120))
 max_retries = int(os.environ.get("OPENAI_MAX_RETRY", 4))
 
-
-client = OpenAI(
-    base_url=base_url,
-    api_key=api_key,
-    timeout=timeout,
-    max_retries=max_retries,
-)
-
-
 async_client = AsyncOpenAI(
-    base_url=base_url,
-    api_key=api_key,
-    timeout=timeout,
-    max_retries=max_retries,
-)
+            base_url=base_url,
+            api_key=api_key,
+            timeout=timeout,
+            max_retries=max_retries,
+        )
 
 
 class BaseQueryObject:
@@ -35,22 +26,24 @@ class BaseQueryObject:
         max_tokens: int = 2048,
         stop="\n\n\n",
     ):
+        
         meta = {'method_obj': self.__class__.__name__}
-        query_message = await self.prepare_query(question, backbone=backbone, **{
+        
+        prepare_query_task = self.prepare_query(question, backbone=backbone, **{
             "temperature": temperature,
             "n": n,
             "seed": seed,
             "max_tokens": max_tokens,
             "stop": stop
-        })
+        }) 
+        query_message = await prepare_query_task
         is_error, error_msg = self.query_error_msg(query_message)
         if is_error:
             return error_msg
         
         model_name = self.backbone2model(backbone)
     
-        completions = []
-        resp = await self.async_query_to_llm(
+        call_llm_task = self.async_query_to_llm(
             model=model_name,
             max_tokens=max_tokens,
             stop=stop,
@@ -60,11 +53,11 @@ class BaseQueryObject:
             seed=seed,
             n=n,
         )
-    
+        resp = await call_llm_task
         contents = self.get_contents(resp)
         return contents, query_message, resp, meta
 
-    def prepare_query(
+    async def prepare_query(
         self,
         question: str,
         backbone: str,
@@ -75,10 +68,8 @@ class BaseQueryObject:
     def query_error_msg(self, query_message):
         raise NotImplementedError()
 
-
     @staticmethod
     async def async_query_to_llm(**chat_params):
-        print(chat_params)
         res = await async_client.chat.completions.create(**chat_params)
         return res
 

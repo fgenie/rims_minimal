@@ -42,7 +42,7 @@ async def indiv_query(
         solmap : {cot: pal: p2c:}
         ansmap : {cot: pal: p2c:} (solution executed)
     """
-
+    
     if dataset_type == "ocw":
         question = row["problem"]
     else:
@@ -69,7 +69,7 @@ async def indiv_query(
         },
         "pal": {
             "gsm": 350,
-            "ocw": 500,
+             "ocw": 500,
             "math": 400,
         },
         "p2c": {
@@ -106,7 +106,7 @@ async def indiv_query(
 
         query_obj = query_objects[method](**init_param)
         jobs.append(query_obj.async_query(**query_params))
-
+    
     for contents, query_message, resp, meta in await asyncio.gather(*jobs):
         return_data[meta['method_obj']] = {
             "contents": contents,

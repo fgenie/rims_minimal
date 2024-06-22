@@ -2,7 +2,7 @@ import os
 from openai import OpenAI, AsyncOpenAI
 
 
-base_url = os.environ.get("OPENAI_API_BASE", "http://localhost:8000/v1")
+base_url = os.environ.get("OPENAI_API_BASE", "http://localhost:49999/v1")
 api_key = os.environ.get("OPENAI_API_KEY", "no_need")
 timeout = int(os.environ.get("OPENAI_TIMEOUT", 120))
 max_retries = int(os.environ.get("OPENAI_MAX_RETRY", 4))

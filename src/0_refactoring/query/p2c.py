@@ -4,7 +4,6 @@ from pathlib import Path
 
 
 from query import BaseQueryObject, get_user_assistant_messages
-from query import math_util
 
 
 THIS_PARENT = Path(__file__).parent.resolve()

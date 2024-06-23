@@ -3,7 +3,7 @@ import yaml
 from query import BaseQueryObject, get_user_assistant_messages
 from query import math_prompt
 from typing import Literal
-
+from pathlib import Path
 
 class PALQueryObject(BaseQueryObject):
     def __init__(self, dataset_type):
@@ -65,6 +65,7 @@ def get_pal_prompt(
             ]
     elif dataset_type in ["ocw", "math"]:
         # open ocw/MATH targeted CoT prompts
+        THIS_PARENT = Path(__file__).parent.resolve()
         ymlf = THIS_PARENT / "ocw_MATH_prompts.yaml"
         prompt_d = yaml.full_load(open(ymlf))
         pmpt_d = prompt_d[f"{dataset_type}_pal"]

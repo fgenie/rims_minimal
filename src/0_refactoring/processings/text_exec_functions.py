@@ -7,7 +7,7 @@ import func_timeout
 
 # to avoid matplotlib error by display in code execution
 import matplotlib
-import processings.math_util
+from processings import math_util
 
 matplotlib.use("Agg")
 

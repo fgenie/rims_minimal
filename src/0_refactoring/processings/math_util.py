@@ -26,6 +26,7 @@ def gsm_check_answer(a1, a2):
         decision = abs(a1 - a2) < 1e-3
     except Exception as e:
         print(e)
+        print(f"{a1=}, {a2=}")
         decision = None
     return decision
 

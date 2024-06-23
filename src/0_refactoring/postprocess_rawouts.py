@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 def process_indiv(
     exp_dir: str = "",
-    dataset_type: Literal["gsm", "ocw", "math"] = "",
+    dataset_type: Literal["gsm", "ocw", "math"] = "gsm",
     infile: str = "raw_indiv.jsonl",
     outfile: str = "processed_indiv.jsonl",
 ):
@@ -44,6 +44,12 @@ def process_indiv(
 
     processed_rows = []
     for row in tqdm(records):
+        # question = row["question"]
+        question = row["CoTQueryObject"]["query_message"][-1]["content"].replace(
+            "Question: ", ""
+        )
+        # answer = row["answer"]
+
         # regardless of n,
         raw_cots = row["CoTQueryObject"]["contents"]
         raw_pals = row["PALQueryObject"]["contents"]
@@ -75,6 +81,8 @@ def process_indiv(
         need_selection = [maj is None for maj in majvote_answers]
 
         processed_row = dict(
+            question=question,
+            # answer = answer,
             cot_solutions=cot_solutions,
             pal_solutions=pal_solutions,
             p2c_solutions=p2c_solutions,
@@ -85,10 +93,15 @@ def process_indiv(
             need_selection=need_selection,
         )
         processed_rows.append(processed_row)
-    with jsl.open(exp_dir / outfile, "w") as writer:
+
+    outjslf = Path(exp_dir) / outfile
+    if not outjslf.parent.is_dir():
+        outjslf.parent.mkdir(parents=True, exist_ok=True)
+
+    with jsl.open(outjslf, "w") as writer:
         writer.write_all(processed_rows)
         print(f"wrote {len(processed_rows)} rows to")
-        print("\t", str(exp_dir / outfile))
+        print("\t", outjslf)
 
 
 def process_simple_greedy(
@@ -101,3 +114,7 @@ def process_simple_greedy(
     for row in tqdm(records):
         if set(row["majvote_ans"]) == {None}:  # all None
             continue
+
+
+if __name__ == "__main__":
+    Fire()

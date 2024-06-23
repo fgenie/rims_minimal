@@ -62,3 +62,11 @@ https://github.com/fgenie/rims_minimal/issues/37#issuecomment-1967256560
   * (n>1) SC was originally implemented as a loop of n=1 cycle. which means
     * for simple_greedy: indiv n=1 --> majority vote ([if fails] --> selection) (each selection will take their previous indiv solution as prompting resources)
     * for rims: likewise, rims will only run for failed-to-choose-majorities, but this could be implemented with `client.chat.completions.create(n=n)` as it does not actually takes the solution of the previous.
+
+
+
+
+
+OPENAI_API_BASE=http://localhost:8000/v1 python run_baseline.py --gsm_jslf=some_dir/gsm8K_test.jsonl --dataset_type=gsm --backbone=Meta-Llama-3-8B-Instruct
+
+OPENAI_API_BASE=http://localhost:8000/v1 python run_baseline.py --gsm_jslf=/data/recoteam_583/joel/opensource/rims_minimal/dataset/gsm8K_test.jsonl --dataset_type=gsm --backbone=Meta-Llama-3-8B-Instruct --retry_error_in_result_file_path=outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl

@@ -4,10 +4,10 @@ from itertools import combinations
 from typing import Dict, List, Literal, Union
 
 import func_timeout
-import math_util
 
 # to avoid matplotlib error by display in code execution
 import matplotlib
+import processings.math_util
 
 matplotlib.use("Agg")
 
@@ -282,6 +282,8 @@ def get_concordant_answer(
             elif len(answers_no_none) == 2:
                 if abs(answers_no_none[0] - answers_no_none[1]) < 1e-3:
                     res = answers_no_none[0]
+                else:
+                    res = None
             else:
                 for a1, a2 in combinations(answers_no_none, 2):
                     if abs(a1 - a2) < 1e-3:

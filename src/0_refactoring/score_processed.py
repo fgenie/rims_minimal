@@ -157,6 +157,10 @@ def score_indiv(
         f.close()
 
 
+def score_selected_result():
+    raise NotImplementedError()
+
+
 if __name__ == "__main__":
     Fire()
     """python score_processed.py score_indiv """

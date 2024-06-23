@@ -138,9 +138,17 @@ def score_indiv(
             )
             print("\n", file=f)
             each_corrects[method] = corrects_mask_
+
+        df_cor = pd.DataFrame(each_corrects)
+        df = pd.concat([df, df_cor], axis="columns")
+        df.to_json(
+            Path(ptn).parent / Path(ptn).name.replace("jsonl", "_inspect.jsonl"),
+            lines=True,
+            orient="records",
+        )
         scoredf = pd.DataFrame(
             {
-                k: f"{v.sum()}/{len(v)} ({v.mean()*100:.1f} %)"
+                k: f"{v.sum()}/{len(v)} ({100*v.sum()/len(v):.1f} %)"
                 for k, v in each_corrects.items()
             },
             index=[0],

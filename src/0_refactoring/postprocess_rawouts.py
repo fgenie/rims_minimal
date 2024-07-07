@@ -67,7 +67,6 @@ def process_indiv(
             else extract_ans_from_cot_MATHnOCW
         )
         code_exec = safe_execute_turbo
-
         cot_preds = [cot_exec(s) for s in cot_solutions]
         pal_preds = [code_exec(s) for s in pal_solutions]
         p2c_preds = [code_exec(s) for s in p2c_solutions]

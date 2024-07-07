@@ -151,21 +151,15 @@ def safe_execute_turbo(code_string: str):
                 all_codes
             )  # all_codes[-1] # if we parsed more than one function, we need to use them all.
 
-            ans = func_timeout.func_timeout(
-                3,
-                _execute,
-                args=(
-                    new_code,
-                    code_return,
-                ),
-            )
+            with math_util.timeout(seconds=3):
+                ans = _execute(new_code, code_return)
             ans = _convert_to_float_if_possible(ans)
             ans = _convert_to_str_if_not_none_nor_float(ans)
         else:
             ans = None
-    except (func_timeout.FunctionTimedOut, IndexError, NameError, SyntaxError):
+    except (TimeoutError, IndexError, NameError, SyntaxError):
+        print('Timeout. skip this sample output')
         ans = None
-
     return ans
 
 
@@ -261,7 +255,6 @@ def get_concordant_answer(
 
     **for math and ocw, safe_execute_turbo polishes returned answer with `sp.latex` if the result is sympy object (See the last line of `def _execute`)
     """
-
     answers_no_none = [a for a in answers if (a is not None and a != "None")]
 
     if dataset_type in ["svamp", "gsm"]:
@@ -293,9 +286,18 @@ def get_concordant_answer(
                         res = None
         return res
     elif dataset_type in ["math"]:
-        answers_normalized = [
-            math_util.normalize_final_answer(str(a)) for a in answers_no_none
-        ]
+        answers_normalized = []
+        
+        for a in answers_no_none:    
+            try:
+                with math_util.timeout(seconds=60):
+                    res = math_util.normalize_final_answer(str(a))
+            except TimeoutError as e:
+                print('math_util.normalize_final_answer raise timeout error. Skip this answer.')
+                pass
+        print('answers_normalized len', len(answers_normalized))
+        print('answers_normalized', answers_normalized)
+        
         if len(answers_normalized) == 0:
             res = None
         elif len(answers_normalized) == 1:
@@ -305,6 +307,7 @@ def get_concordant_answer(
             res = answers_no_none[0] if cond else None
         else:  # len()==3
             revert_normalized = dict(zip(answers_normalized, answers_no_none))
+
             for a1, a2 in combinations(answers_normalized, 2):
                 cond = math_util.is_equiv(a1, a2)
                 res = revert_normalized[a1] if cond else None

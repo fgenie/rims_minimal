@@ -37,10 +37,13 @@ def ocw_check_answer(a1, a2):
     """
     try:
         a1, a2 = map(str, [a1, a2])
+        logging.error(f'a1 {a1}')
+        logging.error(f'a2 {a2}')
         decision = is_equiv_ocw(a1, a2)
     except Exception as e:
         print(e)
         decision = False
+    logging.error(f'decision {decision}')
     return decision
 
 
@@ -49,8 +52,9 @@ def math_check_answer(a1, a2):
     check if a1 and a2 are equivalent in math
     """
     try:
-        a1, a2 = map(str, [a1, a2])
-        decision = is_equiv(normalize_final_answer(a1), normalize_final_answer(a2))
+        with timeout(seconds=5):
+            a1, a2 = map(str, [a1, a2])
+            decision = is_equiv(normalize_final_answer(a1), normalize_final_answer(a2))
     except Exception as e:
         print(e)
         decision = False

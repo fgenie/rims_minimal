@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Literal
+import json
 
 import jsonlines as jsl
 import numpy as np
@@ -9,7 +10,6 @@ from processings.math_util import gsm_check_answer, math_check_answer, ocw_check
 from tqdm import tqdm
 
 tqdm.pandas()
-
 
 # eval functions with exception handled (like len(df)==0)
 def eval_gsm_svamp(
@@ -98,7 +98,13 @@ def score_indiv(
     for jslf in paths:
         outpath = paths[0].parent / f"{paths[0].stem}_scored.txt"
         # load data
-        df = pd.DataFrame(jsl.open(jslf))
+        data_for_df = []
+
+        with open(jslf) as f:
+            for line in f.readlines():
+                data_for_df.append(json.loads(line))
+
+        df = pd.DataFrame(data_for_df)
         answers = pd.read_json(dataset_jsl, lines=True, orient="records").answer
         df["answer"] = answers
         assert len(df) == len(

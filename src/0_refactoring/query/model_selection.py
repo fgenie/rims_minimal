@@ -11,6 +11,7 @@ class ModelSelectionQuery(BaseQueryObject):
         self,
         question: str,
         cot_pal_p2c_sln_d: dict,
+        dataset_type: Literal["gsm", "svamp", "ocw", "math"],
     ):
         return get_select_prompt2(
             question,

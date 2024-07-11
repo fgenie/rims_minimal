@@ -1,17 +1,21 @@
 """
 code for model selection (i.e. simple-greedy)
 """
+from pathlib import Path
+from typing import Any, Dict, List, Literal
+
+from base_query import BaseQueryObject
 
 
 class ModelSelectionQuery(BaseQueryObject):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, dataset_type):
+        self.dataset_type = dataset_type
 
     async def prepare_query(
         self,
         question: str,
-        cot_pal_p2c_sln_d: dict,
-        dataset_type: Literal["gsm", "svamp", "ocw", "math"],
+        cot_pal_p2c_sln_d: Dict,
+        **kwargs,  # to avoid overiding base class
     ):
         return get_select_prompt2(
             question,
@@ -27,10 +31,10 @@ class ModelSelectionQuery(BaseQueryObject):
 def get_select_prompt2(
     question: str,
     cot_pal_p2c_sln_d: dict = None,
-    dataset_type: Literal["gsm", "svamp", "ocw", "math"] = None
-    # backbone:str="chatgpt",
+    dataset_type: Literal["gsm", "svamp", "ocw", "math"] = None,
 ) -> List[Dict[str, str]]:
     # open up prompt template yaml file
+    THIS_PARENT = Path(__file__).parent.resolve()
     prompt_yml = THIS_PARENT / "model_selection_prompts.yaml"
     prompt_d: Dict[str, Any] = yaml.full_load(open(prompt_yml))
 
@@ -50,6 +54,7 @@ def get_select_prompt2(
     # 1. fill the quesiton
     user_tmp = user_tmp.replace("{QUESTION}", q)
     # 2. fill the solutions
+
     for to_replace, to_be in zip(to_replace_keys.split(), cot_pal_p2c_sln_d.values()):
         user_tmp = user_tmp.replace(to_replace, to_be)
     user_attempt = user_tmp

@@ -84,6 +84,34 @@
             "justMyCode": true,
         },
         {
+            "name": "run sg",
+            "type": "python",
+            "request": "launch",
+            "program": "run_sg.py",
+            "cwd": "/Users/seonils/dev/rims_minimal/src/0_refactoring/",
+            "args": [
+                "--indiv_processed_jslf", "dbg/processed_indiv.jsonl",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },
+        {
+            "name": "postprocess raw py",
+            "type": "python",
+            "request": "launch",
+            "program": "postprocess_rawouts.py",
+            "cwd": "/Users/seonils/dev/rims_minimal/src/0_refactoring/",
+            "args": [
+                "process_indiv",
+                "--infile", "/Users/seonils/dev/rims_minimal/src/0_refactoring/outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl",
+                "--outfile", "dbg/processed_indiv.jsonl",
+                "--dataset_type", "gsm",
+                // "score_indiv",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },
+        {
             "version": "0.2.0",
             "configurations": [
                 {

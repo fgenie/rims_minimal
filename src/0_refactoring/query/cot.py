@@ -1,19 +1,15 @@
-import yaml
-from query import BaseQueryObject, get_user_assistant_messages
-from query import math_prompt
-from typing import Literal
 from pathlib import Path
+from typing import Literal
+
+import yaml
+from query import BaseQueryObject, math_prompt
+
 
 class CoTQueryObject(BaseQueryObject):
     def __init__(self, dataset_type):
         self.dataset_type = dataset_type
 
-    async def prepare_query(
-        self,
-        question: str,
-        backbone: str,
-        **kwargs
-    ):
+    async def prepare_query(self, question: str, backbone: str, **kwargs):
         return get_cot_prompt(
             question, backbone=backbone, dataset_type=self.dataset_type
         )
@@ -43,6 +39,8 @@ def get_cot_prompt(
             system_message = math_prompt.TURBO_COT_SYSTEM
             user_message = math_prompt.TURBO_COT_USER
             assistant_message = math_prompt.TURBO_COT_ASSISTANT
+        from query import get_user_assistant_messages
+
         messages = get_user_assistant_messages(
             system_message, user_message, assistant_message
         )

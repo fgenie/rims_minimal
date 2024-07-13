@@ -15,8 +15,6 @@ from tqdm import tqdm
 
 
 def process_indiv(
-    exp_dir: str = "",
-    dataset_type: Literal["gsm", "ocw", "math"] = "gsm",
     infile: str = "raw_indiv.jsonl",
     outfile: str = "processed_indiv.jsonl",
 ):
@@ -35,13 +33,19 @@ def process_indiv(
     "cot_solution": List[str],
     "pal_solution": List[str],
     "p2c_solution": List[str],
-    "p2c_plan": List[str],
     }
 
     """
-    rawjslf = Path(exp_dir) / infile
-    records = list(jsl.open(rawjslf))
+    parent_dir = Path(infile).parent
+    print(f"parent dir is automatically set to {parent_dir=}")
+    print(f"outfile is set to {Path(outfile).name} and saved under {parent_dir=}")
+    infile = Path(infile).name
+    outfile = Path(outfile).name
+    assert infile != outfile
 
+    records = list(jsl.open(parent_dir / infile))
+
+    dataset_type = records[0]["CoTQueryObject"]["meta"]["dataset_type"]
     processed_rows = []
     for row in tqdm(records):
         # question = row["question"]
@@ -90,10 +94,11 @@ def process_indiv(
             p2c_preds=p2c_preds,
             majvote_answers=majvote_answers,
             need_selection=need_selection,
+            dataset_type=dataset_type,
         )
         processed_rows.append(processed_row)
 
-    outjslf = Path(exp_dir) / outfile
+    outjslf = Path(parent_dir) / outfile
     if not outjslf.parent.is_dir():
         outjslf.parent.mkdir(parents=True, exist_ok=True)
 
@@ -104,11 +109,11 @@ def process_indiv(
 
 
 def process_simple_greedy(
-    exp_dir: str = "",
+    parent_dir: str = "",
     infile: str = "raw_simple_greedy.jsonl",
     outfile: str = "processed_simple_greedy.jsonl",
 ):
-    rawjslf = Path(exp_dir) / "raw_simple_greedy.jsonl"
+    rawjslf = Path(parent_dir) / "raw_simple_greedy.jsonl"
     records = list(jsl.open(rawjslf))
     for row in tqdm(records):
         if set(row["majvote_ans"]) == {None}:  # all None
@@ -117,3 +122,9 @@ def process_simple_greedy(
 
 if __name__ == "__main__":
     Fire()
+    """
+    # process_indiv
+    for F in outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl outputs/MATH-full_dt.math/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl; do
+        python postprocessing_rawouts.py process_indiv --infile $F
+    done
+    """

@@ -1,6 +1,6 @@
+import json
 from pathlib import Path
 from typing import Literal
-import json
 
 import jsonlines as jsl
 import numpy as np
@@ -10,6 +10,7 @@ from processings.math_util import gsm_check_answer, math_check_answer, ocw_check
 from tqdm import tqdm
 
 tqdm.pandas()
+
 
 # eval functions with exception handled (like len(df)==0)
 def eval_gsm_svamp(
@@ -172,6 +173,7 @@ def score_indiv(
 
 
 def score_selected_result():
+    # work for all selection results including n>1
     raise NotImplementedError()
 
 

@@ -1,13 +1,10 @@
-import yaml
-from typing import Literal
 from pathlib import Path
+from typing import Literal
 
-
-from query import BaseQueryObject, get_user_assistant_messages
-
+import yaml
+from query import BaseQueryObject
 
 THIS_PARENT = Path(__file__).parent.resolve()
-
 
 
 class P2CQueryObject(BaseQueryObject):
@@ -22,7 +19,6 @@ class P2CQueryObject(BaseQueryObject):
         self.plan = None
         self.code_query = None
         self.plan_query = None
-        
 
     async def async_query(
         self,
@@ -34,23 +30,20 @@ class P2CQueryObject(BaseQueryObject):
         max_tokens: int = 2048,
         stop="\n\n\n",
     ):
-        contents, query_message, resp, meta = await super().async_query(question, temperature, backbone, n, seed, max_tokens, stop)
-        
+        contents, query_message, resp, meta = await super().async_query(
+            question, temperature, backbone, n, seed, max_tokens, stop
+        )
+
         meta["plan"] = self.plan
         meta["codequery"] = self.code_query
         meta["planquery"] = self.plan_query
 
         return contents, query_message, resp, meta
 
-    async def prepare_query(
-        self,
-        question: str,
-        backbone: str,
-        **kwargs
-    ):
+    async def prepare_query(self, question: str, backbone: str, **kwargs):
         seed = kwargs["seed"]
         model_name = self.backbone2model(backbone)
-        
+
         k_fewshot = 8  # default init 8, for openLLM cases
         if backbone.startswith("gpt4"):
             # print(f'gpt-4 uses k_fewshot=5 as default (p2c fs_prompting)')
@@ -66,7 +59,7 @@ class P2CQueryObject(BaseQueryObject):
             "ocw": 800,
             "math": 800,
         }
-    
+
         resp = await self.async_query_to_llm(
             model=model_name,
             max_tokens=plan_max_tokens_d[self.dataset_type],
@@ -77,7 +70,7 @@ class P2CQueryObject(BaseQueryObject):
             n=1,  # plan*1 + code*n (bad for p2c acc but perf. consideration)
             seed=seed,
         )
-        
+
         contents = self.get_contents(resp)
         plan = [self.postprocess_plan(content) for content in contents][0]
 
@@ -94,11 +87,10 @@ class P2CQueryObject(BaseQueryObject):
         if query_message == -1:
             return (
                 True,
-                (None, None, {"codequery": None, "planquery": plan_query_msg})
+                (None, None, {"codequery": None, "planquery": plan_query_msg}),
             )
         else:
             return False, None
-        
 
     @staticmethod
     def postprocess_plan(rawanswer: str):
@@ -122,17 +114,17 @@ class P2CQueryObject(BaseQueryObject):
             ]
             code_ = "\n".join(lines_)
             return code_
-    
+
         try:
             # 1 removing starting wrap ```
             if "```python" in rawanswer:
                 rawanswer = rawanswer.split("```python")[-1]
             elif rawanswer.startswith("```"):
                 rawanswer = rawanswer.split("```")[-1]
-    
+
             # 2 removing ``` at the end
             code = rawanswer.split("```")[0]  # ending ``` removal
-    
+
             code = remove_prints(code)
             assert code
         except:

@@ -29,9 +29,15 @@ class BaseQueryObject:
     ):
         meta = {
             "method_obj": self.__class__.__name__,
-            "dataset_type": self.dataset_type
-            if hasattr(self, "dataset_type")
-            else "not given",
+            "dataset_type": getattr(self, "dataset_type", "not given"),
+            "query_kwargs": {
+                "backbone": backbone,
+                "temperature": temperature,
+                "n": n,
+                "seed": seed,
+                "max_tokens": max_tokens,
+                "stop": stop,
+            },
         }
 
         prepare_query_task = self.prepare_query(

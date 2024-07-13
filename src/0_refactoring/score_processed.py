@@ -91,8 +91,8 @@ def overlaps_corrects(cot, pal, p2c, return_flags: bool = False):
 
 def score_indiv(
     ptn: str = "dbg_llama/processed_indiv.jsonl",  # regex allowed
-    eval_type: Literal["gsm", "math", "ocw", "svamp"] = "gsm",
-    dataset_jsl: str = "../../dataset/gsm8K_test.jsonl",
+    # eval_type: Literal["gsm", "math", "ocw", "svamp"] = "gsm", # processed_indiv.jsonl includes "dataset_type" field
+    # dataset_jsl: str = "../../dataset/gsm8K_test.jsonl", # processed_indiv.jsonl will include "gt_answer" field now
 ):
     # get jsonl files
     paths = list(Path().glob(ptn))
@@ -106,15 +106,15 @@ def score_indiv(
                 data_for_df.append(json.loads(line))
 
         df = pd.DataFrame(data_for_df)
-        answers = pd.read_json(dataset_jsl, lines=True, orient="records").answer
-        df["answer"] = answers
-        assert len(df) == len(
-            answers
-        ), f"{ptn} has missing rows! ({len(df)!=len(answers)})"
+        df["answer"] = df.gt_answer
 
         # logfile open
         f = open(outpath, "a")
 
+        eval_type = data_for_df[0]["dataset_type"]
+        assert (
+            eval_type in "gsm ocw math".split()
+        ), f"invalid {eval_type=} check {jslf=} contains proper fields"
         eval_type2eval_f = {
             "gsm": eval_gsm_svamp,
             "math": eval_math,

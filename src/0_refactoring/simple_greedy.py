@@ -75,5 +75,6 @@ async def simple_greedy_query(
             "query_message": query_message,
             "resp": resp,
             "meta": meta,
+            "GT_answer": row["answer"],  # included groud_truth answer for later ease
         }
     return return_data

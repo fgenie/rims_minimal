@@ -83,6 +83,9 @@ def process_indiv(
         # to run selection
         need_selection = [maj is None for maj in majvote_answers]
 
+        # for later ease of scoring
+        gt_answer = row["CoTQueryObject"]["gt_answer"]
+
         processed_row = dict(
             question=question,
             # answer = answer,
@@ -95,6 +98,7 @@ def process_indiv(
             majvote_answers=majvote_answers,
             need_selection=need_selection,
             dataset_type=dataset_type,
+            gt_answer=gt_answer,
         )
         processed_rows.append(processed_row)
 
@@ -122,9 +126,3 @@ def process_simple_greedy(
 
 if __name__ == "__main__":
     Fire()
-    """
-    # process_indiv
-    for F in outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl outputs/ocw_course_dt.ocw/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl outputs/MATH-full_dt.math/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl; do
-        python postprocessing_rawouts.py process_indiv --infile $F
-    done
-    """

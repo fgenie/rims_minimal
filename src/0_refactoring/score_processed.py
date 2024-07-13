@@ -1,4 +1,5 @@
 import json
+from functools import partial
 from pathlib import Path
 from typing import Literal
 
@@ -7,6 +8,7 @@ import numpy as np
 import pandas as pd
 from fire import Fire
 from processings.math_util import gsm_check_answer, math_check_answer, ocw_check_answer
+from processings.text_exec_functions import get_concordant_answer_n
 from tqdm import tqdm
 
 tqdm.pandas()
@@ -172,11 +174,82 @@ def score_indiv(
         f.close()
 
 
-def score_selected_result():
-    # work for all selection results including n>1
-    raise NotImplementedError()
+def score_sg(
+    ptn: str = "allows_wildcard_expression",
+    n: int = 1,
+):
+    if n > 1:
+        raise NotImplementedError()
+    jslfs = list(Path().glob(ptn))
+    print(f"found {len(jslfs)} files")
+    for jslf in jslfs:
+        print(" *", jslf.name)
+
+    for jslf in jslfs:
+        outpath = jslf.parent / f"{jslf.stem}_sg_scored.txt"
+        # load data
+        data_for_df = []
+
+        with open(jslf) as f:
+            for line in f.readlines():
+                data_for_df.append(json.loads(line))
+
+        df = pd.DataFrame(data_for_df)
+        df["answer"] = df.gt_answer
+
+        # logfile open
+        f = open(outpath, "a")
+
+        eval_type = data_for_df[0]["dataset_type"]
+        assert (
+            eval_type in "gsm ocw math".split()
+        ), f"invalid {eval_type=} check {jslf=} contains proper fields"
+        eval_type2eval_f = {
+            "gsm": eval_gsm_svamp,
+            "math": eval_math,
+            "ocw": eval_ocw,
+        }
+
+        eval_f = eval_type2eval_f[eval_type]
+        aggf = partial(get_concordant_answer_n, dataset_type=eval_type)
+
+        # need to specify which to submit
+        mask_sel = df.need_selection.apply(lambda x: x[0])
+        df_sel = df[mask_sel]
+        df_maj = df[~mask_sel]
+        df_sel["submission"] = df_sel.sg_answer.apply(aggf)
+        df_maj["submission"] = df_maj.majvote_answers.apply(aggf)
+
+        sel_corrects = eval_f(
+            df_sel, submission_col_already_exists=True, return_flag=False
+        )
+        maj_corrects = eval_f(
+            df_maj, submission_col_already_exists=True, return_flag=False
+        )
+
+        # log with separation (non select, select, total)
+        with open(outpath, "w") as f:
+            print(f"{eval_type} / simple greedy score", file=f)
+            try:
+                print(
+                    f"selection: {sel_corrects/len(df_sel):.3f} ({sel_corrects}/{len(df_sel)})",
+                    file=f,
+                )
+            except ZeroDivisionError:
+                print(f"{len(df_sel)=}")
+            try:
+                print(
+                    f"majvote: {maj_corrects/len(df_maj):.3f} ({maj_corrects}/{len(df_maj)})",
+                    file=f,
+                )
+            except ZeroDivisionError:
+                print(f"{len(df_maj)=}")
+            print(
+                f"total: {(sel_corrects+maj_corrects)/len(df):.3f} ({sel_corrects+maj_corrects}/{len(df)})",
+                file=f,
+            )
+        print(outpath)
 
 
 if __name__ == "__main__":
     Fire()
-    """python score_processed.py score_indiv """

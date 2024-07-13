@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Union
 
 import fire
+import jsonlines as jsl
 import pandas as pd
 
 # from run_baseline import save_res, dedup
@@ -13,12 +14,12 @@ from task_runner import TaskRunner
 
 
 def filter_tobe_run(records):
-    df = pd.DataFrame(records)
+    df = pd.DataFrame(records).reset_index(drop=True)
     mask = df.need_selection.apply(lambda x: x[0])
     df = df.reset_index()
     records = df[mask].to_dict(orient="records")
-    filtered_out_records = df[~mask].to_dict(orient="records")
-    return records, filtered_out_records
+    torun_idx = df[mask].index.tolist()
+    return records, torun_idx
 
 
 def dedup(records):
@@ -101,17 +102,16 @@ async def main(
         if removed_idxs:
             print(f"Removed {len(removed_idxs)} duplicates")
             print(removed_idxs)
-        to_select_records, filtered_out_records = filter_tobe_run(records)
+        to_select_records, torun_idxs = filter_tobe_run(records)
     error_idx = []
     res = []
 
-    outdir = Path(indiv_processed_jslf).parent / "simple_greedy" / backbone
+    outdir = Path(indiv_processed_jslf).parent / "simple_greedy"
 
     if not outdir.exists():
         outdir.mkdir(parents=True)
 
     outpath = outdir / f"n{n}_{temperature}_sg_raw_query_result.jsonl"
-    outpath_intact = outdir / f"intact.jsonl"
 
     res_selection = await run_task(
         records=to_select_records,
@@ -120,9 +120,23 @@ async def main(
         backbone=backbone,
         seed=seed,
     )
-
+    # save_results
     save_res(outpath, res_selection)
-    save_res(outpath_intact, filtered_out_records)
+
+    # record idxs selection performed on
+    selection_idx_path = outdir / "selection_performed_idxs.txt"
+    with open(selection_idx_path, "w") as f:
+        f.write("\n".join(map(str, torun_idxs)))
+
+    # make symlink to input file for postprocessing
+    copypath = outdir / f"{outpath.stem}_input.jsonl"
+    with jsl.open(copypath, "w") as writer:
+        writer.write_all(records)
+
+    # to-postprocess-with are as follows:
+    print(outpath)
+    print(selection_idx_path)
+    print(copypath)
 
 
 if __name__ == "__main__":

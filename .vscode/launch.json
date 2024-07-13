@@ -68,17 +68,25 @@
             "justMyCode": true
         },
         {
-            "name": "Current File: Python",
+            "name": "postprocess sg",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "cwd": "${fileDirname}",
+            "program": "postprocess_rawouts.py",
+            "cwd": "/Users/seonils/dev/rims_minimal/src/0_refactoring/",
             "args": [
-                // "process_indiv",
-                // "--infile", "/Users/seonils/dev/rims_minimal/src/0_refactoring/outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/n1_baseline_raw_query_result.jsonl",
-                // "--outfile", "dbg/processed_indiv.jsonl",
-                // "--dataset_type", "gsm",
-                "score_indiv",
+                "process_simple_greedy", "--infile", "outputs/MATH-full_dt.math/Meta-Llama-3-8B-Instruct/simple_greedy/n1_0.0_sg_raw_query_result.jsonl"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },
+        {
+            "name": "score sg",
+            "type": "python",
+            "request": "launch",
+            "program": "score_processed.py",
+            "cwd": "/Users/seonils/dev/rims_minimal/src/0_refactoring/",
+            "args": [
+                "score_sg", "--ptn", "outputs/gsm8K_test_dt.gsm/Meta-Llama-3-8B-Instruct/simple_greedy/processed_sg.jsonl"
             ],
             "console": "integratedTerminal",
             "justMyCode": true,
@@ -87,7 +95,7 @@
             "name": "run sg",
             "type": "python",
             "request": "launch",
-            "program": "run_sg.py",
+            "program": "run_sg_selection.py",
             "cwd": "/Users/seonils/dev/rims_minimal/src/0_refactoring/",
             "args": [
                 "--indiv_processed_jslf", "dbg/processed_indiv.jsonl",

@@ -70,11 +70,11 @@ async def simple_greedy_query(
         jobs.append(query_obj.async_query(**query_params))
 
     for contents, query_message, resp, meta in await asyncio.gather(*jobs):
+        meta["gt_answer"] = row["gt_answer"]
         return_data[meta["method_obj"]] = {
             "contents": contents,  # already listified
             "query_message": query_message,
             "resp": resp,
             "meta": meta,
-            "GT_answer": row["answer"],  # included groud_truth answer for later ease
         }
     return return_data

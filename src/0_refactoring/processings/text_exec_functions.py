@@ -292,6 +292,7 @@ def get_concordant_answer(
             try:
                 with math_util.timeout(seconds=60):
                     res = math_util.normalize_final_answer(str(a))
+                    answers_normalized.append(res)
             except TimeoutError as e:
                 print('math_util.normalize_final_answer raise timeout error. Skip this answer.')
                 pass

@@ -151,7 +151,78 @@ def process_simple_greedy(
 
     def _process_sg_raw(sel: dict = None, og: dict = None) -> dict:
         # read raw sel row and fill the og row with it.
-        abc = _find_first_abc(sel["ModelSelectionQuery"]["contents"][0])
+        abc = _find_first_abc(sel["SimpleGreedyQueryObject"]["contents"][0])
+        if abc is None:
+            og["sg_answer"] = [None]  # failed to generate the selection
+            og["sg_selected"] = "failed"
+        elif abc == "(A)":
+            og["sg_answer"] = og["cot_preds"]  # list
+            og["sg_selected"] = "cot"  # list
+        elif abc == "(B)":
+            og["sg_answer"] = og["pal_preds"]
+            og["sg_selected"] = "pal"
+        elif abc == "(C)":
+            og["sg_answer"] = og["p2c_preds"]
+            og["sg_selected"] = "p2c"
+        else:
+            og["sg_answer"] = [None]  # failed to generate the selection
+            og["sg_selected"] = "failed"
+
+        return og
+
+    for idx, selrow in zip(selidxs, raw_selections):
+        originals[idx] = _process_sg_raw(sel=selrow, og=originals[idx])
+
+    # save
+    outjslf = Path(parent_dir) / outfile
+    if not outjslf.parent.is_dir():
+        outjslf.parent.mkdir(parents=True, exist_ok=True)
+
+    with jsl.open(outjslf, "w") as writer:
+        writer.write_all(originals)
+        print("\t", outjslf)
+
+
+def process_rims(
+    infile: str = "",
+    outfile: str = "processed_rims.jsonl",
+    n: int = 1,
+):
+    assert infile, f"need to specify {infile=}"
+
+    # path
+    parent_dir = Path(infile).parent
+    print(f"parent dir is automatically set to {parent_dir=}")
+    print(f"outfile is set to {Path(outfile).name} and saved under {parent_dir=}")
+    infile = Path(infile).name
+    outfile = Path(outfile).name
+    assert infile != outfile
+
+    if n > 1 or not infile.startswith("n1_"):
+        raise NotImplementedError("n>1 cannot run here")
+
+    raw_selections = list(jsl.open(parent_dir / infile))
+    selidxs = [
+        int(k)
+        for k in open(parent_dir / "selection_performed_idxs.txt")
+        .read()
+        .strip()
+        .split("\n")
+    ]
+
+    assert len(raw_selections) == len(selidxs)
+    originals = list(jsl.open(parent_dir / infile.replace(".jsonl", "_input.jsonl")))
+
+    # process
+    import re
+
+    def _find_first_abc(text):
+        match = re.search(r"\((A|B|C)\)", text)
+        return match.group() if match else None
+
+    def _process_sg_raw(sel: dict = None, og: dict = None) -> dict:
+        # read raw sel row and fill the og row with it.
+        abc = _find_first_abc(sel["SimpleGreedyQueryObject"]["contents"][0])
         if abc is None:
             og["sg_answer"] = [None]  # failed to generate the selection
             og["sg_selected"] = "failed"

@@ -95,7 +95,19 @@
             "name": "run sg",
             "type": "python",
             "request": "launch",
-            "program": "run_sg_selection.py",
+            "program": "run_sg.py",
+            "cwd": "/Users/seonils/dev/rims_minimal/src/0_refactoring/",
+            "args": [
+                "--indiv_processed_jslf", "dbg/processed_indiv.jsonl",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },
+        {
+            "name": "run rims",
+            "type": "python",
+            "request": "launch",
+            "program": "run_rims.py",
             "cwd": "/Users/seonils/dev/rims_minimal/src/0_refactoring/",
             "args": [
                 "--indiv_processed_jslf", "dbg/processed_indiv.jsonl",

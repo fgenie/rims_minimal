@@ -6,7 +6,7 @@ from typing import Literal
 
 import fire
 import pandas as pd
-from indiv import indiv_query
+from query_scenario import indiv_query
 from task_runner import TaskRunner
 
 

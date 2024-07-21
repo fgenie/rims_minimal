@@ -37,13 +37,13 @@ def ocw_check_answer(a1, a2):
     """
     try:
         a1, a2 = map(str, [a1, a2])
-        logging.error(f'a1 {a1}')
-        logging.error(f'a2 {a2}')
+        print(f"a1 {a1}")
+        print(f"a2 {a2}")
         decision = is_equiv_ocw(a1, a2)
     except Exception as e:
         print(e)
         decision = False
-    logging.error(f'decision {decision}')
+    print(f"decision {decision}")
     return decision
 
 
@@ -83,7 +83,7 @@ def is_equiv(x1: str, x2: str) -> bool:
     x1 and x2 are normalized latex string
     """
     try:
-        with timeout(seconds=5):
+        with timeout(seconds=3):
             # before relying on parse_latex, which is problematic, try exact match by string first
             # added by seonil
             if x1.replace(" ", "") == x2.replace(" ", ""):

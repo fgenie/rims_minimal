@@ -29,7 +29,7 @@ def get_pal_prompt(
     if dataset_type not in "gsm ocw math svamp":
         raise ValueError(f"get_pal_prompt(): {dataset_type=} is not supported")
 
-    from query import get_user_assistant_messages
+    from query_obj import get_user_assistant_messages
 
     if dataset_type in "gsm svamp".split():
         if backbone == "gpt4" or backbone == "gpt4turbo":

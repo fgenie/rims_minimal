@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Literal
+from typing import Dict, List, Literal
 
 import jsonlines as jsl
 from fire import Fire
@@ -184,74 +184,98 @@ def process_simple_greedy(
 
 
 def process_rims(
-    infile: str = "",
-    outfile: str = "processed_rims.jsonl",
+    ptn: str = "pattern or path/to/rawresult jsonl parent",
+    # outfile: str = "processed_rims.jsonl",
     n: int = 1,
 ):
-    assert infile, f"need to specify {infile=}"
+    print(n, type(n))
+    assert ptn, f"need to specify {ptn=}"
+    if n > 1:
+        raise NotImplementedError(
+            "n>1 will need some tweak (majority voting at the last...)"
+        )
 
+    parent_dirs = list(Path("./").glob(ptn))
     # path
-    parent_dir = Path(infile).parent
-    print(f"parent dir is automatically set to {parent_dir=}")
-    print(f"outfile is set to {Path(outfile).name} and saved under {parent_dir=}")
-    infile = Path(infile).name
-    outfile = Path(outfile).name
-    assert infile != outfile
+    for parent_dir in parent_dirs:
+        infile = list(parent_dir.glob("n[0-9]_*_rims_raw_query_result.jsonl"))
+        assert (
+            len(infile) == 1
+        ), "only one file should be found --> for temperature or n options, separate output directory from the first"
+        infile = infile[0]
+        ogpath = parent_dir / infile.name.replace(".jsonl", "_input.jsonl")
+        outfile = parent_dir / "processed_rims.jsonl"
+        assert infile != outfile
 
-    if n > 1 or not infile.startswith("n1_"):
-        raise NotImplementedError("n>1 cannot run here")
+        raw_selections = list(jsl.open(infile))
+        selidxs = [
+            int(k)
+            for k in open(parent_dir / "selection_performed_idxs.txt")
+            .read()
+            .strip()
+            .split("\n")
+        ]
 
-    raw_selections = list(jsl.open(parent_dir / infile))
-    selidxs = [
-        int(k)
-        for k in open(parent_dir / "selection_performed_idxs.txt")
-        .read()
-        .strip()
-        .split("\n")
-    ]
+        assert len(raw_selections) == len(selidxs)
+        originals = list(jsl.open(ogpath))
+        dataset_type = originals[0]["dataset_type"]
 
-    assert len(raw_selections) == len(selidxs)
-    originals = list(jsl.open(parent_dir / infile.replace(".jsonl", "_input.jsonl")))
+        # process
+        from processings.text_exec_functions import process_rims_out_dict
+        from processings.text_parse_functions import parse_raw_modif
 
-    # process
-    import re
+        def _process_rims_raw(sel_content: str = None, og: dict = None) -> dict:
+            # read raw sel row and fill the og row with it.
+            og["rims_selected"] = None
+            og["rims_solution"] = None
+            og["rims_answer"] = None
+            og["rims_summary"] = None
+            # for error logging
+            og["error"] = False
+            og["raw_text"] = None
+            og["exception"] = None
+            try:
+                parsed = parse_raw_modif(sel_content)
+            except Exception as e:  # parsing fails
+                og["error"] = True
+                og["exception"] = f"parse_raw_modif()  {str(e)}"
+                og["raw_text"] = sel_content
+            else:  # parsing success
+                try:
+                    executed = process_rims_out_dict(parsed)
+                    og["rims_selected"] = executed["good_method"]
+                    og["rims_solution"] = executed["good_solution"]
+                except Exception as e:  # parse -> code fail
+                    print(e)
+                    og["error"] = True
+                    og["exception"] = f"process_rims_out_dict()  {str(e)}"
+                    og["raw_text"] = sel_content
+                else:  # code success (all success)
+                    og["rims_answer"] = executed["good_ans"]
+                    og["rims_summary"] = executed
 
-    def _find_first_abc(text):
-        match = re.search(r"\((A|B|C)\)", text)
-        return match.group() if match else None
+            return og
 
-    def _process_sg_raw(sel: dict = None, og: dict = None) -> dict:
-        # read raw sel row and fill the og row with it.
-        abc = _find_first_abc(sel["SimpleGreedyQueryObject"]["contents"][0])
-        if abc is None:
-            og["sg_answer"] = [None]  # failed to generate the selection
-            og["sg_selected"] = "failed"
-        elif abc == "(A)":
-            og["sg_answer"] = og["cot_preds"]  # list
-            og["sg_selected"] = "cot"  # list
-        elif abc == "(B)":
-            og["sg_answer"] = og["pal_preds"]
-            og["sg_selected"] = "pal"
-        elif abc == "(C)":
-            og["sg_answer"] = og["p2c_preds"]
-            og["sg_selected"] = "p2c"
-        else:
-            og["sg_answer"] = [None]  # failed to generate the selection
-            og["sg_selected"] = "failed"
+        err_idxs = []
+        for idx, selrow in tqdm(zip(selidxs, raw_selections), total=len(selidxs)):
+            originals[idx] = _process_rims_raw(
+                sel_content=selrow["RimsQueryObject"]["contents"][0], og=originals[idx]
+            )
+            if originals[idx]["error"]:
+                err_idxs.append(idx)
 
-        return og
+        # save
+        outjslf = outfile
+        errjslf = outfile.with_name(outfile.name.replace(".jsonl", "_errors.jsonl"))
 
-    for idx, selrow in zip(selidxs, raw_selections):
-        originals[idx] = _process_sg_raw(sel=selrow, og=originals[idx])
-
-    # save
-    outjslf = Path(parent_dir) / outfile
-    if not outjslf.parent.is_dir():
-        outjslf.parent.mkdir(parents=True, exist_ok=True)
-
-    with jsl.open(outjslf, "w") as writer:
-        writer.write_all(originals)
-        print("\t", outjslf)
+        print(outjslf)
+        print(errjslf)
+        with jsl.open(outjslf, "w") as writer, jsl.open(errjslf, "w") as writer_err:
+            writer.write_all(originals)
+            writer_err.write_all([originals[i] for i in err_idxs])
+            print(f"processed\n\t{infile}\n\t{ogpath}")
+            print(f"to\n\t{outfile}")
+            print(f"\t{errjslf}", f"{len(err_idxs)}/{len(originals)}", "errors")
 
 
 if __name__ == "__main__":

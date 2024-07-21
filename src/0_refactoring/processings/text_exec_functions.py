@@ -1,7 +1,10 @@
+import queue  # designed thread-safe...
 import re
 from collections import Counter
 from itertools import combinations
 from typing import Dict, List, Literal, Union
+
+err_queue = queue.Queue()  # manages errors in subthread
 
 import func_timeout
 
@@ -120,8 +123,8 @@ def _execute(code, code_return: str):
 
 ### executing a code
 def safe_execute_turbo(code_string: str):
-    # === find code snippets between def solution(): and return ===
     try:
+        # === find code snippets between def solution(): and return ===
         code_list = code_string.strip().split("\n")
 
         new_code_list = []
@@ -153,12 +156,14 @@ def safe_execute_turbo(code_string: str):
 
             with math_util.timeout(seconds=3):
                 ans = _execute(new_code, code_return)
+
             ans = _convert_to_float_if_possible(ans)
             ans = _convert_to_str_if_not_none_nor_float(ans)
         else:
             ans = None
-    except (TimeoutError, IndexError, NameError, SyntaxError):
-        print('Timeout. skip this sample output')
+
+    except (TimeoutError, IndexError, NameError, SyntaxError) as error:
+        print(error)
         ans = None
     return ans
 
@@ -287,17 +292,19 @@ def get_concordant_answer(
         return res
     elif dataset_type in ["math"]:
         answers_normalized = []
-        
-        for a in answers_no_none:    
+        for a in answers_no_none:
             try:
-                with math_util.timeout(seconds=60):
+                with math_util.timeout(seconds=30):
                     res = math_util.normalize_final_answer(str(a))
+                    answers_normalized.append(res)
             except TimeoutError as e:
-                print('math_util.normalize_final_answer raise timeout error. Skip this answer.')
+                print(
+                    "math_util.normalize_final_answer raise timeout error. Skip this answer."
+                )
                 pass
-        print('answers_normalized len', len(answers_normalized))
-        print('answers_normalized', answers_normalized)
-        
+        print("answers_normalized len", len(answers_normalized))
+        print("answers_normalized", answers_normalized)
+
         if len(answers_normalized) == 0:
             res = None
         elif len(answers_normalized) == 1:
@@ -446,3 +453,140 @@ def get_concordant_answer_n(
                 return majorities
             else:
                 return None
+
+
+###################
+### rims ###
+###################
+def get_answer_rims(solution: str, ans: str = "", method: str = ""):
+    from .text_parse_functions import parse_num_from_answer
+
+    try:
+        if method == "cot":
+            pred = parse_num_from_answer(ans)
+        elif method in ["pal", "p2c"]:
+            pred = safe_execute_turbo(solution)
+        else:
+            if "return " in solution:
+                pred = safe_execute_turbo(solution)
+            else:
+                pred = parse_num_from_answer(ans)
+
+    except Exception as e:
+        print(e)
+        pred = None
+    return pred
+
+
+def process_rims_out_dict(parse_dd: dict) -> dict:
+    """
+    in:
+        parsed_dict: contains fields that is directly related to the prompt response such as...
+            Attempt 1: solution1 string
+            Answer 1: solution1 answer (raw string)
+            Mistakes: [solution 1,2,3,...'s mistake string]
+            ...
+    out:
+        eval_friendly_d (dict): contains eval-friendly parsed fields
+            good_solution: solution string at the last
+            good_ans: correct answer executed above
+            good_method: correct method abbreviation (e.g. cot)
+            bad_ans: [list of wrong answers]
+            bad_method: [list of wrong methods before the correct one]
+            bad_solutions: [list of wrong solutions before the correct one]
+            mistakes: [list of mistakes]
+            hint: [list of hints]
+
+    """
+
+    from .text_parse_functions import parse_method2
+
+    # dataset_type = parse_dd["dataset_type"]
+    attempts_keys = sorted([k for k in parse_dd.keys() if "Attempt" in k])
+    ans_keys = sorted([k for k in parse_dd.keys() if "Answer" in k])
+    # method_keys = sorted([k for k in parse_dd.keys() if 'Method' in k])
+
+    if (
+        ans_keys and attempts_keys
+    ):  # answer and solutions inside. additionally Method key is also in the parse_dd
+        good_solution = parse_dd[attempts_keys[-1]] if attempts_keys else None
+        did_reflect = 0
+        if "Workaround Method" in parse_dd.keys() and parse_dd["Workaround Method"]:
+            did_reflect += len(parse_dd["Workaround Method"])
+            good_method = parse_method2(parse_dd["Workaround Method"][-1])
+            bad_method = []
+            if "Method" in parse_dd.keys():
+                bad_method.append(parse_method2(parse_dd["Method"].pop()))
+            if len(parse_dd["Workaround Method"]) > 1:
+                bad_method += [
+                    parse_method2(mstr) for mstr in parse_dd["Workaround Method"][:-1]
+                ]
+
+            # ans and solutions
+            good_ans = parse_dd[ans_keys[-1]]
+            bad_ans = [parse_dd[ak] for ak in ans_keys[:-1]]
+
+            good_solution = parse_dd[attempts_keys[-1]]
+            bad_solution = [parse_dd[atk] for atk in attempts_keys[:-1]]
+
+        elif "Method" in parse_dd.keys() and parse_dd["Method"]:
+            if "Mistakes" in parse_dd.keys():
+                did_reflect += len(parse_dd["Mistakes"])
+            good_method = parse_method2(parse_dd["Method"][-1])
+            bad_method = [parse_method2(m) for m in parse_dd["Method"][:-1]]
+
+            # ans and solutions
+            good_ans = parse_dd[ans_keys[-1]]
+            bad_ans = [parse_dd[ak] for ak in ans_keys[:-1]]
+
+            good_solution = parse_dd[attempts_keys[-1]]
+            bad_solution = [parse_dd[atk] for atk in attempts_keys[:-1]]
+
+        else:  # solved at once
+            good_method = []
+            if "Method" in parse_dd.keys():
+                good_method = parse_method2(parse_dd["Method"])
+            bad_method = []
+
+            good_ans = parse_dd[ans_keys[-1]]
+            bad_ans = []
+
+            good_solution = parse_dd[attempts_keys[-1]]
+            bad_solution = []
+
+    else:  # rims queried for evaluation only. no answer nor solutions.
+        did_reflect = 0
+        good_solution = None
+        good_method = None
+        good_ans = None
+        bad_solution = []
+        bad_ans = []
+        bad_method = []
+
+    mistakes = []
+    hint = []
+    if "Mistakes" in parse_dd.keys():
+        mistakes = parse_dd["Mistakes"]
+    if "Hint for a better Method choice" in parse_dd.keys():
+        hint = parse_dd["Hint for a better Method choice"]
+
+    if not len(bad_solution) == len(bad_ans) == len(bad_method):
+        print(f"{bad_solution=}", f"{bad_ans=}", f"{bad_method=}")
+        print(f"{good_solution=}", f"{good_ans=}", f"{good_method=}")
+        print(f"{bad_solution=} possibly repetition generated (chatgpt, temp 0)")
+
+    eval_friendly_d = dict(
+        good_solution=good_solution,
+        good_ans=get_answer_rims(good_solution, ans=good_ans, method=good_method),
+        good_method=good_method,
+        bad_solutions=bad_solution,
+        bad_ans=[
+            get_answer_rims(s, ans=a, method=m)
+            for s, a, m in zip(bad_solution, bad_ans, bad_method)
+        ],
+        bad_method=bad_method,
+        mistakes=mistakes,
+        hint=hint,
+        did_reflect=did_reflect,
+    )
+    return eval_friendly_d

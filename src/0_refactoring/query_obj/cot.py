@@ -39,7 +39,7 @@ def get_cot_prompt(
             system_message = math_prompt.TURBO_COT_SYSTEM
             user_message = math_prompt.TURBO_COT_USER
             assistant_message = math_prompt.TURBO_COT_ASSISTANT
-        from query import get_user_assistant_messages
+        from query_obj import get_user_assistant_messages
 
         messages = get_user_assistant_messages(
             system_message, user_message, assistant_message

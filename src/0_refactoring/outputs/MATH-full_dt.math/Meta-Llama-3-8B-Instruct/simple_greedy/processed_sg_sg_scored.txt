@@ -1,3 +1,0 @@
-math / simple greedy score
-selection: 0.297 (1485/5000)
-total: 0.297 (1485/5000)

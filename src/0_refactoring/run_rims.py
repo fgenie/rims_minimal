@@ -62,7 +62,7 @@ async def run_task(
     seed: int = 777,
     # dataset_type: Literal["gsm", "ocw", "math"] = "",
 ):
-    task_runner_obj = TaskRunner(50)
+    task_runner_obj = TaskRunner(80)
 
     for row in records:
         jobs = rims_query(

@@ -1,7 +1,8 @@
 set -x
+MODEL=Phi-3-small-128k-instruct
 
-python postprocess_rawouts.py process_rims --ptn "outputs/*/Meta-Llama-3-8B-Instruct/rims/rims_*/" --n 1
+PTN=outputs/*/$MODEL/rims/rims_*/
+python postprocess_rawouts.py process_rims --ptn "$PTN" --n 1
 
-PTN1=outputs/*/Meta-Llama-3-8B-Instruct/rims/rims*/processed_rims.jsonl
-
+PTN1=outputs/*/$MODEL/rims/rims*/processed_rims.jsonl
 python score_processed.py score_rims --ptn "$PTN1" --n 1

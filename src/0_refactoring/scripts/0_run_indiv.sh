@@ -1,6 +1,7 @@
-python run_baseline.py --gsm_jslf ../../dataset/gsm8K_test.jsonl --dataset_type gsm
-python run_baseline.py --gsm_jslf ../../dataset/ocw/ocw_course.jsonl --dataset_type ocw
-python run_baseline.py --gsm_jslf ../../dataset/MATH/MATH-full.jsonl --dataset_type math
+MODEL=microsoft/Phi-3-small-128k-instruct
+# python run_baseline.py --gsm_jslf ../../dataset/gsm8K_test.jsonl --dataset_type gsm --backbone $MODEL
+python run_baseline.py --gsm_jslf ../../dataset/ocw/ocw_course.jsonl --dataset_type ocw --backbone $MODEL
+# python run_baseline.py --gsm_jslf ../../dataset/MATH/MATH-full.jsonl --dataset_type math --backbone $MODEL
 
 # How to run?
 # OPENAI_API_BASE=http://localhost:8000/v1 python run_baseline.py --gsm_jslf=some_dir/gsm8K_test.jsonl --dataset_type=gsm --backbone=Meta-Llama-3-8B-Instruct
